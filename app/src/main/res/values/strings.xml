@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">Airbus Sources</string>
+    <string name="field_hint">Type here...</string>
+
+    <string name="start_button_login">Log in</string>
+    <string name="start_button_signup">Sign up</string>
+
+    <string name="login_login_already_used">This login is already used</string>
+    <string name="login_login_not_exist">This login does not exist</string>
+    <string name="login_login_too_short">The login must be at least 5 characters long</string>
+    <string name="login_password_too_short">The password must be at least 5 characters long</string>
+    <string name="login_password_different">The two password fields must be the same</string>
+    <string name="login_password_incorrect">The password does not match this login</string>
+    <string name="login_loginField_title">Login :</string>
+    <string name="login_passwordField_title">Password :</string>
+    <string name="signup_loginField_title">Choose a login :</string>
+    <string name="signup_passwordField_title">Choose a password :</string>
+    <string name="signup_passwordConfirmationField_title">Confirm your password :</string>
+
 </resources>

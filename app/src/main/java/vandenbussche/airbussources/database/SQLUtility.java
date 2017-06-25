@@ -1,10 +1,13 @@
 package vandenbussche.airbussources.database;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.Nullable;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,16 +49,16 @@ public class SQLUtility extends SQLiteOpenHelper {
     }
 
     /**
-     * Verifie si l'email passe en argument existe deja dans la base de donnees de l'application
-     * @param email L'adresse email a verifier
-     * @throws SQLiteException si il y a une erreur dans la lecture de la DB
-     * @return True si l'adresse existe deja, false sinon
+     * Checks whether this login exists in this DB.
+     * @param login the login to look for
+     * @throws SQLiteException if an error occurs while reading the DB
+     * @return true if this login already exists, false otherwise
      */
-    public boolean emailExistsInDB(String email) throws SQLiteException {
-        Cursor c = myDB.query("\"User\"",
-                new String[]{"\"Mail\""},
-                "Mail=?",
-                new String[]{email},
+    public boolean loginExistsInDB(String login) throws SQLiteException {
+        Cursor c = myDB.query("\"Member\"",
+                new String[]{"\"Login\""},
+                "Login=?",
+                new String[]{login},
                 null,
                 null,
                 null
@@ -101,13 +104,14 @@ public class SQLUtility extends SQLiteOpenHelper {
     }
 
     /**
-     * Retourne toutes les entrees de la DB correspondant aux conditions passees en argument
-     * @param table La table sur laquelle est executee la requete
-     * @param conditionSQL La clause WHERE
-     * @param orderBy La clause ORDERBY
-     * @return Un curseur contenant le resultat de la requete
+     * Returns all the DB entries matching the conditions expressed in the passed arguments
+     * @param distinct pass true if you want each row to be unique, false otherwise
+     * @param table the DB table the query is run on
+     * @param conditionSQL ths SQLite WHERE clause (passing null will return the whole table)
+     * @param orderBy the SQLite ORDERBY clause (can be null)
+     * @return A Cursor containing the query result
      */
-    public Cursor getEntriesFromDB(boolean distinct, String table, String conditionSQL, String orderBy){
+    public Cursor getEntriesFromDB(boolean distinct, String table, @Nullable String conditionSQL, @Nullable String orderBy){
         Cursor c = myDB.query(distinct,
                 "\""+table+"\"",
                 null,
@@ -122,17 +126,17 @@ public class SQLUtility extends SQLiteOpenHelper {
     }
 
     /**
-     * Renvoie toutes les infos connues sur un user donne.
-     * @param email Le mail pour identifier l'user voulu
-     * @return Un ArrayList<String> contenant les infos : {Mail, Name, Age, Sex, Address, Password},
-     *          ou null si cette adresse mail ne correspond pas a un user dans la DB
-     * @throws SQLiteException en cas d'erreur dans l'acces a la DB
+     * Returns all the information on a given member
+     * @param login the login of the member
+     * @return An ArrayList<String> containing the info : {login, password, firstName, name}
+     *          or null if this login does not appear in the DB
+     * @throws SQLiteException if an error occurs while accessing the DB
      */
-    public ArrayList<String> getUserBasicInfo(String email) throws SQLiteException{
+    public ArrayList<String> getMemberInfo(String login) throws SQLiteException{
         ArrayList<String> requestResult = null;
-        Cursor c = myDB.query("User",
-                new String[]{"Mail","Name","Age","Sex","Address","Password"},   //Puisqu'on veut toutes les colonnes
-                "Mail=\""+email+"\"",
+        Cursor c = myDB.query("Member",
+                null,
+                "Login=\""+login+"\"",
                 null,
                 null,
                 null,
@@ -140,12 +144,10 @@ public class SQLUtility extends SQLiteOpenHelper {
         );
         if(c.moveToFirst()){
             requestResult = new ArrayList<>();
-            requestResult.add(c.getString(c.getColumnIndex("Mail")));
-            requestResult.add(c.getString(c.getColumnIndex("Name")));
-            requestResult.add(c.getString(c.getColumnIndex("Age")));
-            requestResult.add(c.getString(c.getColumnIndex("Sex")));
-            requestResult.add(c.getString(c.getColumnIndex("Address")));
+            requestResult.add(c.getString(c.getColumnIndex("Login")));
             requestResult.add(c.getString(c.getColumnIndex("Password")));
+            requestResult.add(c.getString(c.getColumnIndex("First Name")));
+            requestResult.add(c.getString(c.getColumnIndex("Name")));
         }
         c.close();
         return requestResult;
@@ -314,22 +316,16 @@ public class SQLUtility extends SQLiteOpenHelper {
     }
 
     /**
-     * Ajoute une nouvelle entree dans la table User.
-     * L'ArrayList values doit suivre la structure {"Mail","Name","Age","Sex","Address","Password"}.
-     * @param values Un Arraylist (de taille egale au nombre de colonnes de la table) contenant les valeurs a ajouter.
-     * @return True si l'insertion a reussi, false sinon
+     * Adds a nex entry in the Member table.
+     * @param values this map contains the initial column values for the
+     *            row. The keys should be the column names and the values the
+     *            column values
+     * @return true if the insertion succeeded, false otherwise
      */
-    public boolean addToUserTable(ArrayList<String> values){
-        String instruction = "INSERT INTO User(Mail,Name,Age,Sex,Address,Password) VALUES (\'"+
-                values.get(0)+"\',\'"+
-                values.get(1)+"\',"+
-                values.get(2)+",\'"+
-                values.get(3)+"\',\'"+
-                values.get(4)+"\',\'"+
-                values.get(5)+"\');";
-        myDB.execSQL(instruction);
+    public boolean addToMemberTable(ContentValues values){
 
-        return true;
+        return (myDB.insert("Member", null, values) != -1);
+
     }
 
     /**
