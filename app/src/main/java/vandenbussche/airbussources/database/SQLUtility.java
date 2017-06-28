@@ -347,38 +347,41 @@ public class SQLUtility extends SQLiteOpenHelper {
     }
 
     /**
-     * Verifie que l'utilisateur de mail userEmail existe, puis edite les informations de celui-ci avec les nouvelles valeurs envoyees.
-     * L'ArrayList newValues doit suivre la structure {"Mail","Name","Age","Sex","Address","Password"}.
-     * @param userEmail L'utilisateur a modifier
-     * @param newValues Un Arraylist (de taille egale au nombre de colonnes de la table) contenant les valeurs a ajouter.
-     * @return True si la mise a jour a reussi, false sinon
+     * Checks if a member with this login exists in the DB, then edits its information with the new values
+     * @param login the menber whose information will be modified
+     * @param newValues a map from column names to new column values. Can not be null, nor contain null values
+     * @return True if the update succeeded, false otherwise
      */
-    public boolean updateUserBasicInfo(String userEmail, ArrayList<String> newValues){
-        if(!this.emailExistsInDB(userEmail)){
+    public boolean updateMemberBasicInfo(String login, ContentValues newValues){
+        if( ! this.loginExistsInDB(login)){
             return false;
+        } else {
+            return (
+                    myDB.update("Member", newValues, "Login = \"" + login + "\"", null) == 1
+            ); //TODO Care: values should be preceded & followed by a " symbol
         }
-        String instruction = "UPDATE User SET "+
-                "Mail=\'"+newValues.get(0)+"\',"+
-                "Name=\'"+newValues.get(1)+"\',"+
-                "Age="+newValues.get(2)+","+
-                "Sex=\'"+newValues.get(3)+"\',"+
-                "Address=\'"+newValues.get(4)+"\',"+
-                "Password=\'"+newValues.get(5)+"\'"+"" +
-                "WHERE Mail="+"'"+userEmail+"'"+";";
-        myDB.execSQL(instruction);
-        return true;
+
+        //String instruction = "UPDATE User SET "+
+                //"Mail=\'"+newValues.get(0)+"\',"+
+                //"Name=\'"+newValues.get(1)+"\',"+
+                //"Age="+newValues.get(2)+","+
+                //"Sex=\'"+newValues.get(3)+"\',"+
+                //"Address=\'"+newValues.get(4)+"\',"+
+                //"Password=\'"+newValues.get(5)+"\'"+"" +
+                //"WHERE Mail="+"'"+userEmail+"'"+";";
+        //myDB.execSQL(instruction);
     }
 
     /**
-     * Supprime un utilisateur de la base de donnees
-     * @param userEmail L'utilisateur a supprimer
-     * @return True si la suppression a fonctionne, False sinon
+     * Removes a member from the DB
+     * @param login the login of the menber to remove
+     * @return true if deletion has succeeded, false otherwise
      */
-    public boolean deleteFromUserTable(String userEmail){
-        if(!this.emailExistsInDB(userEmail)){
+    public boolean deleteFromUserTable(String login){
+        if( ! this.loginExistsInDB(login)){
             return false;
         }
-        myDB.delete("User","Email=\""+userEmail+"\"",null);
+        myDB.delete("Member","Login=\""+login+"\"",null);
         return true;
     }
 
@@ -508,3 +511,4 @@ public class SQLUtility extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
     }
+}

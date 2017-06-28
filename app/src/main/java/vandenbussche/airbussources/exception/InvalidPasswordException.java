@@ -1,4 +1,4 @@
-package vandenbussche.airbussources.exceptions;
+package vandenbussche.airbussources.exception;
 
 /**
  *

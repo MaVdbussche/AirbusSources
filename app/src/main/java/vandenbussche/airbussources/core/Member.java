@@ -9,9 +9,9 @@ import java.util.ArrayList;
 
 import vandenbussche.airbussources.R;
 import vandenbussche.airbussources.database.SQLUtility;
-import vandenbussche.airbussources.exceptions.ExistingLoginException;
-import vandenbussche.airbussources.exceptions.InvalidFieldException;
-import vandenbussche.airbussources.exceptions.InvalidPasswordException;
+import vandenbussche.airbussources.exception.ExistingLoginException;
+import vandenbussche.airbussources.exception.InvalidFieldException;
+import vandenbussche.airbussources.exception.InvalidPasswordException;
 
 public class Member {
 
@@ -19,6 +19,8 @@ public class Member {
     private String password;
     private String firstName;
     private String name;
+
+    private static Member connectedMember;
 
     /**
      * Constructor used when signing up for the first time
@@ -36,6 +38,8 @@ public class Member {
         if( ! this.addToDB(context)){
             throw new SQLException("The user could not be inserted in the database. Please try again");
         }
+
+        connectedMember = this;
     }
 
     /**
@@ -52,6 +56,8 @@ public class Member {
                 this.password = values.get(1);
                 this.firstName = values.get(2);
                 this.name = values.get(3);
+
+                connectedMember = this;
             }
             throw new InvalidPasswordException(context.getString(R.string.login_password_incorrect));
         }
@@ -96,4 +102,5 @@ public class Member {
     public String getPassword(){return password;}
     public String getFirstName(){return firstName;}
     public String getName(){return name;}
+    public Member getConnectedMember(){return connectedMember;}
 }
