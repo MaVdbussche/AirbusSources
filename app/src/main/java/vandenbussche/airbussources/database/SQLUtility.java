@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.io.FileOutputStream;
@@ -74,19 +75,19 @@ public class SQLUtility extends SQLiteOpenHelper {
     }
 
     /**
-     * Va chercher dans la DB tous les elements de la colonne references en arguments. Ne fonctionne que pour une seule colonne.
-     * Ex: Le nom de tous les utilisateurs de plus de 30 ans => getElementFromDB("User", "Name", "Age<30")
-     * @param table Le nom de la table ou chercher le(s) element(s)
-     * @param colonne La colonne a laquelle appartiennent les elements demandes
-     * @param conditionSQL Les clauses qui viendraient apres le WHERE dans une requete SQL classique
-     * @throws SQLiteException en cas d'erreur de lecture dans la DB
-     * @return Une ArrayList<String> contenant les resultats, ou null s'il n'y a aucun resultat
+     * Looks in the DB for all the values of the given column that comply with the given condition. Only works for one column
+     * Ex: The name of all members older than 30 => getElementFromDB("Member", "Name", "Age<30")
+     * @param table the name of the table in which elements will be looked for
+     * @param column the column whose elements will be returned.
+     * @param conditionSQL A filter declaring which rows to return, formatted as an SQL WHERE clause (excluding the WHERE itself).
+     *                     Passing null will return all rows for the given table and column.
+     * @throws SQLiteException if an error occurs while reading the DB
+     * @return An ArrayList<String> containing all the results, or null if there was none
      */
-    public ArrayList<String> getElementFromDB(boolean distinct,String table, String colonne, String conditionSQL) throws SQLiteException{
+    public ArrayList<String> getElementFromDB(@NonNull String table, @NonNull String column, String conditionSQL) throws SQLiteException{
         ArrayList<String> requestResult = null;
-        Cursor c = myDB.query(distinct,
-                "\""+table+"\"",
-                new String[]{"\""+colonne+"\""},
+        Cursor c = myDB.query("\""+table+"\"",
+                new String[]{"\""+column+"\""},
                 conditionSQL,
                 null,
                 null,
@@ -97,7 +98,7 @@ public class SQLUtility extends SQLiteOpenHelper {
         if (c.moveToFirst()) {
             requestResult = new ArrayList<>();
             for (int i = 0; i < c.getCount(); i++) {
-                requestResult.add(c.getString(0));  //0 puisqu'il n'y aura jamais plusieurs colonnes pour cette methode
+                requestResult.add(c.getString(0));  //0 since there will never be multiple columns in this Cursor, given the method's specification
                 c.moveToNext();
             }
         }
@@ -331,7 +332,7 @@ public class SQLUtility extends SQLiteOpenHelper {
      * @param products the products that should be added to the table facing the given member
      * @return true if the insertion succeeded, false otherwise
      */
-    public boolean addToUserHasTable(String login, ArrayList<Product> products){
+    public boolean addToMemberProductTable(String login, ArrayList<Product> products){
         ContentValues values = new ContentValues(products.size());
         for (int i = 0; i < products.size(); i++) {
             values.put("\"Product\"", products.get(i).getName());
@@ -371,7 +372,7 @@ public class SQLUtility extends SQLiteOpenHelper {
      * @param login the login of the menber to remove
      * @return true if deletion has succeeded, false otherwise
      */
-    public boolean deleteFromUserTable(String login){
+    public boolean deleteFromMemberTable(String login){
         if( ! this.loginExistsInDB(login)){
             return false;
         }
@@ -379,28 +380,6 @@ public class SQLUtility extends SQLiteOpenHelper {
         return true;
     }
 
-    /**
-     * Verifie que l'utilisateur de mail userEmail existe, puis edite le contenu de son frigo avec les nouvelles valeurs envoyees.
-     * L'ArrayList newValues doit suivre la structure {"Mail","Name","Age","Sex","Address","Password"}.
-     * @param userEmail L'utilisateur a modifier
-     * @param newValues Un ArrayList<String[]> contenant pour chaque ingredient, le nom (colonne 0) et la quantite de cet ingredient (colonne 1),
-     *          Le nom de l'ingredient est contenu dans newValues.get(0)[0]
-     *          La quantite de l'ingredient est contenue dans newValues.get(0)[0]
-     * @return True si la mise a jour a reussi, false sinon
-     */
-    public boolean updateUserIngrsInfo(String userEmail, ArrayList<Ingredient> newValues){
-        if(!this.emailExistsInDB(userEmail)){
-            System.out.println("exit a cause de email");
-            return false;
-        }
-        String instruction = "DELETE FROM UserHas WHERE Mail=\'"+userEmail+"\'";
-        myDB.execSQL(instruction);
-        System.out.println("delete all");
-        if(!this.addToUserHasTable(userEmail, newValues)){
-            return false;
-        }
-        return true;
-    }
 
     //----------
     //End of the DB utility methods

@@ -20,7 +20,7 @@ public class Member {
     private String firstName;
     private String name;
 
-    private static Member connectedMember;
+    public static Member connectedMember;
 
     /**
      * Constructor used when signing up for the first time
@@ -102,5 +102,4 @@ public class Member {
     public String getPassword(){return password;}
     public String getFirstName(){return firstName;}
     public String getName(){return name;}
-    public Member getConnectedMember(){return connectedMember;}
 }
