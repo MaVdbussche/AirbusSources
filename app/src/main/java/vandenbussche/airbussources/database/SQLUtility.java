@@ -14,6 +14,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
+import vandenbussche.airbussources.core.Product;
+
 /**
  * Created on 03-04-17.
  * This class provides an interface between the SQL database and the Java classes.
@@ -154,18 +156,18 @@ public class SQLUtility extends SQLiteOpenHelper {
     }
 
     /**
-     * Renvoie les ingredients que possede un user donne.
-     * @param email Le mail pour identifier l'user voulu
-     * @return Un ArrayList<Ingredient> contenant pour chaque ingredient, le nom et la quantite dans un objet Ingredient,
-     *          Pour acceder a un ingredient, il faut donc appeler getUserIngrsInfos().get(0)[0]
-     *          Pour acceder a sa quantite, il faut appeler getUserIngrsInfos().get(0)[1]
-     * @throws SQLiteException en cas d'erreur dans l'acces a la DB
+     * Returns all the products associated with the given Member
+     * @param login the login of the user we are looking for
+     * @return An ArrayList<Product> containing all the product associated with this member in the DB.
+     *          Please note that the ArrayList is not ordered in any way,
+     *          as it depends on the order in which the SQLite request returned its result
+     * @throws SQLiteException if an error occured while accessing the DB
      */
-    public ArrayList<Ingredient> getUserIngrsInfo(String email) throws SQLiteException{
-        ArrayList<Ingredient> requestResult = null;
-        Cursor c = myDB.query("UserHas",
-                new String[]{"\"Ing_Name\"","\"Amount\""},
-                "Mail=\""+email+"\"",
+    public ArrayList<Product> getMemberProductsInfo(String login) throws SQLiteException{
+        ArrayList<Product> requestResult = null;
+        Cursor c = myDB.query("MemberProduct",
+                new String[]{"\"Product\""},
+                "Login=\""+login+"\"",
                 null,
                 null,
                 null,
@@ -174,13 +176,7 @@ public class SQLUtility extends SQLiteOpenHelper {
         if(c.moveToFirst()){
             requestResult = new ArrayList<>();
             for(int i=0; i<c.getCount(); i++){
-                String ingName = c.getString(c.getColumnIndex("Ing_Name"));
-                Cursor c2 = getEntriesFromDB(false,"Ingredients", "Ing_Name =\""+ingName+"\"", null);
-                c2.moveToFirst();
-                String ingUnit = c2.getString(c2.getColumnIndex("Unit"));
-                Ingredient ingredient = new Ingredient(this.context, ingName, ingUnit );
-                requestResult.add(ingredient);
-                c.moveToNext();
+                requestResult.add(new Product(c.getString(c.getColumnIndex("Product"))));
             }
         }
         c.close();
@@ -329,21 +325,19 @@ public class SQLUtility extends SQLiteOpenHelper {
     }
 
     /**
-     * Ajoute une nouvelle entree dans la table UserHas.
-     * L'ArrayList fridgeContent contient des Ingredients qui contiennent une quantite
-     * @param fridgeContent Un Arraylist contenant les valeurs a ajouter.
-     * @return True si l'insertion a reussi, false sinon
+     * Adds new entries to the MemberProduct table.
+     * The ArrayList products contains all the products to be added to the table
+     * @param login the user the given products should be associated with
+     * @param products the products that should be added to the table facing the given member
+     * @return true if the insertion succeeded, false otherwise
      */
-    public boolean addToUserHasTable(String userEmail, ArrayList<Ingredient> fridgeContent){
-        for (int i = 0; i < fridgeContent.size(); i++) {
-            String instruction = "INSERT INTO UserHas(Ing_Name,Amount,Mail) VALUES (\"" +
-                    fridgeContent.get(i).getName() + "\"," +
-                    fridgeContent.get(i).getAmount() + ",\"" +
-                    userEmail + "\");";
-            myDB.execSQL(instruction);
-            System.out.println("mit dans db :" +fridgeContent.get(i).getName());
+    public boolean addToUserHasTable(String login, ArrayList<Product> products){
+        ContentValues values = new ContentValues(products.size());
+        for (int i = 0; i < products.size(); i++) {
+            values.put("\"Product\"", products.get(i).getName());
+
         }
-        return true;
+        return (myDB.insert("MemberProduct", null, values) != -1);
     }
 
     /**

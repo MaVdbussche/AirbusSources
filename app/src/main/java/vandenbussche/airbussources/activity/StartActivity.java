@@ -33,7 +33,7 @@ public class StartActivity extends AppCompatActivity {
         try {
             image.setImageBitmap(BitmapFactory.decodeStream(getApplicationContext().getAssets().open("airbus-logo-large.png")));
         } catch (IOException e) {
-            //Si probleme avec les images, on laisse affiche l'image de base de l'imageView
+            //Do nothing if the asset doesnt load properly (default image will be displayed)
         }
     }
 }
