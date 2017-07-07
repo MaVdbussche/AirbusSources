@@ -16,5 +16,7 @@
     <string name="signup_loginField_title">Choose a login :</string>
     <string name="signup_passwordField_title">Choose a password :</string>
     <string name="signup_passwordConfirmationField_title">Confirm your password :</string>
+    <string name="signup_nameField_title">Enter your name :</string>
+    <string name="signup_firstNameField_title">Enter your first name :</string>
 
 </resources>

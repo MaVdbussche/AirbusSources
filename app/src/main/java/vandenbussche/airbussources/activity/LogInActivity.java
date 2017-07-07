@@ -23,12 +23,12 @@ import vandenbussche.airbussources.exception.InvalidPasswordException;
 
 public class LogInActivity extends AppCompatActivity {
 
+    private EditText login;
+    private EditText password;
     private Button logInButton;
     private TextView loginText;
     private TextView passwordText;
     private ImageView image;
-    private EditText login;
-    private EditText password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,15 +36,14 @@ public class LogInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         ActionBar ab = getSupportActionBar();
-        if(ab != null) {
-            ab.setHomeButtonEnabled(true);
-            ab.setDisplayHomeAsUpEnabled(true);
-            ab.setTitle(R.string.start_button_login);
-            ab.show();
-        }
+        ab.setHomeButtonEnabled(true);
+        ab.setDisplayHomeAsUpEnabled(true);
+        ab.setTitle(R.string.start_button_login);
+        ab.show();
 
         loginText = (TextView) findViewById(R.id.login_field_title);
         passwordText = (TextView) findViewById(R.id.password_field_title);
+        image = (ImageView) findViewById(R.id.airbusLogo);
         login = (EditText) findViewById(R.id.login_field);
         password = (EditText) findViewById(R.id.password_field);
 
@@ -61,14 +60,14 @@ public class LogInActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v){
 
-                        Context appcontext = getApplicationContext();
+                        Context appContext = getApplicationContext();
 
                         try {
-                            Member.connectedMember = new Member(appcontext, login.getText().toString(), password.getText().toString());
+                            Member.connectedMember = new Member(appContext, login.getText().toString(), password.getText().toString());
                             Intent intent = new Intent(LogInActivity.this, MainMenu.class);
                             startActivity(intent);
                         } catch (InvalidPasswordException | InvalidFieldException e){
-                            Toast t = Toast.makeText(appcontext, e.getMessage(), Toast.LENGTH_SHORT);
+                            Toast t = Toast.makeText(appContext, e.getMessage(), Toast.LENGTH_SHORT);
                             t.show();
 
                         }

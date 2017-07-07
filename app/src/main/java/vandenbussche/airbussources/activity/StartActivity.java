@@ -47,7 +47,7 @@ public class StartActivity extends AppCompatActivity {
                     public void onClick(View v){
 
                         Context appcontext = getApplicationContext();
-                        Intent intent = new Intent(appcontext, LogInActivity.class);
+                        Intent intent = new Intent(StartActivity.this, LogInActivity.class);
                         startActivity(intent);
                     }
                 }
