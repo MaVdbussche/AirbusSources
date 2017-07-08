@@ -3,7 +3,7 @@
     <string name="field_hint">Type here...</string>
 
     <string name="start_button_login">Log in</string>
-    <string name="start_button_signup">Sign up</string>
+    <string name="start_button_signup">Register</string>
 
     <string name="login_login_already_used">This login is already used</string>
     <string name="login_login_not_exist">This login does not exist</string>
@@ -18,5 +18,7 @@
     <string name="signup_passwordConfirmationField_title">Confirm your password :</string>
     <string name="signup_nameField_title">Enter your name :</string>
     <string name="signup_firstNameField_title">Enter your first name :</string>
+    <string name="login_nameField_title">Name</string>
+    <string name="login_surnameField_title">Surname</string>
 
 </resources>

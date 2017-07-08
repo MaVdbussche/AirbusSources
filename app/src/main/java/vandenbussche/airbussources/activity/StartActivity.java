@@ -45,8 +45,10 @@ public class StartActivity extends AppCompatActivity {
                 new View.OnClickListener(){
                     @Override
                     public void onClick(View v){
-
-                        Context appcontext = getApplicationContext();
+                        if(Member.connectedMember != null){
+                            Intent intent = new Intent(StartActivity.this, MainMenu.class);
+                            startActivity(intent);
+                        }
                         Intent intent = new Intent(StartActivity.this, LogInActivity.class);
                         startActivity(intent);
                     }
@@ -57,7 +59,6 @@ public class StartActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v){
 
-                        Context appcontext = getApplicationContext();
                         Intent intent = new Intent(StartActivity.this, SignUpActivity.class);
                         startActivity(intent);
                     }

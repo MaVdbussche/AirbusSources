@@ -2,6 +2,7 @@ package vandenbussche.airbussources.database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -41,7 +42,7 @@ public class SQLUtility extends SQLiteOpenHelper {
      */
     private String DATABASE_PATH = "/data/data/vandenbussche.airbussources/databases/"; //context.getFilesDir().getPath();
     private static String DATABASE_NAME = "AirbusSourcesDB.sqlite";
-    /**
+    /***
      * Constructor. Instantiates the DB handling utility
      *
      * @param context the application context.
@@ -52,16 +53,16 @@ public class SQLUtility extends SQLiteOpenHelper {
     }
 
     /**
-     * Checks whether this login exists in this DB.
-     * @param login the login to look for
+     * Checks whether this IDProfile exists in this DB.
+     * @param IDProfile the IDProfile to look for
      * @throws SQLiteException if an error occurs while reading the DB
-     * @return true if this login already exists, false otherwise
+     * @return true if this IDProfile already exists, false otherwise
      */
-    public boolean loginExistsInDB(String login) throws SQLiteException {
+    public boolean idProfileExistsInDB(String IDProfile) throws SQLiteException {
         Cursor c = myDB.query("\"Member\"",
-                new String[]{"\"Login\""},
-                "Login=?",
-                new String[]{login},
+                new String[]{"\"IDProfile\""},
+                "IDProfile=?",
+                new String[]{IDProfile},
                 null,
                 null,
                 null
@@ -129,17 +130,17 @@ public class SQLUtility extends SQLiteOpenHelper {
     }
 
     /**
-     * Returns all the information on a given member
-     * @param login the login of the member
-     * @return An ArrayList<String> containing the info : {login, password, firstName, name}
-     *          or null if this login does not appear in the DB
+     * Returns all the personal information on a given member
+     * @param IDProfile the IDProfile of the member to look for
+     * @return An ArrayList<String> containing the info : {IDProfile, password, name, surname, role, commodity, business unit}
+     *          or null if this IDProfile does not appear in the DB
      * @throws SQLiteException if an error occurs while accessing the DB
      */
-    public ArrayList<String> getMemberInfo(String login) throws SQLiteException{
+    public ArrayList<String> getMemberInfo(String IDProfile) throws SQLiteException{
         ArrayList<String> requestResult = null;
         Cursor c = myDB.query("Member",
                 null,
-                "Login=\""+login+"\"",
+                "IDProfile=\""+IDProfile+"\"",
                 null,
                 null,
                 null,
@@ -147,28 +148,31 @@ public class SQLUtility extends SQLiteOpenHelper {
         );
         if(c.moveToFirst()){
             requestResult = new ArrayList<>();
-            requestResult.add(c.getString(c.getColumnIndex("Login")));
+            requestResult.add(c.getString(c.getColumnIndex("IDProfile")));
             requestResult.add(c.getString(c.getColumnIndex("Password")));
-            requestResult.add(c.getString(c.getColumnIndex("First Name")));
             requestResult.add(c.getString(c.getColumnIndex("Name")));
+            requestResult.add(c.getString(c.getColumnIndex("Surname")));
+            requestResult.add(c.getString(c.getColumnIndex("Role")));
+            requestResult.add(c.getString(c.getColumnIndex("Commodity")));
+            requestResult.add(c.getString(c.getColumnIndex("BU")));
         }
         c.close();
         return requestResult;
     }
 
     /**
-     * Returns all the products associated with the given Member
-     * @param login the login of the user we are looking for
+     * Returns all the Suppl_ProdID associated with the given Member
+     * @param  IDProfile the IDProfile of the user we are looking for
      * @return An ArrayList<Product> containing all the product associated with this member in the DB.
      *          Please note that the ArrayList is not ordered in any way,
      *          as it depends on the order in which the SQLite request returned its result
      * @throws SQLiteException if an error occured while accessing the DB
      */
-    public ArrayList<Product> getMemberProductsInfo(String login) throws SQLiteException{
-        ArrayList<Product> requestResult = null;
-        Cursor c = myDB.query("MemberProduct",
-                new String[]{"\"Product\""},
-                "Login=\""+login+"\"",
+    public ArrayList<Integer> getMemberSuppl_ProdIDs(String IDProfile) throws SQLiteException{
+        ArrayList<Integer> requestResult = null;
+        Cursor c = myDB.query("Suppl_Prod_Member",
+                new String[]{"\"Suppl_ProdID\""},
+                "Member=\""+IDProfile+"\"",
                 null,
                 null,
                 null,
@@ -177,7 +181,7 @@ public class SQLUtility extends SQLiteOpenHelper {
         if(c.moveToFirst()){
             requestResult = new ArrayList<>();
             for(int i=0; i<c.getCount(); i++){
-                requestResult.add(new Product(c.getString(c.getColumnIndex("Product"))));
+                requestResult.add(c.getInt(c.getColumnIndex("Suppl_ProdID")));
             }
         }
         c.close();
