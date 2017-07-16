@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Airbus Sources</string>
+    <string name="app_name">Airbus Procurement Sourcing Tool</string>
     <string name="field_hint">Type here...</string>
 
     <string name="start_button_login">Log in</string>
@@ -13,12 +13,17 @@
     <string name="login_password_incorrect">The password does not match this login</string>
     <string name="login_loginField_title">Login :</string>
     <string name="login_passwordField_title">Password :</string>
-    <string name="signup_loginField_title">Choose a login :</string>
+
+    <string name="signup_nameField_title">Name</string>
+    <string name="signup_surnameField_title">Surname</string>
+    <string name="signup_loginField_title">Enter your login (Matricule)</string>
     <string name="signup_passwordField_title">Choose a password :</string>
     <string name="signup_passwordConfirmationField_title">Confirm your password :</string>
-    <string name="signup_nameField_title">Enter your name :</string>
     <string name="signup_firstNameField_title">Enter your first name :</string>
-    <string name="login_nameField_title">Name</string>
-    <string name="login_surnameField_title">Surname</string>
+    <string name="signup_businessUnits_default">Pick a Business Unit</string>
+    <string name="signup_commodities_default">Pick a Commodity</string>
+    <string name="signup_roles_default">Pick a Role</string>
+    <string name="signup_buttonToProductsText">Which products are you responsible for ?</string>
+
 
 </resources>
