@@ -14,6 +14,7 @@
     <string name="login_loginField_title">Login :</string>
     <string name="login_passwordField_title">Password :</string>
 
+    <string name="signup_screen_title">Register</string>
     <string name="signup_nameField_title">Name</string>
     <string name="signup_surnameField_title">Surname</string>
     <string name="signup_loginField_title">Enter your login (Matricule)</string>
@@ -24,6 +25,19 @@
     <string name="signup_commodities_default">Pick a Commodity</string>
     <string name="signup_roles_default">Pick a Role</string>
     <string name="signup_buttonToProductsText">Which products are you responsible for ?</string>
+
+    <string name="mainMenu_screen_title">Main Menu</string>
+    <string name="mainMenu_welcome_title">Welcome, [insert name] !</string>
+    <string name="mainMenu_buttons_title">What are you looking for today ?</string>
+    <string name="mainMenu_buttonSearchByMember_title">A person</string>
+    <string name="mainMenu_buttonSearchByProduct_title">A Product</string>
+    <string name="mainMenu_buttonSearchBySupplier_title">A supplier</string>
+
+    <string name="searchByMember_screen_title">I am looking for a person</string>
+    <string name="searchByMember_nameField_title">Name</string>
+    <string name="searchByMember_surnameField_title">Surname</string>
+    <string name="searchByMember_BUField_title">Business Unit</string>
+    <string name="searchByMember_button_title">GO</string>
 
 
 </resources>

@@ -347,16 +347,16 @@ public class SQLUtility extends SQLiteOpenHelper {
 
     /**
      * Checks if a member with this login exists in the DB, then edits its information with the new values
-     * @param login the menber whose information will be modified
+     * @param idProfile the menber whose information will be modified
      * @param newValues a map from column names to new column values. Can not be null, nor contain null values
      * @return True if the update succeeded, false otherwise
      */
-    public boolean updateMemberBasicInfo(String login, ContentValues newValues){
-        if( ! this.loginExistsInDB(login)){
+    public boolean updateMemberBasicInfo(String idProfile, ContentValues newValues){
+        if( ! this.idProfileExistsInDB(idProfile)){
             return false;
         } else {
             return (
-                    myDB.update("Member", newValues, "Login = \"" + login + "\"", null) == 1
+                    myDB.update("Member", newValues, "Login = \"" + idProfile + "\"", null) == 1
             ); //TODO Care: values should be preceded & followed by a " symbol
         }
 
@@ -377,7 +377,7 @@ public class SQLUtility extends SQLiteOpenHelper {
      * @return true if deletion has succeeded, false otherwise
      */
     public boolean deleteFromMemberTable(String login){
-        if( ! this.loginExistsInDB(login)){
+        if( ! this.idProfileExistsInDB(login)){
             return false;
         }
         myDB.delete("Member","Login=\""+login+"\"",null);

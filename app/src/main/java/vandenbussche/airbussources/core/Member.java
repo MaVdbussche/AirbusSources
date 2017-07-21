@@ -15,7 +15,7 @@ import vandenbussche.airbussources.exception.InvalidPasswordException;
 
 public class Member {
 
-    private String login;
+    private String idProfile;
     private String password;
     private String firstName;
     private String name;
@@ -25,12 +25,12 @@ public class Member {
     /**
      * Constructor used when signing up for the first time
      */
-    public Member(Context context, String login, String password1, String password2, String firstName, String name) throws InvalidPasswordException, InvalidFieldException, ExistingLoginException, SQLiteException {
+    public Member(Context context, String idProfile, String password1, String password2, String firstName, String name) throws InvalidPasswordException, InvalidFieldException, ExistingLoginException, SQLiteException {
 
         testPassword(context, password1, password2);
-        testLogin(context, login);
+        testLogin(context, idProfile);
 
-        this.login = login;
+        this.idProfile = idProfile;
         this.password = password1;
         this.firstName = firstName;
         this.name = name;
@@ -45,14 +45,14 @@ public class Member {
     /**
      * Constructor used when logging in from an existing account
      */
-    public Member(Context context, String login, String password) throws InvalidFieldException, InvalidPasswordException {
+    public Member(Context context, String idProfile, String password) throws InvalidFieldException, InvalidPasswordException {
 
         SQLUtility db = SQLUtility.prepareDataBase(context);
-        if(db.loginExistsInDB(login)){
+        if(db.idProfileExistsInDB(idProfile)){
 
-            ArrayList<String> values = db.getMemberInfo(login);
+            ArrayList<String> values = db.getMemberInfo(idProfile);
             if(password.equals(values.get(1))){
-                this.login = values.get(0);
+                this.idProfile = values.get(0);
                 this.password = values.get(1);
                 this.firstName = values.get(2);
                 this.name = values.get(3);
@@ -67,7 +67,7 @@ public class Member {
     private boolean addToDB(Context context){
 
         ContentValues values = new ContentValues(4);    //TODO adjust this value if table size changes in the future
-        values.put("\"Login\"", this.login);
+        values.put("\"Login\"", this.idProfile);
         values.put("\"Password\"", this.password);
         values.put("\"First Name\"", this.firstName);
         values.put("\"Name\"", this.name);
@@ -85,20 +85,20 @@ public class Member {
         }
     }
 
-    private void testLogin(Context context, String login) throws ExistingLoginException, InvalidFieldException {
+    private void testLogin(Context context, String idProfile) throws ExistingLoginException, InvalidFieldException {
 
         SQLUtility db = SQLUtility.prepareDataBase(context);
-        if(db.loginExistsInDB(login)){
+        if(db.idProfileExistsInDB(idProfile)){
             db.close();
             throw new ExistingLoginException(context.getString(R.string.login_login_already_used));
         }
-        if (login.length()<5)
+        if (idProfile.length()<5)
         {
             throw new InvalidFieldException(context.getString(R.string.login_login_too_short), "login");
         }
     }
 
-    public String getLogin(){return login;}
+    public String getLogin(){return idProfile;}
     public String getPassword(){return password;}
     public String getFirstName(){return firstName;}
     public String getName(){return name;}
