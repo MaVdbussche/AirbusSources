@@ -11,8 +11,8 @@
     <string name="login_password_too_short">The password must be at least 5 characters long</string>
     <string name="login_password_different">The two password fields must be the same</string>
     <string name="login_password_incorrect">The password does not match this login</string>
-    <string name="login_loginField_title">Login :</string>
-    <string name="login_passwordField_title">Password :</string>
+    <string name="login_loginField_title">Login</string>
+    <string name="login_passwordField_title">Password</string>
 
     <string name="signup_screen_title">Register</string>
     <string name="signup_nameField_title">Name</string>
@@ -38,6 +38,18 @@
     <string name="searchByMember_surnameField_title">Surname</string>
     <string name="searchByMember_BUField_title">Business Unit</string>
     <string name="searchByMember_button_title">GO</string>
+
+    <string name="searchBySupplier_button_title">GO</string>
+    <string name="searchBySupplier_nameField_title">Supplier</string>
+    <string name="searchBySupplier_screen_title">I am looking for a supplier</string>
+
+    <string name="searchByProduct_button_title">GO</string>
+    <string name="searchByProduct_nameField_title">Product</string>
+    <string name="searchByProduct_screen_title">I am looking for a product</string>
+
+    <string name="supplier_screen_title">[insert supplier name]</string>
+    <string name="supplier_productsgrid_title">Products :</string>
+    <string name="supplier_membergrid_title">People :</string>
 
 
 </resources>
