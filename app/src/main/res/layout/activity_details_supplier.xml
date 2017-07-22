@@ -31,12 +31,12 @@
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginBottom="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/supplierProductsGridView"
+        app:layout_constraintBottom_toTopOf="@+id/supplierProductsListView"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp" />
 
-    <GridView
-        android:id="@+id/supplierProductsGridView"
+    <ListView
+        android:id="@+id/supplierProductsListView"
         android:layout_width="306dp"
         android:layout_height="150dp"
         tools:layout_editor_absoluteY="102dp"
@@ -51,7 +51,7 @@
         android:id="@+id/supplierMembersTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/supplier_membergrid_title"
+        android:text="@string/supplier_membersgrid_title"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginRight="8dp"
@@ -63,7 +63,7 @@
 
     <ListView
         android:id="@+id/supplierMembersListView"
-        android:layout_width="wrap_content"
+        android:layout_width="306dp"
         android:layout_height="150dp"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"

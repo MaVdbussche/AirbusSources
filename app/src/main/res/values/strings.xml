@@ -49,7 +49,21 @@
 
     <string name="supplier_screen_title">[insert supplier name]</string>
     <string name="supplier_productsgrid_title">Products :</string>
-    <string name="supplier_membergrid_title">People :</string>
+    <string name="supplier_membersgrid_title">People :</string>
 
+    <string name="member_screen_title">[insert member name]</string>
+    <string name="member_details_title">[insert member details]</string>
+    <string name="member_productsgrid_title">Products :</string>
+    <string name="member_suppliersgrid_title">Suppliers :</string>
+
+    <string name="product_screen_title">[insert product name]</string>
+    <string name="product_suppliersgrid_title">Suppliers :</string>
+    <string name="product_membersgrid_title">People :</string>
+
+    <string name="editprofile_screen_title_button">edit</string>
+    <string name="editprofile_BU_title_button">edit</string>
+    <string name="editprofile_Commodity_title_button">edit</string>
+    <string name="editprofile_productsgrid_title_button">edit</string>
+    <string name="editprofile_suppliersgrid_title_button">edit</string>
 
 </resources>
