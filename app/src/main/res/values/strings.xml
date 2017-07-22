@@ -13,6 +13,7 @@
     <string name="login_password_incorrect">The password does not match this login</string>
     <string name="login_loginField_title">Login</string>
     <string name="login_passwordField_title">Password</string>
+    <string name="login_passwordField2_title">Confirm password</string>
 
     <string name="signup_screen_title">Register</string>
     <string name="signup_nameField_title">Name</string>

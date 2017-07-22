@@ -1,22 +1,17 @@
 package vandenbussche.airbussources.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import java.io.IOException;
 
 import vandenbussche.airbussources.R;
 import vandenbussche.airbussources.core.Member;
-import vandenbussche.airbussources.exception.InvalidFieldException;
-import vandenbussche.airbussources.exception.InvalidPasswordException;
 
 public class StartActivity extends AppCompatActivity {
 
@@ -39,7 +34,7 @@ public class StartActivity extends AppCompatActivity {
         try {
             image.setImageBitmap(BitmapFactory.decodeStream(getApplicationContext().getAssets().open("airbus-logo-large.png")));
         } catch (IOException e) {
-            //Do nothing if the asset doesnt load properly (default image will be displayed)
+            //Do nothing if the asset doesn't load properly (default image will be displayed)
         }
 
         logInButton.setOnClickListener(
@@ -59,7 +54,6 @@ public class StartActivity extends AppCompatActivity {
                 new View.OnClickListener(){
                     @Override
                     public void onClick(View v){
-
                         Intent intent = new Intent(StartActivity.this, SignUpActivity.class);
                         startActivity(intent);
                     }

@@ -26,8 +26,6 @@ public class LogInActivity extends AppCompatActivity {
     private EditText login;
     private EditText password;
     private Button logInButton;
-    private TextView loginText;
-    private TextView passwordText;
     private ImageView image;
 
     @Override
@@ -41,8 +39,6 @@ public class LogInActivity extends AppCompatActivity {
         ab.setTitle(R.string.start_button_login);
         ab.show();
 
-        loginText = (TextView) findViewById(R.id.login_field_title);
-        passwordText = (TextView) findViewById(R.id.password_field_title);
         image = (ImageView) findViewById(R.id.airbusLogo);
         login = (EditText) findViewById(R.id.login_field);
         password = (EditText) findViewById(R.id.password_field);

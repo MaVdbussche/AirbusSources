@@ -18,14 +18,18 @@ public class Member {
     private String idProfile;
     private String password;
     private String firstName;
-    private String name;
+    private String surname;
+    private String bu;
+    private String commodity;
+    private String role;
 
     public static Member connectedMember;
 
     /**
      * Constructor used when signing up for the first time
      */
-    public Member(Context context, String idProfile, String password1, String password2, String firstName, String name) throws InvalidPasswordException, InvalidFieldException, ExistingLoginException, SQLiteException {
+    public Member(Context context, String idProfile, String password1, String password2, String firstName, String surname, String bu, String commodity, String role)
+            throws InvalidPasswordException, InvalidFieldException, ExistingLoginException, SQLiteException {
 
         testPassword(context, password1, password2);
         testLogin(context, idProfile);
@@ -33,13 +37,14 @@ public class Member {
         this.idProfile = idProfile;
         this.password = password1;
         this.firstName = firstName;
-        this.name = name;
+        this.surname = surname;
+        this.bu = bu;
+        this.commodity = commodity;
+        this.role = role;
 
         if( ! this.addToDB(context)){
             throw new SQLException("The user could not be inserted in the database. Please try again");
         }
-
-        connectedMember = this;
     }
 
     /**
@@ -55,9 +60,7 @@ public class Member {
                 this.idProfile = values.get(0);
                 this.password = values.get(1);
                 this.firstName = values.get(2);
-                this.name = values.get(3);
-
-                connectedMember = this;
+                this.surname = values.get(3);
             }
             throw new InvalidPasswordException(context.getString(R.string.login_password_incorrect));
         }
@@ -70,7 +73,7 @@ public class Member {
         values.put("\"Login\"", this.idProfile);
         values.put("\"Password\"", this.password);
         values.put("\"First Name\"", this.firstName);
-        values.put("\"Name\"", this.name);
+        values.put("\"Name\"", this.surname);
 
         SQLUtility db = SQLUtility.prepareDataBase(context);
         return (db.addToMemberTable(values));
@@ -101,5 +104,8 @@ public class Member {
     public String getLogin(){return idProfile;}
     public String getPassword(){return password;}
     public String getFirstName(){return firstName;}
-    public String getName(){return name;}
+    public String getName(){return surname;}
+    public String getBu(){return bu;}
+    public String getCommodity(){return commodity;}
+    public String getRole(){return role;}
 }
