@@ -1,8 +1,10 @@
 package vandenbussche.airbussources.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -18,11 +20,12 @@ public class MainMenu extends AppCompatActivity {
     private Button toMemberSearch;
     private Button toProductSearch;
     private Button toSupplierSearch;
+    private Button toEditProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_mainmenu);
 
         ActionBar ab = getSupportActionBar();
         ab.setHomeButtonEnabled(true);
@@ -34,6 +37,46 @@ public class MainMenu extends AppCompatActivity {
         screenTitle.setText("Welcome, "+ Member.connectedMember.getFirstName()+" "+Member.connectedMember.getName()+" !");
         greetings = (TextView) findViewById(R.id.buttonsTitle);
 
+        toMemberSearch = (Button) findViewById(R.id.buttonSearchByMember);
+        toProductSearch = (Button) findViewById(R.id.buttonSearchByProduct);
+        toSupplierSearch = (Button) findViewById(R.id.buttonSearchBySupplier);
+        toEditProfile = (Button) findViewById(R.id.buttonEditProfile);
 
+        toMemberSearch.setOnClickListener(
+                new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v){
+                        Intent intent = new Intent(MainMenu.this, SearchByMember.class);
+                        startActivity(intent);
+                    }
+                }
+        );
+        toProductSearch.setOnClickListener(
+                new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v){
+                        Intent intent = new Intent(MainMenu.this, SearchByProduct.class);
+                        startActivity(intent);
+                    }
+                }
+        );
+        toSupplierSearch.setOnClickListener(
+                new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v){
+                        Intent intent = new Intent(MainMenu.this, SearchBySupplier.class);
+                        startActivity(intent);
+                    }
+                }
+        );
+        toEditProfile.setOnClickListener(
+                new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v){
+                        Intent intent = new Intent(MainMenu.this, EditProfile.class);
+                        startActivity(intent);
+                    }
+                }
+        );
     }
 }

@@ -1,6 +1,5 @@
 package vandenbussche.airbussources.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -56,14 +54,12 @@ public class LogInActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v){
 
-                        Context appContext = getApplicationContext();
-
                         try {
-                            Member.connectedMember = new Member(appContext, login.getText().toString(), password.getText().toString());
+                            Member.connectedMember = new Member(LogInActivity.this, login.getText().toString(), password.getText().toString());
                             Intent intent = new Intent(LogInActivity.this, MainMenu.class);
                             startActivity(intent);
                         } catch (InvalidPasswordException | InvalidFieldException e){
-                            Toast t = Toast.makeText(appContext, e.getMessage(), Toast.LENGTH_SHORT);
+                            Toast t = Toast.makeText(LogInActivity.this, e.getMessage(), Toast.LENGTH_SHORT);
                             t.show();
 
                         }

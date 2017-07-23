@@ -32,7 +32,7 @@
         android:layout_marginRight="8dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="@string/searchBySupplier_nameField_title"
+        android:hint="@string/searchBySupplier_nameField_title"
         android:textAlignment="center"
         android:textColor="@android:color/darker_gray"
         android:textStyle="italic"

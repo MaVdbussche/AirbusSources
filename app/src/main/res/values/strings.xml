@@ -33,20 +33,24 @@
     <string name="mainMenu_buttonSearchByMember_title">A person</string>
     <string name="mainMenu_buttonSearchByProduct_title">A Product</string>
     <string name="mainMenu_buttonSearchBySupplier_title">A supplier</string>
+    <string name="mainMenu_buttonEditProfile_title">Edit user profile</string>
 
     <string name="searchByMember_screen_title">I am looking for a person</string>
     <string name="searchByMember_nameField_title">Name</string>
     <string name="searchByMember_surnameField_title">Surname</string>
     <string name="searchByMember_BUField_title">Business Unit</string>
     <string name="searchByMember_button_title">GO</string>
+    <string name="searchByMember_title">Searching by member</string>
 
     <string name="searchBySupplier_button_title">GO</string>
     <string name="searchBySupplier_nameField_title">Supplier</string>
     <string name="searchBySupplier_screen_title">I am looking for a supplier</string>
+    <string name="searchBySupplier_title">Searching by supplier</string>
 
     <string name="searchByProduct_button_title">GO</string>
     <string name="searchByProduct_nameField_title">Product</string>
     <string name="searchByProduct_screen_title">I am looking for a product</string>
+    <string name="searchByProduct_title">Searching by product</string>
 
     <string name="supplier_screen_title">[insert supplier name]</string>
     <string name="supplier_productsgrid_title">Products :</string>
@@ -61,6 +65,7 @@
     <string name="product_suppliersgrid_title">Suppliers :</string>
     <string name="product_membersgrid_title">People :</string>
 
+    <string name="editprofile_screen_title">Profile Editor</string>
     <string name="editprofile_screen_title_button">edit</string>
     <string name="editprofile_BU_title_button">edit</string>
     <string name="editprofile_Commodity_title_button">edit</string>
