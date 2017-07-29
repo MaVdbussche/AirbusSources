@@ -2,13 +2,10 @@ package vandenbussche.airbussources.database;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -40,7 +37,7 @@ public class SQLUtility extends SQLiteOpenHelper {
     /**
      * THe database file path.
      */
-    private String DATABASE_PATH = "/data/data/vandenbussche.airbussources/databases/"; //context.getFilesDir().getPath();
+    private String DATABASE_PATH = "/data/data/vandenbussche/airbussources/database";
     private static String DATABASE_NAME = "AirbusSourcesDB.sqlite";
     /***
      * Constructor. Instantiates the DB handling utility
@@ -85,7 +82,7 @@ public class SQLUtility extends SQLiteOpenHelper {
      * @throws SQLiteException if an error occurs while reading the DB
      * @return An ArrayList<String> containing all the results, or null if there was none
      */
-    public ArrayList<String> getElementFromDB(@NonNull String table, @NonNull String column, String conditionSQL) throws SQLiteException{
+    public ArrayList<String> getElementFromDB(String table, String column, String conditionSQL) throws SQLiteException{
         ArrayList<String> requestResult = null;
         Cursor c = myDB.query("\""+table+"\"",
                 new String[]{"\""+column+"\""},
@@ -108,16 +105,14 @@ public class SQLUtility extends SQLiteOpenHelper {
     }
 
     /**
-     * Returns all the DB entries matching the conditions expressed in the passed arguments
-     * @param distinct pass true if you want each row to be unique, false otherwise
+     * Returns all the DB entries (and all the columns of these entries) matching the conditions expressed in the passed arguments
      * @param table the DB table the query is run on
-     * @param conditionSQL ths SQLite WHERE clause (passing null will return the whole table)
+     * @param conditionSQL the SQLite WHERE clause (passing null will return the whole table)
      * @param orderBy the SQLite ORDERBY clause (can be null)
      * @return A Cursor containing the query result
      */
-    public Cursor getEntriesFromDB(boolean distinct, String table, @Nullable String conditionSQL, @Nullable String orderBy){
-        Cursor c = myDB.query(distinct,
-                "\""+table+"\"",
+    public Cursor getEntriesFromDB(String table, String conditionSQL, String orderBy){
+        Cursor c = myDB.query("\""+table+"\"",
                 null,
                 conditionSQL,
                 null,
@@ -139,7 +134,7 @@ public class SQLUtility extends SQLiteOpenHelper {
     public ArrayList<String> getMemberInfo(String IDProfile) throws SQLiteException{
         ArrayList<String> requestResult = null;
         Cursor c = myDB.query("Member",
-                null,
+                new String[]{"IDProfile", "Password", "Name", "Surname", "Role", "Commodity", "BU"},
                 "IDProfile=\""+IDProfile+"\"",
                 null,
                 null,
@@ -161,17 +156,15 @@ public class SQLUtility extends SQLiteOpenHelper {
     }
 
     /**
-     * Returns all the Suppl_ProdID associated with the given Member
+     * Returns all the Suppliers associated with the given Member
      * @param  IDProfile the IDProfile of the user we are looking for
-     * @return An ArrayList<Product> containing all the product associated with this member in the DB.
-     *          Please note that the ArrayList is not ordered in any way,
-     *          as it depends on the order in which the SQLite request returned its result
+     * @return An ArrayList<String> containing all the suppliers associated with this member in the DB.
      * @throws SQLiteException if an error occured while accessing the DB
      */
-    public ArrayList<Integer> getMemberSuppl_ProdIDs(String IDProfile) throws SQLiteException{
+    public ArrayList<Integer> getMemberSuppliers(String IDProfile) throws SQLiteException{
         ArrayList<Integer> requestResult = null;
-        Cursor c = myDB.query("Suppl_Prod_Member",
-                new String[]{"\"Suppl_ProdID\""},
+        Cursor c = myDB.query("Member_Supplier",
+                new String[]{"\"Supplier\""},
                 "Member=\""+IDProfile+"\"",
                 null,
                 null,
@@ -181,7 +174,7 @@ public class SQLUtility extends SQLiteOpenHelper {
         if(c.moveToFirst()){
             requestResult = new ArrayList<>();
             for(int i=0; i<c.getCount(); i++){
-                requestResult.add(c.getInt(c.getColumnIndex("Suppl_ProdID")));
+                requestResult.add(c.getInt(c.getColumnIndex("Supplier")));
             }
         }
         c.close();
@@ -380,8 +373,7 @@ public class SQLUtility extends SQLiteOpenHelper {
         if( ! this.idProfileExistsInDB(login)){
             return false;
         }
-        myDB.delete("Member","Login=\""+login+"\"",null);
-        return true;
+        return (myDB.delete("Member","Login=\""+login+"\"",null) == 1);
     }
 
 

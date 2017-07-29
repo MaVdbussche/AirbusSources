@@ -31,8 +31,8 @@ public class Member {
     public Member(Context context, String idProfile, String password1, String password2, String firstName, String surname, String bu, String commodity, String role)
             throws InvalidPasswordException, InvalidFieldException, ExistingLoginException, SQLiteException {
 
-        testPassword(context, password1, password2);
         testLogin(context, idProfile);
+        testPassword(context, password1, password2);
 
         this.idProfile = idProfile;
         this.password = password1;
@@ -53,7 +53,9 @@ public class Member {
     public Member(Context context, String idProfile, String password) throws InvalidFieldException, InvalidPasswordException {
 
         SQLUtility db = SQLUtility.prepareDataBase(context);
-        if(db.idProfileExistsInDB(idProfile)){
+        if( ! db.idProfileExistsInDB(idProfile)) {
+            throw new InvalidFieldException(context.getString(R.string.login_login_not_exist), "login");
+        } else {
 
             ArrayList<String> values = db.getMemberInfo(idProfile);
             if(password.equals(values.get(1))){
@@ -64,7 +66,6 @@ public class Member {
             }
             throw new InvalidPasswordException(context.getString(R.string.login_password_incorrect));
         }
-        throw new InvalidFieldException(context.getString(R.string.login_login_not_exist), "login");
     }
 
     private boolean addToDB(Context context){
