@@ -75,4 +75,7 @@
     <string name="editprofile_productsgrid_title_button">edit</string>
     <string name="editprofile_suppliersgrid_title_button">edit</string>
 
+    <string name="researchResults_screenTitle">Research results</string>
+    <string name="researchResults_noResultsFound">Research results</string>
+
 </resources>

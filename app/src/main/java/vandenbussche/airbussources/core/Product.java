@@ -4,13 +4,15 @@ package vandenbussche.airbussources.core;
 import android.content.Context;
 
 
-public class Product implements Comparable {
+public class Product implements Comparable, Namable {
 
     private String name;
 
     public Product(Context context, String name){
         this.name =name;
     }
+
+    public String getIdentifier(){return this.getName();}
 
     public String getName(){return this.name;}
 

@@ -13,7 +13,7 @@ import vandenbussche.airbussources.exception.ExistingLoginException;
 import vandenbussche.airbussources.exception.InvalidFieldException;
 import vandenbussche.airbussources.exception.InvalidPasswordException;
 
-public class Member {
+public class Member implements Namable {
 
     private String idProfile;
     private String password;
@@ -57,7 +57,7 @@ public class Member {
             throw new InvalidFieldException(context.getString(R.string.login_login_not_exist), "login");
         } else {
 
-            ArrayList<String> values = db.getMemberInfo(idProfile);
+            ArrayList<String> values = db.getMemberBasicInfo(idProfile);
             if(password.equals(values.get(1))){
                 this.idProfile = values.get(0);
                 this.password = values.get(1);
@@ -101,6 +101,8 @@ public class Member {
             throw new InvalidFieldException(context.getString(R.string.login_login_too_short), "login");
         }
     }
+
+    public String getIdentifier(){return this.getLogin();}
 
     public String getLogin(){return idProfile;}
     public String getPassword(){return password;}

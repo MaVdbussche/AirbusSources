@@ -132,7 +132,7 @@ public class SQLUtility extends SQLiteOpenHelper {
      *          or null if this IDProfile does not appear in the DB
      * @throws SQLiteException if an error occurs while accessing the DB
      */
-    public ArrayList<String> getMemberInfo(String IDProfile) throws SQLiteException{
+    public ArrayList<String> getMemberBasicInfo(String IDProfile) throws SQLiteException{
         ArrayList<String> requestResult = null;
         Cursor c = myDB.query("Member",
                 new String[]{"IDProfile", "Password", "Name", "Surname", "Role", "Commodity", "BU"},
@@ -198,108 +198,7 @@ public class SQLUtility extends SQLiteOpenHelper {
     }
 
     /**
-     * Renvoie les ingredients pour une recette donnee.
-     * @param name Le nom de la recette voulue
-     * @return Un ArrayList<String[]> contenant, pour chaque ingredient, le nom (colonne 0) et la quantite de cet ingredient (colonne 1),
-     *          ou null si ce nom ne correspond pas a une recette dans la DB.
-     *          Pour acceder a un ingredient, il faut donc appeler getRecipeIngrsInfos().get(0)[0]
-     *          Pour acceder a sa quantite, il faut appeler getRecipeIngrsInfos().get(0)[1]
-     * @throws SQLiteException en cas d'erreur dans l'acces a la DB
-     */
-    public ArrayList<String[]> getRecipeIngrsInfo(String name) throws SQLiteException{
-        ArrayList<String[]> requestResult = null;
-        Cursor c = myDB.query("Recip_Ingrs",
-                null,
-                "Name=\""+name+"\"",
-                null,
-                null,
-                null,
-                null
-        );
-        if(c.moveToFirst()){
-            requestResult = new ArrayList<>();
-            for(int i=0; i<c.getCount(); i++){
-                Integer amount = c.getInt(c.getColumnIndex("Amount"));
-                String[] strings = {c.getString(c.getColumnIndex("Ing_Name")), amount.toString()};
-                requestResult.add(strings);
-                c.moveToNext();
-            }
-        }
-        c.close();
-        return requestResult;
-    }
-
-    /**
-     * Renvoie les types et tous leurs sous-types de recette, pour une recette donnee.
-     * @param name Le nom de la recette voulue
-     * @return Un ArrayList<ArrayList<String>> contenant, pour chaque type de la liste, un ArrayList. Celui-ci suit cette structure:{Nom du Type, Sous-Type1, Sous-Type2, etc.}
-     *          ou null si ce nom ne correspond pas a une recette dans la DB.
-     *          Pour acceder au premier type, il faut donc appeler getRecipeTypesInfos().get(0).get(0)
-     *          Pour acceder a un des sous-types de ce type, il faut appeler getRecipeIngrsInfos().get(0).get(1/2/etc)
-     *          Pour acceder au deuxieme type, il faut donc appeler getRecipeTypesInfos().get(1).get(0)
-     *          Pour acceder a un des sous-types de ce type, il faut appeler getRecipeIngrsInfos().get(1).get(1/2/etc)
-     *          etc...
-     * @throws SQLiteException en cas d'erreur dans l'acces a la DB
-     */
-    public ArrayList<ArrayList<String>> getRecipeTypesInfo(String name) throws SQLiteException{
-        ArrayList<ArrayList<String>> requestResult = null;
-        Cursor c = myDB.query("Recip_Types",
-                new String[]{"\"Type\"","\"Sub_Type\""},
-                "Name=\""+name+"\"",
-                null,
-                null,
-                null,
-                null
-        );
-        if(c.moveToFirst()){
-            requestResult = new ArrayList<>();
-            for(int i=0; i<c.getCount(); i++){  //Pour chaque ligne du curseur (Sera de structure {"Type";"SubType"})
-                String type = c.getString(0);
-                String subType = c.getString(1);
-                for(int j=0;j<requestResult.size();j++){    //Pour chaque sous-tableau
-                    if(requestResult.get(j).get(0).equals(type)){  //Si il contient le type, on ajoute le sous-type
-                        requestResult.get(j).add(subType);
-                    }   //Sinon, on continue à chercher
-                }
-                //Ici, on peut dire que ce type n'existe pas encore.
-                ArrayList<String> newList = new ArrayList<>();
-                requestResult.add(newList);
-                newList.add(type);
-                newList.add(subType);
-            }
-        }
-        c.close();
-        return requestResult;
-    }
-
-    /**
-     * Renvoie toutes les infos connues sur un ingredient donne.
-     * @param name Le nom pour identifier l'ingredient voulu
-     * @return Un ArrayList<String> contenant les infos : {Name, Unit},
-     *          ou null si ce nom ne correspond pas a un ingredient dans la DB
-     * @throws SQLiteException en cas d'erreur dans l'acces a la DB
-     */
-    public ArrayList<String> getIngredientFullInfo(String name) throws SQLiteException{
-        ArrayList<String> requestResult = null;
-        Cursor c = myDB.query("Ingredients",
-                null,   //Puisqu'on veut toutes les colonnes
-                "Ing_Name=\""+name+"\"",
-                null,
-                null,
-                null,
-                null
-        );
-        if(c.moveToFirst()){
-            requestResult = new ArrayList<>();
-            requestResult.add(c.getString(c.getColumnIndex("Ing_Name")));
-            requestResult.add(c.getString(c.getColumnIndex("Unit")));
-        }
-        c.close();
-        return requestResult;
-    }
-
-    /**
-     * Adds a nex entry in the Member table.
+     * Adds a new entry in the Member table.
      * @param values this map contains the initial column values for the
      *            row. The keys should be the column names and the values the
      *            column values

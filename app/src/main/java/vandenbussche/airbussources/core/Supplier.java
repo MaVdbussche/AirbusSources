@@ -5,7 +5,7 @@ import android.content.Context;
 import java.util.ArrayList;
 
 
-public class Supplier {
+public class Supplier implements Namable {
 
     private String name;
     private ArrayList<Product> products;
@@ -18,6 +18,8 @@ public class Supplier {
     public Supplier(Context context, String name){
         this.name = name;
     }
+
+    public String getIdentifier(){return this.getName();}
 
     public String getName(){
         return this.name;
