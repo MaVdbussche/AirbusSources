@@ -46,12 +46,12 @@
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginBottom="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/supplierProductsListView"
+        app:layout_constraintBottom_toTopOf="@+id/memberProductsListView"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp" />
 
     <ListView
-        android:id="@+id/supplierProductsListView"
+        android:id="@+id/memberProductsListView"
         android:layout_width="306dp"
         android:layout_height="150dp"
         android:layout_marginLeft="8dp"

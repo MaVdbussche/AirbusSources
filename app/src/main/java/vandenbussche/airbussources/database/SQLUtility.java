@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 import vandenbussche.airbussources.core.Product;
+import vandenbussche.airbussources.core.Supplier;
 
 /**
  * Created on 03-04-17.
@@ -161,51 +162,39 @@ public class SQLUtility extends SQLiteOpenHelper {
      * @return An ArrayList<String> containing all the suppliers associated with this member in the DB.
      * @throws SQLiteException if an error occured while accessing the DB
      */
-    public ArrayList<Integer> getMemberSuppliers(String IDProfile) throws SQLiteException{
-        ArrayList<Integer> requestResult = null;
-        Cursor c = myDB.query("Member_Supplier",
-                new String[]{"\"Supplier\""},
-                "Member=\""+IDProfile+"\"",
-                null,
-                null,
-                null,
-                null
-        );
-        if(c.moveToFirst()){
-            requestResult = new ArrayList<>();
-            for(int i=0; i<c.getCount(); i++){
-                requestResult.add(c.getInt(c.getColumnIndex("Supplier")));
-            }
-        }
-        c.close();
-        return requestResult;
+    public ArrayList<String> getAllMembersSuppliers(String IDProfile) throws SQLiteException{
+
+        return getElementFromDB("Member_Supplier", "Supplier", "Member=\""+IDProfile+"\"");
     }
 
-    /**
-     * Renvoie toutes les infos connues sur une recette donnee, EXCEPTE les ingredients, les types et les sous-types.
-     * @param name Le nom de la recette voulue
-     * @return Un ArrayList<String> contenant les infos : {Name, Image, Total_Time, Prep_Time, Cooking_Time, Nb_Ppl, Creation_Date, Diff_Lvl, Prep_Text, Descr_Text},
-     *          ou null si ce nom ne correspond pas a une recette dans la DB
-     * @throws SQLiteException en cas d'erreur dans l'acces a la DB
-     */
-    public ArrayList<String> getRecipeBasicInfo(String name) throws SQLiteException{
-        ArrayList<String> requestResult = null;
-        Cursor c = myDB.query("Recipe",
-                null,   //Puisqu'on veut toutes les colonnes
-                "Name=\""+name+"\"",
-                null,
-                null,
-                null,
-                null
-        );
-        if(c.moveToFirst()){
-            requestResult = new ArrayList<>();
-            for(int i=0; i<9; i++){
-                requestResult.add(c.getString(i));
-            }
-        }
-        c.close();
-        return requestResult;
+    public ArrayList<String> getAllSuppliersNames() throws SQLiteException {
+
+        return getElementFromDB("Supplier", "Name", null);
+    }
+
+    public ArrayList<String> getAllProductsNames() throws SQLiteException {
+
+        return getElementFromDB("Product", "Name", null);
+    }
+
+    public ArrayList<String> getAllRolesNames() throws SQLiteException {
+
+        return getElementFromDB("Role", "Name", null);
+    }
+
+    public ArrayList<String> getAllCommoditiesNames() throws SQLiteException {
+
+        return getElementFromDB("Commodity", "Name", null);
+    }
+
+    public ArrayList<String> getAllBUsNames() throws SQLiteException {
+
+        return getElementFromDB("BU", "Name", null);
+    }
+
+    public ArrayList<String> getAllSuppliersProductsNames(Supplier supplier){
+
+        return getElementFromDB("Suppl_Prod", "Product", "Supplier=\""+supplier+"\"");
     }
 
     /**

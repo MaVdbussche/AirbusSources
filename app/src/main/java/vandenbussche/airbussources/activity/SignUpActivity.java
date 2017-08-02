@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import vandenbussche.airbussources.R;
 import vandenbussche.airbussources.core.Member;
 import vandenbussche.airbussources.core.Supplier;
+import vandenbussche.airbussources.database.SQLUtility;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -46,7 +47,7 @@ public class SignUpActivity extends AppCompatActivity {
         surnameField = (EditText) findViewById(R.id.surname_field);
         loginField = (EditText) findViewById(R.id.login_field);
         passwordField = (EditText) findViewById(R.id.password_field);
-        password2Field = (EditText) findViewById(R.id.password_field2);
+        password2Field = (EditText) findViewById(R.id.password_field_2);
 
         businessUnits = (RadioGroup) findViewById(R.id.businessUnits);
         commodities = (RadioGroup) findViewById(R.id.commodities);
@@ -54,10 +55,11 @@ public class SignUpActivity extends AppCompatActivity {
 
         toProductsButton = (Button) findViewById(R.id.signup_button_toProductsScreen);
 
-        ArrayList<Supplier> listSuppliers = Supplier.getAllSuppliers();
+        SQLUtility db = SQLUtility.prepareDataBase(this);
+        ArrayList<String> listSuppliers = db.getAllSuppliersNames();
         for (int i = 0; i < listSuppliers.size(); i++) {
             RadioButton button = new RadioButton(this);
-            button.setText(listSuppliers.get(i).getName());
+            button.setText(listSuppliers.get(i));
             businessUnits.addView(button);
         }
 
