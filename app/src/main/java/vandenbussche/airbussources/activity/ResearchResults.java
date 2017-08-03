@@ -13,13 +13,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vandenbussche.airbussources.R;
+import vandenbussche.airbussources.core.Member;
 import vandenbussche.airbussources.core.Namable;
+import vandenbussche.airbussources.core.Product;
+import vandenbussche.airbussources.core.Supplier;
 
 
 public class ResearchResults extends AppCompatActivity {
 
     ListView listView;
-    ArrayList resultsIdentifiers;
+
+    final Intent inputIntent = getIntent();
+    final String resultsType = inputIntent.getStringExtra("Research Type");
+    ArrayList<CharSequence> resultsIdentifiers = inputIntent.getExtras().getCharSequenceArrayList("resultsList");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +40,9 @@ public class ResearchResults extends AppCompatActivity {
 
         listView= (ListView) findViewById(R.id.listView);
 
-
-        final Intent inputIntent = getIntent();
-        resultsIdentifiers = inputIntent.getExtras().getCharSequenceArrayList("resultsList");
-        if(results!=null)
+        if(resultsIdentifiers.size() > 0)
         {
-            dispResults();
+            sendToAdapter(resultsIdentifiers);
         }
         else
         {
@@ -50,31 +53,50 @@ public class ResearchResults extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (inputIntent.getExtras().get("Research Type").equals("Product")){
+                if (resultsType.equals("Product")){
                     Intent intent = new Intent(ResearchResults.this, DetailsProduct.class);
-                    intent.putExtra("Identifier", results.get(position).getIdentifier());
+                    intent.putExtra("Identifier", resultsIdentifiers.get(position).toString());
                     startActivity(intent);
-                } else if (inputIntent.getExtras().get("Research Type").equals("Member")){
+
+                } else if (resultsType.equals("Member")){
                     Intent intent = new Intent(ResearchResults.this, DetailsMember.class);
-                    intent.putExtra("Identifier", results.get(position).getIdentifier());
+                    intent.putExtra("Identifier", resultsIdentifiers.get(position).toString());
                     startActivity(intent);
 
-                } else if (inputIntent.getExtras().get("Research Type").equals("Supplier")){
+                } else if (resultsType.equals("Supplier")){
                     Intent intent = new Intent(ResearchResults.this, DetailsSupplier.class);
-                    intent.putExtra("Identifier", results.get(position).getIdentifier());
+                    intent.putExtra("Identifier", resultsIdentifiers.get(position).toString());
                     startActivity(intent);
 
-                } else{
+                } else {
                     System.out.println("Research Type in intent to ResearchResults.java is wrong ! No assumptions are made about what will happen next !");
                 }
             }
         });
     }
 
-    //Envoie a l'adapter la liste de recette a afficher
-    private void dispResults()
-    {
-        RowAdapter adapter = new RowAdapter(ResearchResults.this, (List) results);
+
+    private void sendToAdapter(List<CharSequence> elementsIdentifiers){
+
+        ArrayList<Namable> results = new ArrayList<>();
+
+        if(resultsType.equals("Member")){
+            for ( CharSequence member : elementsIdentifiers){
+                results.add(new Member(ResearchResults.this, member.toString()));
+            }
+        } else if(resultsType.equals("Supplier")){
+            for ( CharSequence supplier : elementsIdentifiers){
+                results.add(new Supplier(ResearchResults.this, supplier.toString()));
+            }
+        } else if (resultsType.equals("Product")){
+            for ( CharSequence product : elementsIdentifiers){
+                results.add(new Product(ResearchResults.this, product.toString()));
+            }
+        } else {
+            System.out.println("Research Type received by sendToAdapter() is wrong ! No assumptions are made about what will happen next !");
+        }
+
+        RowAdapter adapter = new RowAdapter(ResearchResults.this, results);
         listView.setAdapter(adapter);
     }
 }

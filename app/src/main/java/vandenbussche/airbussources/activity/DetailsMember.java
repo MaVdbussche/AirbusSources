@@ -37,7 +37,7 @@ public class DetailsMember extends AppCompatActivity {
         listProducts = (ListView) findViewById(R.id.memberProductsListView);
         listSuppliers = (ListView) findViewById(R.id.memberSuppliersListView);
 
-        listProducts.setAdapter(null);//TODO
-        listSuppliers.setAdapter(null);//TODO
+        //listProducts.setAdapter(null);//TODO
+        //listSuppliers.setAdapter(null);//TODO
     }
 }

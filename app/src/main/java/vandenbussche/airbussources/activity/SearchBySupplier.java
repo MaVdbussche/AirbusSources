@@ -9,7 +9,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import vandenbussche.airbussources.R;
+import vandenbussche.airbussources.core.Research;
 
 public class SearchBySupplier extends AppCompatActivity {
 
@@ -38,7 +42,13 @@ public class SearchBySupplier extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(SearchBySupplier.this, DetailsSupplier.class);
+                        Research research = new Research(SearchBySupplier.this);
+                        ArrayList<String> researchWords = new ArrayList<>(Arrays.asList(nameField.getText().toString().split(" ")));
+                        ArrayList<CharSequence> researchResult = new ArrayList<CharSequence>(research.getSuppliersNames(SearchBySupplier.this, researchWords));
+
+                        Intent intent = new Intent(SearchBySupplier.this, ResearchResults.class);
+                        intent.putCharSequenceArrayListExtra("resultsList", researchResult);
+                        intent.putExtra("Research Type", "Supplier");
                         startActivity(intent);
                     }
                 }

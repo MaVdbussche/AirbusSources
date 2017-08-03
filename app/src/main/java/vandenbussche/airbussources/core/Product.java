@@ -7,14 +7,21 @@ import android.content.Context;
 public class Product implements Comparable, Namable {
 
     private String name;
+    private boolean isOnCFT;
 
     public Product(Context context, String name){
         this.name =name;
     }
 
+    public Product(Context context, String name, boolean isOnCFT){
+        this.name =name;
+        this.isOnCFT = isOnCFT;
+    }
+
     public String getIdentifier(){return this.getName();}
 
     public String getName(){return this.name;}
+    public boolean getCftState(){return this.isOnCFT;}
 
     public int compareTo(Object other) throws ClassCastException{
         if( ! (other instanceof Product)){

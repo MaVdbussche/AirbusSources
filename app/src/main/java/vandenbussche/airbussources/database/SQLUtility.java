@@ -108,13 +108,14 @@ public class SQLUtility extends SQLiteOpenHelper {
     /**
      * Returns all the DB entries (and all the columns of these entries) matching the conditions expressed in the passed arguments
      * @param table the DB table the query is run on
-     * @param conditionSQL the SQLite WHERE clause (passing null will return the whole table)
-     * @param orderBy the SQLite ORDERBY clause (can be null)
+     * @param columns  he columns of the found entries you want in the Cursor. Passing null will return all columns of the given row
+     * @param conditionSQL the SQLite WHERE clause. Passing null will all the rows of the table
+     * @param orderBy the SQLite ORDERBY clause. Passing null means the results wont be ordered in a specific way
      * @return A Cursor containing the query result
      */
-    public Cursor getEntriesFromDB(String table, String conditionSQL, String orderBy){
+    public Cursor getEntriesFromDB(String table, String[] columns, String conditionSQL, String orderBy){
         Cursor c = myDB.query("\""+table+"\"",
-                null,
+                columns,
                 conditionSQL,
                 null,
                 null,

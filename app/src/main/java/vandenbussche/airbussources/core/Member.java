@@ -63,9 +63,29 @@ public class Member implements Namable {
                 this.password = values.get(1);
                 this.firstName = values.get(2);
                 this.surname = values.get(3);
+                this.role = values.get(4);
+                this.commodity = values.get(5);
+                this.bu = values.get(6);
             }
             throw new InvalidPasswordException(context.getString(R.string.login_password_incorrect));
         }
+    }
+
+    /**
+     * Constructor used for displaying in a ResearchResult list
+     */
+    public Member(Context context, String idProfile){
+
+        SQLUtility db = SQLUtility.prepareDataBase(context);
+
+        ArrayList<String> values = db.getMemberBasicInfo(idProfile);
+        this.idProfile = values.get(0);
+        this.password = values.get(1);
+        this.firstName = values.get(2);
+        this.surname = values.get(3);
+        this.role = values.get(4);
+        this.commodity = values.get(5);
+        this.bu = values.get(6);
     }
 
     private boolean addToDB(Context context){

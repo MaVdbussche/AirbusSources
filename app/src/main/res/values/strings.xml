@@ -33,7 +33,7 @@
     <string name="mainMenu_buttonSearchByMember_title">A person</string>
     <string name="mainMenu_buttonSearchByProduct_title">A Product</string>
     <string name="mainMenu_buttonSearchBySupplier_title">A supplier</string>
-    <string name="mainMenu_buttonEditProfile_title">Edit user profile</string>
+    <string name="mainMenu_buttonEditProfile_title">Edit my profile</string>
 
     <string name="searchByMember_screen_title">I am looking for a person</string>
     <string name="searchByMember_nameField_title">Name</string>
@@ -77,5 +77,7 @@
 
     <string name="researchResults_screenTitle">Research results</string>
     <string name="researchResults_noResultsFound">Research results</string>
+
+    <string name="rowItem_defaultText">[Insert element here]</string>
 
 </resources>

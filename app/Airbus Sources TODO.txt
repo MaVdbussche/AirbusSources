@@ -1,0 +1,22 @@
+- Ecran MemberSearch : Only nom et/ou prénom
+- Ecran ProductSearch : renommer produits -> ??? A voir
+- Ecran SupplierSearch : préciser modalités de recherche : pas d'acronymes
+
+RGB : 13 9 91
+
+SignupScreen :
+
+- IDProfile = Airbus User ID
+- Name-Surname --> First name-Name
+- CREATE Password
+Passer à 3+ écrans -> radiogroups vers 2e écran
+
+EditProfile : passer à 3 écrans
+	- nom, bu, pw etc.
+	- products
+	- suppliers
+Utiliser la même table qu'à l'inscription
+
+DetailsMember :
+Même tableaux que EditProfile mais pas éditable
+Details

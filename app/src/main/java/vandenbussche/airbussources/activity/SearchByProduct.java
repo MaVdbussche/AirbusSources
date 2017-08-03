@@ -42,10 +42,11 @@ public class SearchByProduct extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ArrayList<String> research = new ArrayList<>(Arrays.asList(nameField.getText().toString().split(" ")));
-                        ArrayList<CharSequence> researchResult = new ArrayList<CharSequence>(Research.getProductsNames(SearchByProduct.this, research));
+                        Research research = new Research(SearchByProduct.this);
+                        ArrayList<String> researchWords = new ArrayList<>(Arrays.asList(nameField.getText().toString().split(" ")));
+                        ArrayList<CharSequence> researchResult = new ArrayList<CharSequence>(research.getProductsNames(SearchByProduct.this, researchWords));
 
-                        Intent intent = new Intent(SearchByProduct.this, DetailsProduct.class);
+                        Intent intent = new Intent(SearchByProduct.this, ResearchResults.class);
                         intent.putCharSequenceArrayListExtra("resultsList", researchResult);
                         intent.putExtra("Research Type", "Product");
                         startActivity(intent);
