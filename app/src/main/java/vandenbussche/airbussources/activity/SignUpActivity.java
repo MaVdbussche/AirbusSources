@@ -7,18 +7,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
 import vandenbussche.airbussources.R;
-import vandenbussche.airbussources.core.Member;
-import vandenbussche.airbussources.core.Supplier;
 import vandenbussche.airbussources.database.SQLUtility;
+import vandenbussche.airbussources.exception.ExistingLoginException;
+import vandenbussche.airbussources.exception.InvalidFieldException;
+import vandenbussche.airbussources.exception.InvalidPasswordException;
 
 public class SignUpActivity extends AppCompatActivity {
+
+    private TextView welcomeText;
 
     private EditText nameField;
     private EditText surnameField;
@@ -26,11 +26,7 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText passwordField;
     private EditText password2Field;
 
-    private RadioGroup businessUnits;
-    private RadioGroup commodities;
-    private RadioGroup roles;
-
-    private Button toProductsButton;
+    private Button toScreen2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +36,10 @@ public class SignUpActivity extends AppCompatActivity {
         ActionBar ab = getSupportActionBar();
         ab.setHomeButtonEnabled(true);
         ab.setDisplayHomeAsUpEnabled(true);
-        ab.setTitle(R.string.signup_screen_title);
+        ab.setTitle(R.string.signup_screen_title_1);
         ab.show();
+
+        welcomeText = (TextView) findViewById(R.id.signupScreen1WelcomeTextView);
 
         nameField = (EditText) findViewById(R.id.name_field);
         surnameField = (EditText) findViewById(R.id.surname_field);
@@ -49,45 +47,39 @@ public class SignUpActivity extends AppCompatActivity {
         passwordField = (EditText) findViewById(R.id.password_field);
         password2Field = (EditText) findViewById(R.id.password_field_2);
 
-        businessUnits = (RadioGroup) findViewById(R.id.businessUnits);
-        commodities = (RadioGroup) findViewById(R.id.commodities);
-        roles = (RadioGroup) findViewById(R.id.roles);
+        toScreen2 = (Button) findViewById(R.id.signupScreen1ButtonNext);
 
-        toProductsButton = (Button) findViewById(R.id.signup_button_toProductsScreen);
-
-        SQLUtility db = SQLUtility.prepareDataBase(this);
-        ArrayList<String> listSuppliers = db.getAllSuppliersNames();
-        for (int i = 0; i < listSuppliers.size(); i++) {
-            RadioButton button = new RadioButton(this);
-            button.setText(listSuppliers.get(i));
-            businessUnits.addView(button);
-        }
-
-        toProductsButton.setOnClickListener(
+        toScreen2.setOnClickListener(
                 new View.OnClickListener(){
                     @Override
                     public void onClick(View v){
-                        if(businessUnits.getCheckedRadioButtonId() == -1){
-                            Toast t = Toast.makeText(SignUpActivity.this, "Please select a Business Unit", Toast.LENGTH_SHORT);
-                            t.show();
-                        }
-                        if(commodities.getCheckedRadioButtonId() == -1){
-                            Toast t = Toast.makeText(SignUpActivity.this, "Please select a Commodity", Toast.LENGTH_SHORT);
-                            t.show();
-                        }if(roles.getCheckedRadioButtonId() == -1){
-                            Toast t = Toast.makeText(SignUpActivity.this, "Please select a Role", Toast.LENGTH_SHORT);
-                            t.show();
-                        }
-                        RadioButton bu = (RadioButton) findViewById(businessUnits.getCheckedRadioButtonId());
-                        RadioButton commodity = (RadioButton) findViewById(commodities.getCheckedRadioButtonId());
-                        RadioButton role = (RadioButton) findViewById(roles.getCheckedRadioButtonId());
                         try {
-                            Member.connectedMember = new Member(SignUpActivity.this, loginField.getText().toString(), passwordField.getText().toString(), password2Field.getText().toString(),
-                                                                nameField.getText().toString(), surnameField.getText().toString(), bu.getText().toString(), commodity.getText().toString(),
-                                                                role.getText().toString());
+                            SQLUtility db = SQLUtility.prepareDataBase(SignUpActivity.this);
+                            if(db.idProfileExistsInDB(loginField.getText().toString())){
+                                db.close();
+                                throw new ExistingLoginException(SignUpActivity.this.getString(R.string.login_login_already_used));
+                            }
+                            if (loginField.getText().toString().length()<5)
+                            {
+                                throw new InvalidFieldException(SignUpActivity.this.getString(R.string.login_login_too_short), "login");
+                            }
+
+                            String password1 = passwordField.getText().toString();
+                            String password2 = password2Field.getText().toString();
+                            if(password1.length() < 5){
+                                throw new InvalidFieldException(SignUpActivity.this.getString(R.string.login_password_too_short), "password");
+                            }
+                            if ( ! password1.equals(password2)){
+                                throw new InvalidPasswordException(SignUpActivity.this.getString(R.string.login_password_different));
+                            }
                             Intent intent = new Intent(SignUpActivity.this, SignUpActivity2.class);
+                            intent.putExtra("First Name", nameField.getText().toString());
+                            intent.putExtra("Name", surnameField.getText().toString());
+                            intent.putExtra("Password", passwordField.getText().toString());
+                            intent.putExtra("Login", loginField.getText().toString());
                             startActivity(intent);
-                        } catch (Exception e){
+                            }
+                        catch(InvalidFieldException|InvalidPasswordException|ExistingLoginException e){
                             Toast t = Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_SHORT);
                             t.show();
                         }

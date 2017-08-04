@@ -6,6 +6,7 @@ import android.database.Cursor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 
 import vandenbussche.airbussources.activity.SearchByMember;
@@ -22,7 +23,7 @@ public class Research {
         this.context = c;
     }
 
-    private class Result{
+    private class Result implements Comparable {
         Object value;
         int pertinence;
 
@@ -38,6 +39,12 @@ public class Research {
         int decrPertinence(int i){
             this.pertinence = pertinence - i;
             return this.pertinence;
+        }
+        public int compareTo(Object o) throws ClassCastException {
+            if( ! (o instanceof Result)){
+                throw new ClassCastException("Could not compare those, as one of them is not a Result instance");
+            }
+            return this.pertinence - ((Result) o).pertinence;
         }
     }
 
@@ -129,15 +136,15 @@ public class Research {
             c.close();
         }
         //Now we have a list of Result instances, which we will copy in pertinence order into an ArrayList<String>
-        for (Result result : results){
-            //TODO
-            //into returnedList
+        Collections.sort(results);
+        for(int i=0; i<results.size(); i++){
+            returnedList.add((String) results.get(i).value);
         }
         return returnedList;
     }
 
     /**
-     * This option removes all duplicates and sort an ArrayList of Strings
+     * This option removes all duplicates and sorts an ArrayList of Strings
      * @param list the list to be processed
      * @return an ArrayList<String> that is duplicate-free and ordered lexicographically
      */

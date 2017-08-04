@@ -11,21 +11,30 @@
     <string name="login_password_too_short">The password must be at least 5 characters long</string>
     <string name="login_password_different">The two password fields must be the same</string>
     <string name="login_password_incorrect">The password does not match this login</string>
-    <string name="login_loginField_title">Login</string>
+    <string name="login_loginField_title">Airbus User ID</string>
     <string name="login_passwordField_title">Password</string>
     <string name="login_passwordField2_title">Confirm password</string>
 
-    <string name="signup_screen_title">Register</string>
-    <string name="signup_nameField_title">Name</string>
-    <string name="signup_surnameField_title">Surname</string>
-    <string name="signup_loginField_title">Enter your login (Matricule)</string>
-    <string name="signup_passwordField_title">Choose a password :</string>
+    <string name="signup_screen_title_1">Register (1/4)</string>
+    <string name="signup_screen_title_2">Register (2/4)</string>
+    <string name="signup_screen_title_3">Register (3/4)</string>
+    <string name="signup_screen_title_4">Register (4/4)</string>
+    <string name="signup_screen_1_welcome">Welcome to the Airbus Procurement Sourcing Tool ! Please register :</string>
+    <string name="signup_nameField_title">First Name</string>
+    <string name="signup_surnameField_title">Name</string>
+    <string name="signup_loginField_title">Enter your Airbus User ID</string>
+    <string name="signup_passwordField_title">Choose a password</string>
     <string name="signup_passwordConfirmationField_title">Confirm your password :</string>
     <string name="signup_firstNameField_title">Enter your first name :</string>
     <string name="signup_businessUnits_default">Pick a Business Unit</string>
     <string name="signup_commodities_default">Pick a Commodity</string>
     <string name="signup_roles_default">Pick a Role</string>
-    <string name="signup_buttonToProductsText">Which products are you responsible for ?</string>
+    <string name="signup_buttonNext">Next</string>
+    <string name="signup_buttonConfirm">Confirm</string>
+    <string name="signup_screen_3_titleColumn1">Select suppliers you are working with :</string>
+    <string name="signup_screen_3_titleColumn3">Tick only if you plan a negotiation</string>
+    <string name="signup_screen_4_titleColumn1">Select products you are working on :</string>
+    <string name="signup_screen_4_titleColumn3">Tick only if you plan a CFT</string>
 
     <string name="mainMenu_screen_title">Main Menu</string>
     <string name="mainMenu_welcome_title">Welcome, [insert name] !</string>
@@ -36,8 +45,8 @@
     <string name="mainMenu_buttonEditProfile_title">Edit my profile</string>
 
     <string name="searchByMember_screen_title">I am looking for a person</string>
-    <string name="searchByMember_nameField_title">Name</string>
-    <string name="searchByMember_surnameField_title">Surname</string>
+    <string name="searchByMember_nameField_title">First Name</string>
+    <string name="searchByMember_surnameField_title">Name</string>
     <string name="searchByMember_BUField_title">Business Unit</string>
     <string name="searchByMember_button_title">GO</string>
     <string name="searchByMember_title">Searching by member</string>

@@ -11,6 +11,7 @@ public class Product implements Comparable, Namable {
 
     public Product(Context context, String name){
         this.name =name;
+        this.isOnCFT = false;
     }
 
     public Product(Context context, String name, boolean isOnCFT){

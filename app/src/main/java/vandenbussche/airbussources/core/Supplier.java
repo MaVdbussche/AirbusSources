@@ -1,7 +1,5 @@
 package vandenbussche.airbussources.core;
 
-import android.content.Context;
-
 import java.util.ArrayList;
 
 
@@ -9,14 +7,17 @@ public class Supplier implements Namable {
 
     private String name;
     private ArrayList<Product> products;
+    private boolean isOnNegotiation;
 
-    public Supplier(Context context, String name, ArrayList<Product> products){
+    public Supplier(String name, ArrayList<Product> products){
         this.name = name;
         this.products = products;
+        this.isOnNegotiation = false;
     }
-
-    public Supplier(Context context, String name){
+    public Supplier(String name, ArrayList<Product> products, boolean isOnNegotiation){
         this.name = name;
+        this.products = products;
+        this.isOnNegotiation = isOnNegotiation;
     }
 
     public String getIdentifier(){return this.getName();}
@@ -24,4 +25,5 @@ public class Supplier implements Namable {
     public String getName(){
         return this.name;
     }
+    public boolean getNegotiationState(){return this.isOnNegotiation;}
 }

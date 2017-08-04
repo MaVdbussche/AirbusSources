@@ -163,9 +163,17 @@ public class SQLUtility extends SQLiteOpenHelper {
      * @return An ArrayList<String> containing all the suppliers associated with this member in the DB.
      * @throws SQLiteException if an error occured while accessing the DB
      */
-    public ArrayList<String> getAllMembersSuppliers(String IDProfile) throws SQLiteException{
+    public ArrayList<Supplier> getAllMembersSuppliers(String IDProfile) throws SQLiteException{
 
-        return getElementFromDB("Member_Supplier", "Supplier", "Member=\""+IDProfile+"\"");
+        ArrayList<Supplier> returnedList = new ArrayList<>();
+        Cursor c = getEntriesFromDB("Member_Supplier", new String[]{"Supplier","Negotiation"}, "Member=\""+IDProfile+"\"", null);
+        if(c.moveToFirst()){
+            for(int i=0; i<c.getCount(); i++){
+                boolean negotiationState = (c.getInt(c.getColumnIndex("Negotiation")) == 1);
+                returnedList.add(new Supplier(c.getString(c.getColumnIndex("Supplier")), null, negotiationState));
+            }
+        }
+        return returnedList;
     }
 
     public ArrayList<String> getAllSuppliersNames() throws SQLiteException {
@@ -223,6 +231,27 @@ public class SQLUtility extends SQLiteOpenHelper {
         for (int i = 0; i < products.size(); i++) {
             values.put("\"Product\"", products.get(i).getName());
 
+        }
+        return (myDB.insert("MemberProduct", null, values) != -1);
+    }
+
+    /**
+     * Adds new entries to the Member_Supplier table.
+     * The ArrayList <#param>suppliers</#param> contains all the suppliers to be added to the table
+     * @param login the user the given products should be associated with
+     * @param suppliers the suppliers that should be added to the table facing the given member.
+     *                  Make sure the Supplier instances contain the correct isOnNegotiation boolean !
+     * @return true if the insertion succeeded, false otherwise
+     */
+    public boolean addToMemberSupplierTable(String login, ArrayList<Supplier> suppliers){
+        ContentValues values = new ContentValues(suppliers.size());
+        for (int i = 0; i < suppliers.size(); i++) {
+            values.put("\"Member\"", suppliers.get(i).getName());
+            if(suppliers.get(i).getNegotiationState()) {
+                values.put("\"Negotiation\"", 1);
+            } else {
+                values.put("\"Negotiation\"", 0);
+            }
         }
         return (myDB.insert("MemberProduct", null, values) != -1);
     }

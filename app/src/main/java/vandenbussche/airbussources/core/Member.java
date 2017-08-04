@@ -22,29 +22,61 @@ public class Member implements Namable {
     private String bu;
     private String commodity;
     private String role;
+    private ArrayList<Supplier> suppliers;
 
     public static Member connectedMember;
 
     /**
      * Constructor used when signing up for the first time
      */
-    public Member(Context context, String idProfile, String password1, String password2, String firstName, String surname, String bu, String commodity, String role)
-            throws InvalidPasswordException, InvalidFieldException, ExistingLoginException, SQLiteException {
-
-        testLogin(context, idProfile);
-        testPassword(context, password1, password2);
+    public Member(Context context, String idProfile, String password, String firstName, String surname, String bu, String commodity, String role, ArrayList<Supplier> suppliers)
+            throws SQLiteException {
 
         this.idProfile = idProfile;
-        this.password = password1;
+        this.password = password;
         this.firstName = firstName;
         this.surname = surname;
         this.bu = bu;
         this.commodity = commodity;
         this.role = role;
+        this.suppliers = suppliers;
 
-        if( ! this.addToDB(context)){
+        if( ! this.addBasicInfoToDB(context)){
             throw new SQLException("The user could not be inserted in the database. Please try again");
         }
+        if( ! this.addSuppliersToDB(context)){
+            throw new SQLiteException("Suppliers could not be added to the database. Please try again");
+        }
+    }
+
+    /**
+     * Slightly easier constructor, used during registering, when some info aren't available yet.
+     * This incomplete Member instance will NOT be sent to the DB !
+     */
+    public Member(String idProfile, String password, String firstName, String surname, String bu, String commodity, String role){
+        this.idProfile = idProfile;
+        this.password = password;
+        this.firstName = firstName;
+        this.surname = surname;
+        this.bu = bu;
+        this.commodity = commodity;
+        this.role = role;
+        this.suppliers = null;
+    }
+
+    /**
+     * Slightly easier constructor, used during registering, when some info aren't available yet.
+     * This incomplete Member instance will NOT be sent to the DB !
+     */
+    public Member(String idProfile, String password, String firstName, String surname, String bu, String commodity, String role, ArrayList<Supplier> suppliers){
+        this.idProfile = idProfile;
+        this.password = password;
+        this.firstName = firstName;
+        this.surname = surname;
+        this.bu = bu;
+        this.commodity = commodity;
+        this.role = role;
+        this.suppliers = suppliers;
     }
 
     /**
@@ -66,13 +98,14 @@ public class Member implements Namable {
                 this.role = values.get(4);
                 this.commodity = values.get(5);
                 this.bu = values.get(6);
+                this.suppliers = db.getAllMembersSuppliers(this.idProfile);
             }
             throw new InvalidPasswordException(context.getString(R.string.login_password_incorrect));
         }
     }
 
     /**
-     * Constructor used for displaying in a ResearchResult list
+     * Easier to use constructor, used for displaying in a ResearchResult list
      */
     public Member(Context context, String idProfile){
 
@@ -86,40 +119,71 @@ public class Member implements Namable {
         this.role = values.get(4);
         this.commodity = values.get(5);
         this.bu = values.get(6);
+        this.suppliers = db.getAllMembersSuppliers(this.idProfile);
     }
 
-    private boolean addToDB(Context context){
+    private boolean addBasicInfoToDB(Context context){
 
         ContentValues values = new ContentValues(4);    //TODO adjust this value if table size changes in the future
         values.put("\"Login\"", this.idProfile);
         values.put("\"Password\"", this.password);
         values.put("\"First Name\"", this.firstName);
         values.put("\"Name\"", this.surname);
+        values.put("\"BU\"", this.bu);
+        values.put("\"Commodity\"", this.commodity);
+        values.put("\"Role\"", this.role);
 
         SQLUtility db = SQLUtility.prepareDataBase(context);
         return (db.addToMemberTable(values));
     }
 
-    private void testPassword(Context context, String password1, String password2) throws InvalidPasswordException, InvalidFieldException {
-        if ( ! password1.equals(password2)){
-            throw new InvalidPasswordException(context.getString(R.string.login_password_different));
-        }
-        if(password1.length()<5){
-            throw new InvalidFieldException(context.getString(R.string.login_password_too_short), "password");
-        }
+    private boolean addSuppliersToDB(Context context){
+        SQLUtility db = SQLUtility.prepareDataBase(context);
+        return db.addToMemberSupplierTable(this.idProfile, suppliers);
     }
 
-    private void testLogin(Context context, String idProfile) throws ExistingLoginException, InvalidFieldException {
+    public static boolean isThereANegotiationBetween(Context context, Member member, Supplier supplier){
 
         SQLUtility db = SQLUtility.prepareDataBase(context);
-        if(db.idProfileExistsInDB(idProfile)){
-            db.close();
-            throw new ExistingLoginException(context.getString(R.string.login_login_already_used));
+        ArrayList<String> list = db.getElementFromDB("Member_Supplier", "Negotiation", "Member =\""+member.idProfile+"\" AND Supplier = \""+supplier+"\"");
+        if(list.size() != 1){
+            System.out.println("Redundancy detected in the database ! Please check the Member_Supplier table. Returning false");
+            System.out.println("Location : method isThereANegotiationBetween in class Member");
+            return false;
         }
-        if (idProfile.length()<5)
-        {
-            throw new InvalidFieldException(context.getString(R.string.login_login_too_short), "login");
+        return list.get(0).equals("1");
+    }
+    public static boolean isThereACFTOn(Context context, Member member, Product product){
+
+        SQLUtility db = SQLUtility.prepareDataBase(context);
+        ArrayList<String> list = db.getElementFromDB("Member_Product", "CFT", "Member =\""+member.idProfile+"\" AND Product = \""+product+"\"");
+        if(list.size() != 1){
+            System.out.println("Redundancy detected in the database ! Please check the Member_Product table. Returning false");
+            System.out.println("Location : method isThereACFTOn in class Member");
+            return false;
         }
+        return list.get(0).equals("1");
+    }
+
+    public boolean isWorkingWith(Context context, Supplier supplier){
+        SQLUtility db = SQLUtility.prepareDataBase(context);
+        ArrayList<Supplier> suppliers = db.getAllMembersSuppliers(this.idProfile);
+        for (int i=0; i<suppliers.size(); i++){
+            if(suppliers.get(i).getName().equals(supplier.getName())){
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean isWorkingOn(Context context, Product product){
+        SQLUtility db = SQLUtility.prepareDataBase(context);
+        ArrayList<Product> products = null;//db.getAllMembersProducts(this.idProfile);
+        for (int i=0; i<products.size(); i++){
+            if(products.get(i).getName().equals(product.getName())){
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getIdentifier(){return this.getLogin();}
@@ -131,4 +195,9 @@ public class Member implements Namable {
     public String getBu(){return bu;}
     public String getCommodity(){return commodity;}
     public String getRole(){return role;}
+    public ArrayList<Supplier> getSuppliers(){return this.suppliers;}
+
+    public void setSuppliers(ArrayList<Supplier> suppliers){
+        this.suppliers = suppliers;
+    }
 }

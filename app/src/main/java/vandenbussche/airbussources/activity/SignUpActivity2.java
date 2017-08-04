@@ -2,15 +2,28 @@ package vandenbussche.airbussources.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 import vandenbussche.airbussources.R;
+import vandenbussche.airbussources.database.SQLUtility;
 
 public class SignUpActivity2 extends AppCompatActivity {
 
-    private Button toMainMenu;
+    Intent inputIntent = getIntent();
+
+    private Button toScreen3;
+
+    private RadioGroup businessUnits;
+    private RadioGroup commodities;
+    private RadioGroup roles;
 
 
     @Override
@@ -18,13 +31,66 @@ public class SignUpActivity2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup2);
 
-        toMainMenu = (Button) findViewById(R.id.buttonToMainMenu);
+        ActionBar ab = getSupportActionBar();
+        ab.setHomeButtonEnabled(true);
+        ab.setDisplayHomeAsUpEnabled(true);
+        ab.setTitle(R.string.signup_screen_title_2);
+        ab.show();
 
-        toMainMenu.setOnClickListener(
+        toScreen3 = (Button) findViewById(R.id.signupScreen2ButtonNext);
+
+        businessUnits = (RadioGroup) findViewById(R.id.businessUnitsRadioGroup);
+        commodities = (RadioGroup) findViewById(R.id.commoditiesRadioGroup);
+        roles = (RadioGroup) findViewById(R.id.rolesRadioGroup);
+
+        SQLUtility db = SQLUtility.prepareDataBase(this);
+        final ArrayList<String> listBusinessUnits = db.getAllSuppliersNames();
+        final ArrayList<String> listCommodities = db.getAllCommoditiesNames();
+        final ArrayList<String> listRoles = db.getAllRolesNames();
+
+        for (int i = 0; i < listBusinessUnits.size(); i++) {
+            RadioButton button = new RadioButton(this);
+            button.setText(listBusinessUnits.get(i));
+            businessUnits.addView(button);
+        }
+        for (int i = 0; i < listCommodities.size(); i++) {
+            RadioButton button = new RadioButton(this);
+            button.setText(listCommodities.get(i));
+            commodities.addView(button);
+        }
+        for (int i = 0; i < listRoles.size(); i++) {
+            RadioButton button = new RadioButton(this);
+            button.setText(listRoles.get(i));
+            roles.addView(button);
+        }
+
+        toScreen3.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(SignUpActivity2.this, MainMenu.class);
+                        RadioButton bu = (RadioButton) findViewById(businessUnits.getCheckedRadioButtonId());
+                        RadioButton commodity = (RadioButton) findViewById(commodities.getCheckedRadioButtonId());
+                        RadioButton role = (RadioButton) findViewById(roles.getCheckedRadioButtonId());
+                        if( (businessUnits.getCheckedRadioButtonId()==-1) || (bu.getText().toString()).equals(getString(R.string.signup_businessUnits_default)) ){
+                            Toast t = Toast.makeText(SignUpActivity2.this, "Please select a Business Unit", Toast.LENGTH_SHORT);
+                            t.show();
+                        }
+                        if( (commodities.getCheckedRadioButtonId()==-1) || (commodity.getText().toString()).equals(getString(R.string.signup_commodities_default)) ){
+                            Toast t = Toast.makeText(SignUpActivity2.this, "Please select a Commodity", Toast.LENGTH_SHORT);
+                            t.show();
+                        }
+                        if( (roles.getCheckedRadioButtonId()==-1) || (role.getText().toString()).equals(getString(R.string.signup_roles_default)) ){
+                            Toast t = Toast.makeText(SignUpActivity2.this, "Please select a Role", Toast.LENGTH_SHORT);
+                            t.show();
+                        }
+                        Intent intent = new Intent(SignUpActivity2.this, SignupActivity3.class);
+                        intent.putExtra("First Name", inputIntent.getStringExtra("First Name"));
+                        intent.putExtra("Name", inputIntent.getStringExtra("Name"));
+                        intent.putExtra("Password", inputIntent.getStringExtra("Password"));
+                        intent.putExtra("Login", inputIntent.getStringExtra("Login"));
+                        intent.putExtra("Business Unit", bu.getText().toString());
+                        intent.putExtra("Commodity", commodity.getText().toString());
+                        intent.putExtra("Role", role.getText().toString());
                         startActivity(intent);
                     }
                 }

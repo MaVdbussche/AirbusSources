@@ -21,7 +21,7 @@ import vandenbussche.airbussources.core.Supplier;
 
 public class ResearchResults extends AppCompatActivity {
 
-    ListView listView;
+    private ListView listView;
 
     final Intent inputIntent = getIntent();
     final String resultsType = inputIntent.getStringExtra("Research Type");
@@ -76,27 +76,27 @@ public class ResearchResults extends AppCompatActivity {
     }
 
 
-    private void sendToAdapter(List<CharSequence> elementsIdentifiers){
+    private void sendToAdapter(List<CharSequence> elements){
 
         ArrayList<Namable> results = new ArrayList<>();
 
         if(resultsType.equals("Member")){
-            for ( CharSequence member : elementsIdentifiers){
+            for ( CharSequence member : elements){
                 results.add(new Member(ResearchResults.this, member.toString()));
             }
         } else if(resultsType.equals("Supplier")){
-            for ( CharSequence supplier : elementsIdentifiers){
-                results.add(new Supplier(ResearchResults.this, supplier.toString()));
+            for ( CharSequence supplier : elements){
+                results.add(new Supplier(supplier.toString(), null, false));
             }
         } else if (resultsType.equals("Product")){
-            for ( CharSequence product : elementsIdentifiers){
+            for ( CharSequence product : elements){
                 results.add(new Product(ResearchResults.this, product.toString()));
             }
         } else {
             System.out.println("Research Type received by sendToAdapter() is wrong ! No assumptions are made about what will happen next !");
         }
 
-        RowAdapter adapter = new RowAdapter(ResearchResults.this, results);
+        RowAdapterResearchResults adapter = new RowAdapterResearchResults(ResearchResults.this, results);
         listView.setAdapter(adapter);
     }
 }
