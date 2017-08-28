@@ -19,7 +19,7 @@ import vandenbussche.airbussources.core.Member;
 import vandenbussche.airbussources.core.Supplier;
 import vandenbussche.airbussources.database.SQLUtility;
 
-public class SignupActivity3 extends AppCompatActivity {
+public class SignUpActivity3 extends AppCompatActivity {
 
     private TextView titleColumn1;
     private TextView titleColumn3;
@@ -123,7 +123,7 @@ public class SignupActivity3 extends AppCompatActivity {
                         }
                         inputMember.setSuppliers(selectedSuppliers);
 
-                        Intent intent = new Intent(SignupActivity3.this, SignupActivity4.class);
+                        Intent intent = new Intent(SignUpActivity3.this, SignUpActivity4.class);
                         Member.connectedMember = new Member(inputMember.getLogin(), inputMember.getPassword(),
                                 inputMember.getFirstName(), inputMember.getName(), inputMember.getBu(), inputMember.getCommodity(),
                                 inputMember.getRole(), inputMember.getSuppliers());
@@ -135,13 +135,13 @@ public class SignupActivity3 extends AppCompatActivity {
 
     private void displayAllSuppliersTickable(){
 
-        SQLUtility db = SQLUtility.prepareDataBase(SignupActivity3.this);
+        SQLUtility db = SQLUtility.prepareDataBase(SignUpActivity3.this);
         ArrayList<String> namesList = db.getAllSuppliersNames();
         ArrayList<Supplier> suppliersList = new ArrayList<>(namesList.size());
         for(int i=0; i<namesList.size(); i++){
             suppliersList.add(new Supplier(namesList.get(i), null, false));
         }
-        RowAdapterSuppliers adapter = new RowAdapterSuppliers(SignupActivity3.this, suppliersList, inputMember);
+        RowAdapterSuppliers adapter = new RowAdapterSuppliers(SignUpActivity3.this, suppliersList, inputMember);
         listSuppliersToTick.setAdapter(adapter);
     }
 }

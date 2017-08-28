@@ -1,7 +1,6 @@
 package vandenbussche.airbussources.activity;
 
 
-import android.content.Intent;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -10,17 +9,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import vandenbussche.airbussources.R;
 import vandenbussche.airbussources.core.Member;
 import vandenbussche.airbussources.core.Product;
-import vandenbussche.airbussources.core.Supplier;
 import vandenbussche.airbussources.database.SQLUtility;
 
-public class SignupActivity4 extends AppCompatActivity {
+public class SignUpActivity4 extends AppCompatActivity {
 
     private TextView titleColumn1;
     private TextView titleColumn3;
@@ -45,7 +42,7 @@ public class SignupActivity4 extends AppCompatActivity {
 
         displayAllProductsTickable();
 
-        //ItemClickListener pour liste produits (voir SignupActivity3)
+        //ItemClickListener pour liste produits (voir SignUpActivity3)
         //TODO
 
         toConfirm.setOnClickListener(
@@ -54,7 +51,7 @@ public class SignupActivity4 extends AppCompatActivity {
                     public void onClick(View v) {
                         try {
                             Member m = Member.connectedMember;
-                            Member.connectedMember = new Member(SignupActivity4.this, m.getLogin(), m.getPassword(), m.getFirstName(),
+                            Member.connectedMember = new Member(SignUpActivity4.this, m.getLogin(), m.getPassword(), m.getFirstName(),
                                     m.getName(), m.getBu(), m.getCommodity(), m.getRole(), m.getSuppliers());
                         } catch (SQLiteException e){
                             throw new SQLiteException(e.getMessage());
@@ -80,13 +77,13 @@ public class SignupActivity4 extends AppCompatActivity {
 
     private void displayAllProductsTickable(){
 
-        SQLUtility db = SQLUtility.prepareDataBase(SignupActivity4.this);
+        SQLUtility db = SQLUtility.prepareDataBase(SignUpActivity4.this);
         ArrayList<String> namesList = db.getAllProductsNames();
         ArrayList<Product> productsList = new ArrayList<>(namesList.size());
         for(int i=0; i<namesList.size(); i++){
-            productsList.add(new Product(SignupActivity4.this, namesList.get(i), false));
+            productsList.add(new Product(SignUpActivity4.this, namesList.get(i), false));
         }
-        RowAdapterProducts adapter = new RowAdapterProducts(SignupActivity4.this, productsList, Member.connectedMember);
+        RowAdapterProducts adapter = new RowAdapterProducts(SignUpActivity4.this, productsList, Member.connectedMember);
         listProductsToTick.setAdapter(adapter);
     }
 }

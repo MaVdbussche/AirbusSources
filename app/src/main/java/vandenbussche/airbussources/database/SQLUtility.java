@@ -36,10 +36,11 @@ public class SQLUtility extends SQLiteOpenHelper {
      */
     private static final int DATABASE_VERSION = 1;
     /**
-     * THe database file path.
+     * The database file path.
      */
-    private String DATABASE_PATH = "/data/data/vandenbussche/airbussources/database";
+    //private String DATABASE_PATH = "/data/data/vandenbussche/airbussources/database/";
     private static String DATABASE_NAME = "AirbusSourcesDB.sqlite";
+    private String DATABASE_PATH;
     /***
      * Constructor. Instantiates the DB handling utility
      *
@@ -48,6 +49,8 @@ public class SQLUtility extends SQLiteOpenHelper {
     private SQLUtility(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
+        this.myDB = this.context.openOrCreateDatabase(DATABASE_NAME, 0, null);
+        this.DATABASE_PATH = this.context.getDatabasePath(DATABASE_NAME).getPath();
     }
 
     /**
@@ -324,7 +327,7 @@ public class SQLUtility extends SQLiteOpenHelper {
     private boolean checkDataBase(){
         SQLiteDatabase checkDB = null;
         try{
-            String path = DATABASE_PATH + DATABASE_NAME;
+            String path = DATABASE_PATH;
             checkDB = SQLiteDatabase.openDatabase(path, null , SQLiteDatabase.OPEN_READONLY);
         }catch (SQLiteException e){
             //The DB couldn't be opened -> it doesn't exist yet
@@ -342,7 +345,7 @@ public class SQLUtility extends SQLiteOpenHelper {
      */
     private void overrideDataBase() throws IOException{
         InputStream myInput = context.getAssets().open(DATABASE_NAME);
-        String outputFile = DATABASE_PATH + DATABASE_NAME;
+        String outputFile = DATABASE_PATH;
         OutputStream myOutput = new FileOutputStream(outputFile);
 
         byte[] buffer = new byte[1024];
@@ -377,7 +380,7 @@ public class SQLUtility extends SQLiteOpenHelper {
         try{
             db.openDataBase();
         }catch (SQLiteException e){
-            throw new SQLiteException("Error while openeing the DB");
+            throw new SQLiteException("Error while opening the DB");
         }
         db.myDB.execSQL("PRAGMA foreign_keys = ON;");
         return db;
