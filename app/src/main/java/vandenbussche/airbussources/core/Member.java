@@ -86,11 +86,15 @@ public class Member implements Namable {
 
         SQLUtility db = SQLUtility.prepareDataBase(context);
         if( ! db.idProfileExistsInDB(idProfile)) {
+            db.close();
             throw new InvalidFieldException(context.getString(R.string.login_login_not_exist), "login");
         } else {
-
             ArrayList<String> values = db.getMemberBasicInfo(idProfile);
-            if(password.equals(values.get(1))){
+
+            if( ! password.equals(values.get(1))){
+                db.close();
+                throw new InvalidPasswordException(context.getString(R.string.login_password_incorrect));
+            } else {
                 this.idProfile = values.get(0);
                 this.password = values.get(1);
                 this.firstName = values.get(2);
@@ -99,8 +103,8 @@ public class Member implements Namable {
                 this.commodity = values.get(5);
                 this.bu = values.get(6);
                 this.suppliers = db.getAllMembersSuppliers(this.idProfile);
+                db.close();
             }
-            throw new InvalidPasswordException(context.getString(R.string.login_password_incorrect));
         }
     }
 
@@ -120,6 +124,7 @@ public class Member implements Namable {
         this.commodity = values.get(5);
         this.bu = values.get(6);
         this.suppliers = db.getAllMembersSuppliers(this.idProfile);
+        db.close();
     }
 
     private boolean addBasicInfoToDB(Context context){
@@ -134,18 +139,32 @@ public class Member implements Namable {
         values.put("\"Role\"", this.role);
 
         SQLUtility db = SQLUtility.prepareDataBase(context);
-        return (db.addToMemberTable(values));
+        try {
+            return (db.addToMemberTable(values));
+        }
+        finally{
+            db.close();
+        }
     }
 
     private boolean addSuppliersToDB(Context context){
         SQLUtility db = SQLUtility.prepareDataBase(context);
-        return db.addToMemberSupplierTable(this.idProfile, suppliers);
+        try {
+            return db.addToMemberSupplierTable(this.idProfile, suppliers);
+        } finally {
+            db.close();
+        }
     }
 
     public static boolean isThereANegotiationBetween(Context context, Member member, Supplier supplier){
 
         SQLUtility db = SQLUtility.prepareDataBase(context);
-        ArrayList<String> list = db.getElementFromDB("Member_Supplier", "Negotiation", "Member =\""+member.idProfile+"\" AND Supplier = \""+supplier+"\"");
+        ArrayList<String> list = db.getElementFromDB("Member_Supplier", "Negotiation", "Member = \""+member.idProfile+"\" AND Supplier = \""+supplier+"\"");
+        db.close();
+        if(list==null){
+            //There is no such match in the DB
+            return false;
+        }
         if(list.size() != 1){
             System.out.println("Redundancy detected in the database ! Please check the Member_Supplier table. Returning false");
             System.out.println("Location : method isThereANegotiationBetween in class Member");
@@ -157,6 +176,7 @@ public class Member implements Namable {
 
         SQLUtility db = SQLUtility.prepareDataBase(context);
         ArrayList<String> list = db.getElementFromDB("Member_Product", "CFT", "Member =\""+member.idProfile+"\" AND Product = \""+product+"\"");
+        db.close();
         if(list.size() != 1){
             System.out.println("Redundancy detected in the database ! Please check the Member_Product table. Returning false");
             System.out.println("Location : method isThereACFTOn in class Member");
@@ -168,6 +188,7 @@ public class Member implements Namable {
     public boolean isWorkingWith(Context context, Supplier supplier){
         SQLUtility db = SQLUtility.prepareDataBase(context);
         ArrayList<Supplier> suppliers = db.getAllMembersSuppliers(this.idProfile);
+        db.close();
         for (int i=0; i<suppliers.size(); i++){
             if(suppliers.get(i).getName().equals(supplier.getName())){
                 return true;
@@ -177,7 +198,8 @@ public class Member implements Namable {
     }
     public boolean isWorkingOn(Context context, Product product){
         SQLUtility db = SQLUtility.prepareDataBase(context);
-        ArrayList<Product> products = null;//db.getAllMembersProducts(this.idProfile);
+        ArrayList<Product> products = db.getAllMembersProducts(this.idProfile);
+        db.close();
         for (int i=0; i<products.size(); i++){
             if(products.get(i).getName().equals(product.getName())){
                 return true;

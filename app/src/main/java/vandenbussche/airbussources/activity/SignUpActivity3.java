@@ -13,6 +13,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 import vandenbussche.airbussources.R;
 import vandenbussche.airbussources.core.Member;
@@ -26,19 +28,21 @@ public class SignUpActivity3 extends AppCompatActivity {
     private ListView listSuppliersToTick;
     private Button toScreen4;
 
-    Intent inputIntent =getIntent();
-
-    Member inputMember = new Member(inputIntent.getStringExtra("Login"), inputIntent.getStringExtra("Password"),
-            inputIntent.getStringExtra("First Name"), inputIntent.getStringExtra("Name"), inputIntent.getStringExtra("Business Unit"),
-            inputIntent.getStringExtra("Commodity"), inputIntent.getStringExtra("Role"));
-
-    ArrayList<String> tickedSuppliersNames = new ArrayList<>();
-    ArrayList<Integer> tickedNegotiations = new ArrayList<>();
+    Member inputMember;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup3);
+
+        final Intent inputIntent =getIntent();
+
+        inputMember = new Member(inputIntent.getStringExtra("Login"), inputIntent.getStringExtra("Password"),
+                inputIntent.getStringExtra("First Name"), inputIntent.getStringExtra("Name"), inputIntent.getStringExtra("Business Unit"),
+                inputIntent.getStringExtra("Commodity"), inputIntent.getStringExtra("Role"));
+
+        final ArrayList<String> tickedSuppliersNames = new ArrayList<>();
+        final ArrayList<Integer> tickedNegotiations = new ArrayList<>();
 
         ActionBar ab = getSupportActionBar();
         ab.setHomeButtonEnabled(true);
@@ -137,6 +141,8 @@ public class SignUpActivity3 extends AppCompatActivity {
 
         SQLUtility db = SQLUtility.prepareDataBase(SignUpActivity3.this);
         ArrayList<String> namesList = db.getAllSuppliersNames();
+        db.close();
+        Collections.sort(namesList);
         ArrayList<Supplier> suppliersList = new ArrayList<>(namesList.size());
         for(int i=0; i<namesList.size(); i++){
             suppliersList.add(new Supplier(namesList.get(i), null, false));

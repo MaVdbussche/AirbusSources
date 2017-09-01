@@ -53,14 +53,12 @@ public class SignUpActivity extends AppCompatActivity {
                 new View.OnClickListener(){
                     @Override
                     public void onClick(View v){
+                        SQLUtility db = SQLUtility.prepareDataBase(SignUpActivity.this);
                         try {
-                            SQLUtility db = SQLUtility.prepareDataBase(SignUpActivity.this);
                             if(db.idProfileExistsInDB(loginField.getText().toString())){
-                                db.close();
                                 throw new ExistingLoginException(SignUpActivity.this.getString(R.string.login_login_already_used));
                             }
-                            if (loginField.getText().toString().length()<5)
-                            {
+                            if (loginField.getText().toString().length()<5){
                                 throw new InvalidFieldException(SignUpActivity.this.getString(R.string.login_login_too_short), "login");
                             }
 
@@ -82,6 +80,8 @@ public class SignUpActivity extends AppCompatActivity {
                         catch(InvalidFieldException|InvalidPasswordException|ExistingLoginException e){
                             Toast t = Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_SHORT);
                             t.show();
+                        } finally {
+                            db.close();
                         }
                     }
                 }

@@ -63,6 +63,7 @@ public class Research {
         for (String word:research)
         {
             ArrayList<String> resultsForOneWord = db.getElementFromDB("Product", "Name", "Name LIKE "+"\'%"+word+"%\'");
+            db.close();
             //Now we will add all the results for this word (there will in fact probably only be one most of the time)
             //to the global result ArrayList.
             //This looks pretty inefficient to me, but can't think of anything better right now
@@ -89,6 +90,7 @@ public class Research {
         for (String word:research)
         {
             ArrayList<String> resultsForOneWord = db.getElementFromDB("Supplier", "Name", "Name LIKE "+"\'%"+word+"%\'");
+            db.close();
             //Now we will add all the results for this word (there will in fact probably only be one most of the time)
             //to the global result ArrayList.
             //This looks pretty inefficient to me, but can't think of anything better right now
@@ -110,6 +112,7 @@ public class Research {
         SQLUtility db = SQLUtility.prepareDataBase(context);
         ArrayList<Result> results = new ArrayList<>();
         ArrayList<String> returnedList = new ArrayList<>();
+        boolean flag = false;
 
         //For each word typed in by the user
         for (String word:research)
@@ -125,15 +128,18 @@ public class Research {
                         //If it is already contained in the list, we increase its pertinence
                         if(idProfile.equals(result.value)){
                             result.incrPertinence(1);
-                        }//Otherwise we add it to the list
-                        else {
-                            results.add(new Result(idProfile));
+                            flag = true;
                         }
+                    }
+                    if( ! flag){
+                        //Otherwise we add it to the list
+                        results.add(new Result(idProfile));
                     }
                     c.moveToNext();
                 }
             }
             c.close();
+            db.close();
         }
         //Now we have a list of Result instances, which we will copy in pertinence order into an ArrayList<String>
         Collections.sort(results);

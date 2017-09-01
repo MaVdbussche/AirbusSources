@@ -179,6 +179,22 @@ public class SQLUtility extends SQLiteOpenHelper {
         return returnedList;
     }
 
+    /**
+     * Returns all the Products associated with the given Member
+     * @param  IDProfile the IDProfile of the user we are looking for
+     * @return An ArrayList<ArrayList<String>> containing all the products associated with this member in the DB.
+     * @throws SQLiteException if an error occurred while accessing the DB
+     */
+    public ArrayList<ArrayList<String>> getAllMembersProducts(String IDProfile) throws SQLiteException{
+
+        ArrayList<Supplier> allMembersSuppliers = getAllMembersSuppliers(IDProfile);
+        ArrayList<ArrayList<String>> resultNames = new ArrayList<>(allMembersSuppliers.size());
+        for( Supplier supplier : allMembersSuppliers ){
+            resultNames.add(getAllSuppliersProductsNames(supplier));
+        }
+        return resultNames;
+    }
+
     public ArrayList<String> getAllSuppliersNames() throws SQLiteException {
 
         return getElementFromDB("Supplier", "Name", null);
@@ -205,6 +221,17 @@ public class SQLUtility extends SQLiteOpenHelper {
     }
 
     public ArrayList<String> getAllSuppliersProductsNames(Supplier supplier){
+
+        return getElementFromDB("Suppl_Prod", "Product", "Supplier=\""+supplier+"\"");
+    }
+
+    public ArrayList<Product> getAllSuppliersProducts(Supplier supplier){
+
+        ArrayList<String> names = getAllSuppliersProductsNames(supplier);
+        ArrayList<Product> result = new ArrayList<>(names.size());
+        for( String name : names ){
+            result.add(new Product(context, name, ))
+        }
 
         return getElementFromDB("Suppl_Prod", "Product", "Supplier=\""+supplier+"\"");
     }

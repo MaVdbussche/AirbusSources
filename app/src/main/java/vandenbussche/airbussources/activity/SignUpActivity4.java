@@ -11,6 +11,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 import vandenbussche.airbussources.R;
 import vandenbussche.airbussources.core.Member;
@@ -79,6 +81,8 @@ public class SignUpActivity4 extends AppCompatActivity {
 
         SQLUtility db = SQLUtility.prepareDataBase(SignUpActivity4.this);
         ArrayList<String> namesList = db.getAllProductsNames();
+        db.close();
+        Collections.sort(namesList);
         ArrayList<Product> productsList = new ArrayList<>(namesList.size());
         for(int i=0; i<namesList.size(); i++){
             productsList.add(new Product(SignUpActivity4.this, namesList.get(i), false));

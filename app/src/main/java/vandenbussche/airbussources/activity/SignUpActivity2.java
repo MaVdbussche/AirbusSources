@@ -18,7 +18,6 @@ import vandenbussche.airbussources.database.SQLUtility;
 
 public class SignUpActivity2 extends AppCompatActivity {
 
-    Intent inputIntent = getIntent();
 
     private Button toScreen3;
 
@@ -35,6 +34,8 @@ public class SignUpActivity2 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup2);
+
+        final Intent inputIntent = getIntent();
 
         ActionBar ab = getSupportActionBar();
         ab.setHomeButtonEnabled(true);
@@ -56,6 +57,7 @@ public class SignUpActivity2 extends AppCompatActivity {
         final ArrayList<String> listBusinessUnits = db.getAllSuppliersNames();
         final ArrayList<String> listCommodities = db.getAllCommoditiesNames();
         final ArrayList<String> listRoles = db.getAllRolesNames();
+        db.close();
 
         for (int i = 0; i < listBusinessUnits.size(); i++) {
             RadioButton button = new RadioButton(this);
