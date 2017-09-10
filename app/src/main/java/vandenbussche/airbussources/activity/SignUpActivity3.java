@@ -35,7 +35,7 @@ public class SignUpActivity3 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup3);
 
-        final Intent inputIntent =getIntent();
+        final Intent inputIntent = getIntent();
 
         inputMember = new Member(inputIntent.getStringExtra("Login"), inputIntent.getStringExtra("Password"),
                 inputIntent.getStringExtra("First Name"), inputIntent.getStringExtra("Name"), inputIntent.getStringExtra("Business Unit"),
@@ -77,7 +77,7 @@ public class SignUpActivity3 extends AppCompatActivity {
                     }
                 } else if (view instanceof CheckedTextView && tickedNegotiations.get(position) != 0){
                     //If one ticks column 2 and column 3 IS already checked
-                    System.out.println("Click ! (column 2, column 3 IS already checked");
+                    System.out.println("Click ! (column 2, column 3 IS already checked)");
                     if (((CheckedTextView) view).isChecked()) {
                         //If it is being "checked on"
                         System.out.println("How could this happen ?");
@@ -121,6 +121,7 @@ public class SignUpActivity3 extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
                         ArrayList<Supplier> selectedSuppliers = new ArrayList<>();
                         for(int i=0; i<tickedSuppliersNames.size(); i++){
                             selectedSuppliers.add(new Supplier(tickedSuppliersNames.get(i), null, (tickedNegotiations.get(i)==1)));
@@ -128,9 +129,7 @@ public class SignUpActivity3 extends AppCompatActivity {
                         inputMember.setSuppliers(selectedSuppliers);
 
                         Intent intent = new Intent(SignUpActivity3.this, SignUpActivity4.class);
-                        Member.connectedMember = new Member(inputMember.getLogin(), inputMember.getPassword(),
-                                inputMember.getFirstName(), inputMember.getName(), inputMember.getBu(), inputMember.getCommodity(),
-                                inputMember.getRole(), inputMember.getSuppliers());
+                        Member.connectedMember = inputMember;
                         startActivity(intent);
                     }
                 }

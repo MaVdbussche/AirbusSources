@@ -1,6 +1,6 @@
 package vandenbussche.airbussources.activity;
 
-
+import android.content.Intent;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -21,6 +21,8 @@ import vandenbussche.airbussources.database.SQLUtility;
 
 public class SignUpActivity4 extends AppCompatActivity {
 
+    Intent inputIntent;
+
     private TextView titleColumn1;
     private TextView titleColumn3;
     private ListView listProductsToTick;
@@ -28,6 +30,9 @@ public class SignUpActivity4 extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        inputIntent = getIntent();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup4);
 
@@ -61,20 +66,6 @@ public class SignUpActivity4 extends AppCompatActivity {
                     }
                 }
         );
-        /**
-         *
-          *
-    try {
-        Member.connectedMember = new Member(SignUpActivity.this, loginField.getText().toString(), passwordField.getText().toString(), password2Field.getText().toString(),
-                nameField.getText().toString(), surnameField.getText().toString(), bu.getText().toString(), commodity.getText().toString(),
-                role.getText().toString());
-        Intent intent = new Intent(SignUpActivity.this, SignUpActivity3.class);
-        startActivity(intent);
-    } catch (Exception e){
-        Toast t = Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_SHORT);
-        t.show();
-    }
-         */
     }
 
     private void displayAllProductsTickable(){

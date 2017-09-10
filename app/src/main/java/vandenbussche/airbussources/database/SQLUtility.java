@@ -78,7 +78,7 @@ public class SQLUtility extends SQLiteOpenHelper {
 
     /**
      * Looks in the DB for all the values of the given column that comply with the given condition. Only works for one column
-     * Ex: The name of all members older than 30 => getElementFromDB("Member", "Name", "Age<30")
+     * Ex: The name of all members older than 30 => getElementFromDB("Member", "Name", "Age>30")
      * @param table the name of the table in which elements will be looked for
      * @param column the column whose elements will be returned.
      * @param conditionSQL A filter declaring which rows to return, formatted as an SQL WHERE clause (excluding the WHERE itself).
@@ -267,7 +267,7 @@ public class SQLUtility extends SQLiteOpenHelper {
 
     /**
      * Adds new entries to the Member_Supplier table.
-     * The ArrayList <#param>suppliers</#param> contains all the suppliers to be added to the table
+     * The ArrayList <#param>suppliers</#param> contains all the suppliers to be added to the table.
      * @param login the user the given products should be associated with
      * @param suppliers the suppliers that should be added to the table facing the given member.
      *                  Make sure the Supplier instances contain the correct isOnNegotiation boolean !
@@ -276,7 +276,8 @@ public class SQLUtility extends SQLiteOpenHelper {
     public boolean addToMemberSupplierTable(String login, ArrayList<Supplier> suppliers){
         ContentValues values = new ContentValues(suppliers.size());
         for (int i = 0; i < suppliers.size(); i++) {
-            values.put("\"Member\"", suppliers.get(i).getName());
+            values.put("\"Supplier\"", suppliers.get(i).getName());
+            values.put("\"Member\"", login);
             if(suppliers.get(i).getNegotiationState()) {
                 values.put("\"Negotiation\"", 1);
             } else {
@@ -288,7 +289,7 @@ public class SQLUtility extends SQLiteOpenHelper {
 
     /**
      * Checks if a member with this login exists in the DB, then edits its information with the new values
-     * @param idProfile the menber whose information will be modified
+     * @param idProfile the member whose information will be modified
      * @param newValues a map from column names to new column values. Can not be null, nor contain null values
      * @return True if the update succeeded, false otherwise
      */
@@ -297,7 +298,7 @@ public class SQLUtility extends SQLiteOpenHelper {
             return false;
         } else {
             return (
-                    myDB.update("Member", newValues, "Login = \"" + idProfile + "\"", null) == 1
+                    myDB.update("Member", newValues, "IDProfile = \"" + idProfile + "\"", null) == 1
             ); //TODO Care: values should be preceded & followed by a " symbol
         }
 
@@ -310,6 +311,32 @@ public class SQLUtility extends SQLiteOpenHelper {
                 //"Password=\'"+newValues.get(5)+"\'"+"" +
                 //"WHERE Mail="+"'"+userEmail+"'"+";";
         //myDB.execSQL(instruction);
+    }
+
+    /**
+     * Checks if a member with this login exists in the DB, then edits its information with the new values
+     * @param idProfile the member whose information will be modified
+     * @param newValues an ArrayList<String> containing all the values of the updated member in the exact same order
+     *                  as the database columns (IDProfile, password, name, surname, role, commodity, business unit).
+     *                  Since this method is very sensitive to errors, prefer the method using ContentValues when possible.
+     *                  Can not be null, nor contain any null values
+     * @return True if the update succeeded, false otherwise
+     */
+    public boolean updateMemberBasicInfo(String idProfile, ArrayList<String> newValues){
+        if( ! this.idProfileExistsInDB(idProfile)){
+            return false;
+        } else {
+            ContentValues contentValues = new ContentValues(6);
+            contentValues.put("Password", newValues.get(1));
+            contentValues.put("Name", newValues.get(2));
+            contentValues.put("Surname", newValues.get(3));
+            contentValues.put("Role", newValues.get(4));
+            contentValues.put("Commodity", newValues.get(5));
+            contentValues.put("BU", newValues.get(6));
+            return (
+                    myDB.update("Member", contentValues, "IDProfile = \"" + idProfile + "\"", null) == 1
+            );
+        }
     }
 
     /**

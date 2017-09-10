@@ -109,27 +109,30 @@ public class Member implements Namable {
     }
 
     /**
-     * Easier to use constructor, used for displaying in a ResearchResult list
+     * Easier to use constructor that retrieves values from the database.
+     * Please first make sure the idProfile exists in the DB before calling this ! (Otherwise no code will be executed)
      */
     public Member(Context context, String idProfile){
 
         SQLUtility db = SQLUtility.prepareDataBase(context);
 
-        ArrayList<String> values = db.getMemberBasicInfo(idProfile);
-        this.idProfile = values.get(0);
-        this.password = values.get(1);
-        this.firstName = values.get(2);
-        this.surname = values.get(3);
-        this.role = values.get(4);
-        this.commodity = values.get(5);
-        this.bu = values.get(6);
-        this.suppliers = db.getAllMembersSuppliers(this.idProfile);
+        if(db.idProfileExistsInDB(idProfile)) {
+            ArrayList<String> values = db.getMemberBasicInfo(idProfile);
+            this.idProfile = values.get(0);
+            this.password = values.get(1);
+            this.firstName = values.get(2);
+            this.surname = values.get(3);
+            this.role = values.get(4);
+            this.commodity = values.get(5);
+            this.bu = values.get(6);
+            this.suppliers = db.getAllMembersSuppliers(this.idProfile);
+        }
         db.close();
     }
 
     private boolean addBasicInfoToDB(Context context){
 
-        ContentValues values = new ContentValues(4);    //TODO adjust this value if table size changes in the future
+        ContentValues values = new ContentValues(7);    //TODO adjust this value if table size changes in the future
         values.put("\"Login\"", this.idProfile);
         values.put("\"Password\"", this.password);
         values.put("\"First Name\"", this.firstName);
@@ -154,6 +157,20 @@ public class Member implements Namable {
         } finally {
             db.close();
         }
+    }
+
+    private boolean updateMemberInDB(Context context){
+        SQLUtility db = SQLUtility.prepareDataBase(context);
+        ArrayList<String> newValues = new ArrayList<>(6);
+        newValues.add(this.idProfile);
+        newValues.add(this.password);
+        newValues.add(this.firstName);
+        newValues.add(this.surname);
+        newValues.add(this.role);
+        newValues.add(this.commodity);
+        newValues.add(this.bu);
+
+        return (db.updateMemberBasicInfo(this.idProfile, newValues) );
     }
 
     public static boolean isThereANegotiationBetween(Context context, Member member, Supplier supplier){
@@ -198,13 +215,14 @@ public class Member implements Namable {
     }
     public boolean isWorkingOn(Context context, Product product){
         SQLUtility db = SQLUtility.prepareDataBase(context);
-        ArrayList<Product> products = db.getAllMembersProducts(this.idProfile);
-        db.close();
-        for (int i=0; i<products.size(); i++){
-            if(products.get(i).getName().equals(product.getName())){
-                return true;
-            }
-        }
+        //ArrayList<Product> products = db.getAllMembersProducts(this.idProfile);
+        //db.close();
+        //for (int i=0; i<products.size(); i++){
+        //    if(products.get(i).getName().equals(product.getName())){
+        //        return true;
+        //    }
+        //}
+        //TODO
         return false;
     }
 
@@ -219,6 +237,42 @@ public class Member implements Namable {
     public String getRole(){return role;}
     public ArrayList<Supplier> getSuppliers(){return this.suppliers;}
 
+    public void setPassword(Context context, String password){
+        this.password = password;
+        if( ! this.updateMemberInDB(context)){
+            System.err.println("Password updated in the instance but NOT in the DB !");
+        }
+    }
+    public void setFirstName(Context context, String firstName){
+        this.firstName = firstName;
+        if( ! this.updateMemberInDB(context)){
+            System.err.println("First Name updated in the instance but NOT in the DB !");
+        }
+    }
+    public void setSurname(Context context, String surname){
+        this.surname = surname;
+        if( ! this.updateMemberInDB(context)){
+            System.err.println("Surname updated in the instance but NOT in the DB !");
+        }
+    }
+    public void setBu(Context context, String bu){
+        this.bu = bu;
+        if( ! this.updateMemberInDB(context)){
+            System.err.println("BU updated in the instance but NOT in the DB !");
+        }
+    }
+    public void setCommodity(Context context, String commodity){
+        this.commodity = commodity;
+        if( ! this.updateMemberInDB(context)){
+            System.err.println("Commodity updated in the instance but NOT in the DB !");
+        }
+    }
+    public void setRole(Context context, String role){
+        this.role = role;
+        if( ! this.updateMemberInDB(context)){
+            System.err.println("Role updated in the instance but NOT in the DB !");
+        }
+    }
     public void setSuppliers(ArrayList<Supplier> suppliers){
         this.suppliers = suppliers;
     }
