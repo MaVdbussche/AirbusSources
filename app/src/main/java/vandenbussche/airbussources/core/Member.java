@@ -170,7 +170,11 @@ public class Member implements Namable {
         newValues.add(this.commodity);
         newValues.add(this.bu);
 
-        return (db.updateMemberBasicInfo(this.idProfile, newValues) );
+        try {
+            return ( db.updateMemberBasicInfo(this.idProfile, newValues) );
+        }finally {
+            db.close();
+        }
     }
 
     public static boolean isThereANegotiationBetween(Context context, Member member, Supplier supplier){

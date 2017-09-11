@@ -230,7 +230,7 @@ public class SQLUtility extends SQLiteOpenHelper {
         ArrayList<String> names = getAllSuppliersProductsNames(supplier);
         ArrayList<Product> result = new ArrayList<>(names.size());
         for( String name : names ){
-            result.add(new Product(context, name, ))
+            result.add(new Product(context, name, ));
         }
 
         return getElementFromDB("Suppl_Prod", "Product", "Supplier=\""+supplier+"\"");
@@ -327,6 +327,7 @@ public class SQLUtility extends SQLiteOpenHelper {
             return false;
         } else {
             ContentValues contentValues = new ContentValues(6);
+            //We don't retrieve the IDProfile value, as we do not allow to modify this field in the database anyway
             contentValues.put("Password", newValues.get(1));
             contentValues.put("Name", newValues.get(2));
             contentValues.put("Surname", newValues.get(3));
