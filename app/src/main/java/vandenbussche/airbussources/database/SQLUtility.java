@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
+import vandenbussche.airbussources.core.Member;
 import vandenbussche.airbussources.core.Product;
 import vandenbussche.airbussources.core.Supplier;
 
@@ -30,7 +31,7 @@ public class SQLUtility extends SQLiteOpenHelper {
     /**
      * The application context
      */
-    private Context context;
+    private final Context context;
     /**
      * The database version (should be incremented in order for the onUpgrade() method to be called).
      */
@@ -38,9 +39,9 @@ public class SQLUtility extends SQLiteOpenHelper {
     /**
      * The database file path.
      */
-    //private String DATABASE_PATH = "/data/data/vandenbussche/airbussources/database/";
+    private static String DATABASE_PATH; // = "/data/data/vandenbussche/airbussources/databases/";
     private static String DATABASE_NAME = "AirbusSourcesDB.sqlite";
-    private String DATABASE_PATH;
+
     /***
      * Constructor. Instantiates the DB handling utility
      *
@@ -49,8 +50,7 @@ public class SQLUtility extends SQLiteOpenHelper {
     private SQLUtility(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
-        this.myDB = this.context.openOrCreateDatabase(DATABASE_NAME, 0, null);
-        this.DATABASE_PATH = this.context.getDatabasePath(DATABASE_NAME).getPath();
+        DATABASE_PATH = context.getFilesDir().getPath();
     }
 
     /**
@@ -161,38 +161,79 @@ public class SQLUtility extends SQLiteOpenHelper {
     }
 
     /**
-     * Returns all the Suppliers associated with the given Member
+     * Returns all the Suppliers associated with the given Member.
+     * Note that those Supplier instances also hold a list of te Products they are working on.
      * @param  IDProfile the IDProfile of the user we are looking for
      * @return An ArrayList<String> containing all the suppliers associated with this member in the DB.
-     * @throws SQLiteException if an error occured while accessing the DB
+     * @throws SQLiteException if an error occurred while accessing the DB
      */
     public ArrayList<Supplier> getAllMembersSuppliers(String IDProfile) throws SQLiteException{
 
         ArrayList<Supplier> returnedList = new ArrayList<>();
-        Cursor c = getEntriesFromDB("Member_Supplier", new String[]{"Supplier","Negotiation"}, "Member=\""+IDProfile+"\"", null);
-        if(c.moveToFirst()){
-            for(int i=0; i<c.getCount(); i++){
-                boolean negotiationState = (c.getInt(c.getColumnIndex("Negotiation")) == 1);
-                returnedList.add(new Supplier(c.getString(c.getColumnIndex("Supplier")), null, negotiationState));
+        ArrayList<String> suppliersNames = getAllMembersSuppliersNames(IDProfile);
+        for ( String name : suppliersNames )
+        {
+            returnedList.add( new Supplier(name, getRelevantSuppliersProducts(IDProfile,name), getNegotiationState(IDProfile, name)) );
+            for ( Product product : returnedList.get(returnedList.size()-1).getProducts() )
+            {
+                product.setCFT(getCFTState(IDProfile, product.getName()));
             }
         }
         return returnedList;
     }
 
     /**
-     * Returns all the Products associated with the given Member
+     * Returns all the Products associated with the given Supplier
+     * @param  supplier the name of the supplier we are looking for
+     * @return An ArrayList<Product> containing all the products associated with this supplier in the DB.
+     * @throws SQLiteException if an error occurred while accessing the DB
+     */
+    public ArrayList<Product> getAllSuppliersProducts(String supplier){
+
+        ArrayList<String> names = getAllSuppliersProductsNames(supplier);
+        ArrayList<Product> result = new ArrayList<>(names.size());
+        for( String name : names ){
+            result.add(new Product(name));
+        }
+
+        return result;
+    }
+
+    /**
+     * Returns all the Products associated with the given Supplier the given Member is working on
+     * @param IDProfile the Member we are looking for
+     * @param  supplier the name of the supplier we are looking for
+     * @return An ArrayList<Product> containing all the products associated with this supplier and this Member in the DB.
+     * @throws SQLiteException if an error occurred while accessing the DB
+     */
+    public ArrayList<Product> getRelevantSuppliersProducts(String IDProfile, String supplier){
+
+        //TODO (see Notes on phone)
+        return null;    //For compiler
+    }
+
+    /**
+     * Returns all the Products associated with the given Member.
+     * They are not ordered in any way: if you want them to be ordered by Supplier, use
+     * getAllMemberSuppliers instead and query the Products list in those Supplier instances.
+     * This makes this function quite useless in my opinion, but it's there in case one ever need it.
      * @param  IDProfile the IDProfile of the user we are looking for
      * @return An ArrayList<ArrayList<String>> containing all the products associated with this member in the DB.
      * @throws SQLiteException if an error occurred while accessing the DB
      */
-    public ArrayList<ArrayList<String>> getAllMembersProducts(String IDProfile) throws SQLiteException{
+    public ArrayList<Product> getAllMembersProducts(String IDProfile) throws SQLiteException{
 
-        ArrayList<Supplier> allMembersSuppliers = getAllMembersSuppliers(IDProfile);
-        ArrayList<ArrayList<String>> resultNames = new ArrayList<>(allMembersSuppliers.size());
-        for( Supplier supplier : allMembersSuppliers ){
-            resultNames.add(getAllSuppliersProductsNames(supplier));
+        ArrayList<Supplier> suppliers = getAllMembersSuppliers(IDProfile);
+        ArrayList<Product> returnedList = new ArrayList<>();
+        ArrayList<Product> suppliersProducts;
+        for( Supplier supplier : suppliers ){
+            suppliersProducts = getAllSuppliersProducts(supplier.getName());
+            for (Product product : suppliersProducts ) {
+                product.setCFT(getCFTState(IDProfile, product.getName()));
+                returnedList.add(product);
+            }
         }
-        return resultNames;
+        return returnedList;
     }
 
     public ArrayList<String> getAllSuppliersNames() throws SQLiteException {
@@ -220,20 +261,56 @@ public class SQLUtility extends SQLiteOpenHelper {
         return getElementFromDB("BU", "Name", null);
     }
 
-    public ArrayList<String> getAllSuppliersProductsNames(Supplier supplier){
+    public ArrayList<String> getAllSuppliersProductsNames(String supplier){
 
         return getElementFromDB("Suppl_Prod", "Product", "Supplier=\""+supplier+"\"");
     }
 
-    public ArrayList<Product> getAllSuppliersProducts(Supplier supplier){
+    public ArrayList<String> getAllMembersSuppliersNames(String IDProfile){
 
-        ArrayList<String> names = getAllSuppliersProductsNames(supplier);
-        ArrayList<Product> result = new ArrayList<>(names.size());
-        for( String name : names ){
-            result.add(new Product(context, name, ));
+        return getElementFromDB("Member_Supplier", "Supplier", "Member=\""+IDProfile+"\"");
+    }
+
+    /**
+     * Returns the negotiation state between the given Member and Supplier
+     * @param IDProfile the Member to be looked for
+     * @param supplier the supplier to be looked for
+     * @return the negotiation state as a boolean
+     */
+    public boolean getNegotiationState(String IDProfile, String supplier) {
+
+        ArrayList<String> resultsAsStrings = getElementFromDB("Member_Supplier", "Negotiation", "Member=\"" + IDProfile + "\" AND Supplier=\"" + supplier + "\"");
+        if (resultsAsStrings.size() < 1) {
+            System.err.println("Problem in the database structure ! (No such Member-Supplier association)");
+            System.err.println("Location : getNegotiationState in SQLUtility");
+            throw new SQLiteException();
+        } else if (resultsAsStrings.size() > 1) {
+            System.err.println("Problem in the database structure ! (Redundancy of this Member-Supplier association)");
+            System.err.println("Location : getNegotiationState in SQLUtility");
+            throw new SQLiteException();
         }
+        return resultsAsStrings.get(0).equals("1");
+    }
 
-        return getElementFromDB("Suppl_Prod", "Product", "Supplier=\""+supplier+"\"");
+    /**
+     * Returns the CFT state between the given Member and Product
+     * @param IDProfile the Member to be looked for
+     * @param product the Product to be looked for
+     * @return the negotiation state as a boolean
+     */
+    public boolean getCFTState(String IDProfile, String product) {
+
+        ArrayList<String> resultsAsStrings = getElementFromDB("Member_Product", "CFT", "Member=\"" +IDProfile+ "\" AND Product=\"" +product+ "\"");
+        if (resultsAsStrings.size() < 1) {
+            System.err.println("Problem in the database structure ! (No such Member-Product association)");
+            System.err.println("Location : getCFTState in SQLUtility");
+            throw new SQLiteException();
+        } else if (resultsAsStrings.size() > 1) {
+            System.err.println("Problem in the database structure ! (Redundancy of this Member-Product association)");
+            System.err.println("Location : getCFTState in SQLUtility");
+            throw new SQLiteException();
+        }
+        return resultsAsStrings.get(0).equals("1");
     }
 
     /**
@@ -250,7 +327,7 @@ public class SQLUtility extends SQLiteOpenHelper {
     }
 
     /**
-     * Adds new entries to the MemberProduct table.
+     * Adds new entries to the Member_Product table.
      * The ArrayList products contains all the products to be added to the table
      * @param login the user the given products should be associated with
      * @param products the products that should be added to the table facing the given member
@@ -259,10 +336,16 @@ public class SQLUtility extends SQLiteOpenHelper {
     public boolean addToMemberProductTable(String login, ArrayList<Product> products){
         ContentValues values = new ContentValues(products.size());
         for (int i = 0; i < products.size(); i++) {
+            values.put("\"Member\"", login);
             values.put("\"Product\"", products.get(i).getName());
+            if(products.get(i).getIsOnCFT()) {
+                values.put("\"CFT\"", 1);
+            } else {
+                values.put("\"CFT\"", 0);
+            }
 
         }
-        return (myDB.insert("MemberProduct", null, values) != -1);
+        return (myDB.insert("Member_Product", null, values) != -1);
     }
 
     /**
@@ -284,7 +367,7 @@ public class SQLUtility extends SQLiteOpenHelper {
                 values.put("\"Negotiation\"", 0);
             }
         }
-        return (myDB.insert("MemberProduct", null, values) != -1);
+        return (myDB.insert("Member_Supplier", null, values) != -1);
     }
 
     /**
@@ -382,8 +465,8 @@ public class SQLUtility extends SQLiteOpenHelper {
     private boolean checkDataBase(){
         SQLiteDatabase checkDB = null;
         try{
-            String path = DATABASE_PATH;
-            checkDB = SQLiteDatabase.openDatabase(path, null , SQLiteDatabase.OPEN_READONLY);
+            String path = DATABASE_PATH + DATABASE_NAME;
+            checkDB = SQLiteDatabase.openDatabase(path, null , SQLiteDatabase.OPEN_READWRITE);
         }catch (SQLiteException e){
             //The DB couldn't be opened -> it doesn't exist yet
         }
@@ -400,7 +483,7 @@ public class SQLUtility extends SQLiteOpenHelper {
      */
     private void overrideDataBase() throws IOException{
         InputStream myInput = context.getAssets().open(DATABASE_NAME);
-        String outputFile = DATABASE_PATH;
+        String outputFile = DATABASE_PATH + DATABASE_NAME;
         OutputStream myOutput = new FileOutputStream(outputFile);
 
         byte[] buffer = new byte[1024];
@@ -418,6 +501,7 @@ public class SQLUtility extends SQLiteOpenHelper {
      * Opens the DB on READWRITE mode
      */
     private void openDataBase() throws SQLiteException {
+
         String path = DATABASE_PATH + DATABASE_NAME;
         this.myDB = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READWRITE);
     }

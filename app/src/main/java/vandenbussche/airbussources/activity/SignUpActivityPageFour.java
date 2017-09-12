@@ -11,7 +11,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
 import vandenbussche.airbussources.R;
@@ -19,7 +18,7 @@ import vandenbussche.airbussources.core.Member;
 import vandenbussche.airbussources.core.Product;
 import vandenbussche.airbussources.database.SQLUtility;
 
-public class SignUpActivity4 extends AppCompatActivity {
+public class SignUpActivityPageFour extends AppCompatActivity {
 
     Intent inputIntent;
 
@@ -49,7 +48,7 @@ public class SignUpActivity4 extends AppCompatActivity {
 
         displayAllProductsTickable();
 
-        //ItemClickListener pour liste produits (voir SignUpActivity3)
+        //ItemClickListener pour liste produits (voir SignUpActivityPageThree)
         //TODO
 
         toConfirm.setOnClickListener(
@@ -58,7 +57,7 @@ public class SignUpActivity4 extends AppCompatActivity {
                     public void onClick(View v) {
                         try {
                             Member m = Member.connectedMember;
-                            Member.connectedMember = new Member(SignUpActivity4.this, m.getLogin(), m.getPassword(), m.getFirstName(),
+                            Member.connectedMember = new Member(SignUpActivityPageFour.this, m.getLogin(), m.getPassword(), m.getFirstName(),
                                     m.getName(), m.getBu(), m.getCommodity(), m.getRole(), m.getSuppliers());
                         } catch (SQLiteException e){
                             throw new SQLiteException(e.getMessage());
@@ -70,15 +69,15 @@ public class SignUpActivity4 extends AppCompatActivity {
 
     private void displayAllProductsTickable(){
 
-        SQLUtility db = SQLUtility.prepareDataBase(SignUpActivity4.this);
+        SQLUtility db = SQLUtility.prepareDataBase(SignUpActivityPageFour.this);
         ArrayList<String> namesList = db.getAllProductsNames();
         db.close();
         Collections.sort(namesList);
         ArrayList<Product> productsList = new ArrayList<>(namesList.size());
         for(int i=0; i<namesList.size(); i++){
-            productsList.add(new Product(SignUpActivity4.this, namesList.get(i), false));
+            productsList.add(new Product(namesList.get(i), false));
         }
-        RowAdapterProducts adapter = new RowAdapterProducts(SignUpActivity4.this, productsList, Member.connectedMember);
+        RowAdapterProducts adapter = new RowAdapterProducts(SignUpActivityPageFour.this, productsList, Member.connectedMember);
         listProductsToTick.setAdapter(adapter);
     }
 }

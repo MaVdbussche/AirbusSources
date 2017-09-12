@@ -11,12 +11,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import vandenbussche.airbussources.R;
+import vandenbussche.airbussources.core.Member;
 import vandenbussche.airbussources.database.SQLUtility;
 import vandenbussche.airbussources.exception.ExistingLoginException;
 import vandenbussche.airbussources.exception.InvalidFieldException;
 import vandenbussche.airbussources.exception.InvalidPasswordException;
 
-public class SignUpActivity extends AppCompatActivity {
+public class SignUpActivityPageOne extends AppCompatActivity {
 
     private TextView welcomeText;
 
@@ -53,32 +54,40 @@ public class SignUpActivity extends AppCompatActivity {
                 new View.OnClickListener(){
                     @Override
                     public void onClick(View v){
-                        SQLUtility db = SQLUtility.prepareDataBase(SignUpActivity.this);
+                        SQLUtility db = SQLUtility.prepareDataBase(SignUpActivityPageOne.this);
                         try {
-                            if(db.idProfileExistsInDB(loginField.getText().toString())){
-                                throw new ExistingLoginException(SignUpActivity.this.getString(R.string.login_login_already_used));
-                            }
-                            if (loginField.getText().toString().length()<5){
-                                throw new InvalidFieldException(SignUpActivity.this.getString(R.string.login_login_too_short), "login");
-                            }
-
                             String password1 = passwordField.getText().toString();
                             String password2 = password2Field.getText().toString();
                             if(password1.length() < 5){
-                                throw new InvalidFieldException(SignUpActivity.this.getString(R.string.login_password_too_short), "password");
+                                throw new InvalidFieldException(SignUpActivityPageOne.this.getString(R.string.login_password_too_short), "password");
                             }
                             if ( ! password1.equals(password2)){
-                                throw new InvalidPasswordException(SignUpActivity.this.getString(R.string.login_password_different));
+                                throw new InvalidPasswordException(SignUpActivityPageOne.this.getString(R.string.login_password_different));
                             }
-                            Intent intent = new Intent(SignUpActivity.this, SignUpActivity2.class);
+                            if(db.idProfileExistsInDB(loginField.getText().toString())){
+                                throw new ExistingLoginException(SignUpActivityPageOne.this.getString(R.string.login_login_already_used));
+                            }
+                            if (loginField.getText().toString().length()<5){
+                                throw new InvalidFieldException(SignUpActivityPageOne.this.getString(R.string.login_login_too_short), "login");
+                            }
+
+                            Member.connectedMember = new Member(
+                                    loginField.getText().toString(),
+                                    passwordField.getText().toString(),
+                                    nameField.getText().toString(),
+                                    surnameField.getText().toString()
+                            );
+                            Intent intent = new Intent(SignUpActivityPageOne.this, SignUpActivityPageTwo.class);
+                            /**
                             intent.putExtra("First Name", nameField.getText().toString());
                             intent.putExtra("Name", surnameField.getText().toString());
                             intent.putExtra("Password", passwordField.getText().toString());
                             intent.putExtra("Login", loginField.getText().toString());
+                             **/
                             startActivity(intent);
                             }
                         catch(InvalidFieldException|InvalidPasswordException|ExistingLoginException e){
-                            Toast t = Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_SHORT);
+                            Toast t = Toast.makeText(SignUpActivityPageOne.this, e.getMessage(), Toast.LENGTH_SHORT);
                             t.show();
                         } finally {
                             db.close();

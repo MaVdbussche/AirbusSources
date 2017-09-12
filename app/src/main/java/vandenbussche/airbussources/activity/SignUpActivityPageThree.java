@@ -13,7 +13,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
 import vandenbussche.airbussources.R;
@@ -21,7 +20,7 @@ import vandenbussche.airbussources.core.Member;
 import vandenbussche.airbussources.core.Supplier;
 import vandenbussche.airbussources.database.SQLUtility;
 
-public class SignUpActivity3 extends AppCompatActivity {
+public class SignUpActivityPageThree extends AppCompatActivity {
 
     private TextView titleColumn1;
     private TextView titleColumn3;
@@ -37,9 +36,7 @@ public class SignUpActivity3 extends AppCompatActivity {
 
         final Intent inputIntent = getIntent();
 
-        inputMember = new Member(inputIntent.getStringExtra("Login"), inputIntent.getStringExtra("Password"),
-                inputIntent.getStringExtra("First Name"), inputIntent.getStringExtra("Name"), inputIntent.getStringExtra("Business Unit"),
-                inputIntent.getStringExtra("Commodity"), inputIntent.getStringExtra("Role"));
+        inputMember = Member.connectedMember; //new Member(inputIntent.getStringExtra("Login"), inputIntent.getStringExtra("Password"), inputIntent.getStringExtra("First Name"), inputIntent.getStringExtra("Name"), inputIntent.getStringExtra("Business Unit"), inputIntent.getStringExtra("Commodity"), inputIntent.getStringExtra("Role"));
 
         final ArrayList<String> tickedSuppliersNames = new ArrayList<>();
         final ArrayList<Integer> tickedNegotiations = new ArrayList<>();
@@ -128,7 +125,7 @@ public class SignUpActivity3 extends AppCompatActivity {
                         }
                         inputMember.setSuppliers(selectedSuppliers);
 
-                        Intent intent = new Intent(SignUpActivity3.this, SignUpActivity4.class);
+                        Intent intent = new Intent(SignUpActivityPageThree.this, SignUpActivityPageFour.class);
                         Member.connectedMember = inputMember;
                         startActivity(intent);
                     }
@@ -138,7 +135,7 @@ public class SignUpActivity3 extends AppCompatActivity {
 
     private void displayAllSuppliersTickable(){
 
-        SQLUtility db = SQLUtility.prepareDataBase(SignUpActivity3.this);
+        SQLUtility db = SQLUtility.prepareDataBase(SignUpActivityPageThree.this);
         ArrayList<String> namesList = db.getAllSuppliersNames();
         db.close();
         Collections.sort(namesList);
@@ -146,7 +143,7 @@ public class SignUpActivity3 extends AppCompatActivity {
         for(int i=0; i<namesList.size(); i++){
             suppliersList.add(new Supplier(namesList.get(i), null, false));
         }
-        RowAdapterSuppliers adapter = new RowAdapterSuppliers(SignUpActivity3.this, suppliersList, inputMember);
+        RowAdapterSuppliers adapter = new RowAdapterSuppliers(SignUpActivityPageThree.this, suppliersList, inputMember);
         listSuppliersToTick.setAdapter(adapter);
     }
 }

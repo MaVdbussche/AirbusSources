@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 import vandenbussche.airbussources.R;
 import vandenbussche.airbussources.database.SQLUtility;
-import vandenbussche.airbussources.exception.ExistingLoginException;
 import vandenbussche.airbussources.exception.InvalidFieldException;
 import vandenbussche.airbussources.exception.InvalidPasswordException;
 
@@ -23,6 +22,7 @@ public class Member implements Namable {
     private String commodity;
     private String role;
     private ArrayList<Supplier> suppliers;
+    private ArrayList<Product> products;
 
     public static Member connectedMember;
 
@@ -47,6 +47,9 @@ public class Member implements Namable {
         if( ! this.addSuppliersToDB(context)){
             throw new SQLiteException("Suppliers could not be added to the database. Please try again");
         }
+        if( ! this.addProductsToDB(context)){
+            throw new SQLiteException("Products could not be added to the database. Please try again");
+        }
     }
 
     /**
@@ -61,6 +64,21 @@ public class Member implements Namable {
         this.bu = bu;
         this.commodity = commodity;
         this.role = role;
+        this.suppliers = null;
+    }
+
+    /**
+     * Slightly easier constructor, used during registering, when some info aren't available yet.
+     * This incomplete Member instance will NOT be sent to the DB !
+     */
+    public Member(String idProfile, String password, String firstName, String surname){
+        this.idProfile = idProfile;
+        this.password = password;
+        this.firstName = firstName;
+        this.surname = surname;
+        this.bu = null;
+        this.commodity = null;
+        this.role = null;
         this.suppliers = null;
     }
 
@@ -159,6 +177,15 @@ public class Member implements Namable {
         }
     }
 
+    private boolean addProductsToDB(Context context){
+        SQLUtility db = SQLUtility.prepareDataBase(context);
+        try {
+            return db.addToMemberProductTable(this.idProfile, products);
+        } finally {
+            db.close();
+        }
+    }
+
     private boolean updateMemberInDB(Context context){
         SQLUtility db = SQLUtility.prepareDataBase(context);
         ArrayList<String> newValues = new ArrayList<>(6);
@@ -207,6 +234,8 @@ public class Member implements Namable {
     }
 
     public boolean isWorkingWith(Context context, Supplier supplier){
+        return this.suppliers.contains(supplier);
+        /**
         SQLUtility db = SQLUtility.prepareDataBase(context);
         ArrayList<Supplier> suppliers = db.getAllMembersSuppliers(this.idProfile);
         db.close();
@@ -216,6 +245,7 @@ public class Member implements Namable {
             }
         }
         return false;
+         **/
     }
     public boolean isWorkingOn(Context context, Product product){
         SQLUtility db = SQLUtility.prepareDataBase(context);

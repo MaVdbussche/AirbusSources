@@ -14,9 +14,10 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import vandenbussche.airbussources.R;
+import vandenbussche.airbussources.core.Member;
 import vandenbussche.airbussources.database.SQLUtility;
 
-public class SignUpActivity2 extends AppCompatActivity {
+public class SignUpActivityPageTwo extends AppCompatActivity {
 
 
     private Button toScreen3;
@@ -83,17 +84,28 @@ public class SignUpActivity2 extends AppCompatActivity {
                         RadioButton commodity = (RadioButton) findViewById(commodities.getCheckedRadioButtonId());
                         RadioButton role = (RadioButton) findViewById(roles.getCheckedRadioButtonId());
                         if( (businessUnits.getCheckedRadioButtonId()==-1) || (bu.getText().toString()).equals(getString(R.string.signup_businessUnits_default)) ){
-                            Toast t = Toast.makeText(SignUpActivity2.this, "Please select a Business Unit", Toast.LENGTH_SHORT);
+                            Toast t = Toast.makeText(SignUpActivityPageTwo.this, "Please select a Business Unit", Toast.LENGTH_SHORT);
                             t.show();
                         } else if( (commodities.getCheckedRadioButtonId()==-1) || (commodity.getText().toString()).equals(getString(R.string.signup_commodities_default)) ){
-                            Toast t = Toast.makeText(SignUpActivity2.this, "Please select a Commodity", Toast.LENGTH_SHORT);
+                            Toast t = Toast.makeText(SignUpActivityPageTwo.this, "Please select a Commodity", Toast.LENGTH_SHORT);
                             t.show();
                         } else if( (roles.getCheckedRadioButtonId()==-1) || (role.getText().toString()).equals(getString(R.string.signup_roles_default)) ){
-                            Toast t = Toast.makeText(SignUpActivity2.this, "Please select a Role", Toast.LENGTH_SHORT);
+                            Toast t = Toast.makeText(SignUpActivityPageTwo.this, "Please select a Role", Toast.LENGTH_SHORT);
                             t.show();
                         } else {
-                            Intent intent = new Intent(SignUpActivity2.this, SignUpActivity3.class);
+                            Member m = Member.connectedMember;
+                            Member.connectedMember = new Member(
+                                    m.getLogin(),
+                                    m.getPassword(),
+                                    m.getFirstName(),
+                                    m.getName(),
+                                    bu.getText().toString(),
+                                    commodity.getText().toString(),
+                                    role.getText().toString()
+                            );
+                            Intent intent = new Intent(SignUpActivityPageTwo.this, SignUpActivityPageThree.class);
 
+                            /**
                             if(inputIntent != null) {
                                 String firstName = inputIntent.getStringExtra("First Name");
                                 String name = inputIntent.getStringExtra("Name");
@@ -107,10 +119,11 @@ public class SignUpActivity2 extends AppCompatActivity {
                                 intent.putExtra("Business Unit", bu.getText().toString());
                                 intent.putExtra("Commodity", commodity.getText().toString());
                                 intent.putExtra("Role", role.getText().toString());
-                                startActivity(intent);
                             } else {
                                 System.out.println("Input Intent was null !!!!!!!!!!");
                             }
+                             **/
+                            startActivity(intent);
                         }
                     }
                 }

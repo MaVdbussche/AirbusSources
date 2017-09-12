@@ -30,28 +30,35 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.SignUpActivity">
+        <activity android:name=".activity.ResearchResults">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.SignUpActivity2">
+        <activity android:name=".activity.SignUpActivityPageOne">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.SignUpActivity3">
+        <activity android:name=".activity.SignUpActivityPageTwo">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.SignUpActivity4">
+        <activity android:name=".activity.SignUpActivityPageThree">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activity.SignUpActivityPageFour">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

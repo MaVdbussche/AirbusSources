@@ -90,7 +90,7 @@ public class ResearchResults extends AppCompatActivity {
             }
         } else if (resultsType.equals("Product")){
             for ( CharSequence product : elements){
-                results.add(new Product(ResearchResults.this, product.toString()));
+                results.add(new Product(product.toString()));
             }
         } else {
             System.out.println("Research Type received by sendToAdapter() is wrong ! No assumptions are made about what will happen next !");
