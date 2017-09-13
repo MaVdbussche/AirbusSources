@@ -25,7 +25,7 @@ public class Product implements Comparable, Namable {
 
     public int compareTo(Object other) throws ClassCastException{
         if( ! (other instanceof Product)){
-            throw new ClassCastException("Could not compare those, as one of them is not a Product");
+            throw new ClassCastException("Could not compare those, as one of them is not a Product and/or is null");
         }
         return this.name.compareTo(((Product) other).getName());
     }

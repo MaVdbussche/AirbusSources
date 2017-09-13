@@ -28,6 +28,8 @@ public class Member implements Namable {
 
     /**
      * Constructor used when signing up for the first time
+     * Please make sure the <#param>suppliers</#param> list contains valid Supplier instances
+     * (that is, instances who contain the correct Products in them) !
      */
     public Member(Context context, String idProfile, String password, String firstName, String surname, String bu, String commodity, String role, ArrayList<Supplier> suppliers)
             throws SQLiteException {
@@ -46,9 +48,6 @@ public class Member implements Namable {
         }
         if( ! this.addSuppliersToDB(context)){
             throw new SQLiteException("Suppliers could not be added to the database. Please try again");
-        }
-        if( ! this.addProductsToDB(context)){
-            throw new SQLiteException("Products could not be added to the database. Please try again");
         }
     }
 
@@ -150,8 +149,8 @@ public class Member implements Namable {
 
     private boolean addBasicInfoToDB(Context context){
 
-        ContentValues values = new ContentValues(7);    //TODO adjust this value if table size changes in the future
-        values.put("\"Login\"", this.idProfile);
+        ContentValues values = new ContentValues();
+        values.put("\"IDProfile\"", this.idProfile);
         values.put("\"Password\"", this.password);
         values.put("\"First Name\"", this.firstName);
         values.put("\"Name\"", this.surname);
@@ -171,16 +170,7 @@ public class Member implements Namable {
     private boolean addSuppliersToDB(Context context){
         SQLUtility db = SQLUtility.prepareDataBase(context);
         try {
-            return db.addToMemberSupplierTable(this.idProfile, suppliers);
-        } finally {
-            db.close();
-        }
-    }
-
-    private boolean addProductsToDB(Context context){
-        SQLUtility db = SQLUtility.prepareDataBase(context);
-        try {
-            return db.addToMemberProductTable(this.idProfile, products);
+            return db.addToMemberSupplierProductTable(this.idProfile, suppliers);
         } finally {
             db.close();
         }
@@ -188,17 +178,17 @@ public class Member implements Namable {
 
     private boolean updateMemberInDB(Context context){
         SQLUtility db = SQLUtility.prepareDataBase(context);
-        ArrayList<String> newValues = new ArrayList<>(6);
-        newValues.add(this.idProfile);
-        newValues.add(this.password);
-        newValues.add(this.firstName);
-        newValues.add(this.surname);
-        newValues.add(this.role);
-        newValues.add(this.commodity);
-        newValues.add(this.bu);
+        ContentValues values = new ContentValues();
+        values.put("\"IDProfile\"", this.idProfile);
+        values.put("\"Password\"", this.password);
+        values.put("\"First Name\"", this.firstName);
+        values.put("\"Name\"", this.surname);
+        values.put("\"BU\"", this.bu);
+        values.put("\"Commodity\"", this.commodity);
+        values.put("\"Role\"", this.role);
 
         try {
-            return ( db.updateMemberBasicInfo(this.idProfile, newValues) );
+            return ( db.updateMemberBasicInfo(this.idProfile, values) );
         }finally {
             db.close();
         }
@@ -207,14 +197,14 @@ public class Member implements Namable {
     public static boolean isThereANegotiationBetween(Context context, Member member, Supplier supplier){
 
         SQLUtility db = SQLUtility.prepareDataBase(context);
-        ArrayList<String> list = db.getElementFromDB("Member_Supplier", "Negotiation", "Member = \""+member.idProfile+"\" AND Supplier = \""+supplier+"\"");
+        ArrayList<String> list = db.getElementFromDB("Member_Supplier_Product", "Negotiation", "Member = \""+member.idProfile+"\" AND Supplier = \""+supplier.getName()+"\"");
         db.close();
         if(list==null){
             //There is no such match in the DB
             return false;
         }
         if(list.size() != 1){
-            System.out.println("Redundancy detected in the database ! Please check the Member_Supplier table. Returning false");
+            System.out.println("Redundancy detected in the database ! Please check the Member_Supplier_Product table. Returning false");
             System.out.println("Location : method isThereANegotiationBetween in class Member");
             return false;
         }
@@ -223,41 +213,27 @@ public class Member implements Namable {
     public static boolean isThereACFTOn(Context context, Member member, Product product){
 
         SQLUtility db = SQLUtility.prepareDataBase(context);
-        ArrayList<String> list = db.getElementFromDB("Member_Product", "CFT", "Member =\""+member.idProfile+"\" AND Product = \""+product+"\"");
+        ArrayList<String> list = db.getElementFromDB("Member_Supplier_Product", "CFT", "Member =\""+member.idProfile+"\" AND Product = \""+product.getName()+"\"");
         db.close();
         if(list.size() != 1){
-            System.out.println("Redundancy detected in the database ! Please check the Member_Product table. Returning false");
+            System.out.println("Redundancy detected in the database ! Please check the Member_Supplier_Product table. Returning false");
             System.out.println("Location : method isThereACFTOn in class Member");
             return false;
         }
         return list.get(0).equals("1");
     }
 
-    public boolean isWorkingWith(Context context, Supplier supplier){
-        return this.suppliers.contains(supplier);
-        /**
+    public boolean isWorkingWith(Context context, String supplier){
         SQLUtility db = SQLUtility.prepareDataBase(context);
-        ArrayList<Supplier> suppliers = db.getAllMembersSuppliers(this.idProfile);
+        ArrayList<String> suppliers = db.getAllMembersSuppliersNames(this.idProfile);
         db.close();
-        for (int i=0; i<suppliers.size(); i++){
-            if(suppliers.get(i).getName().equals(supplier.getName())){
-                return true;
-            }
-        }
-        return false;
-         **/
+        return suppliers.contains(supplier);
     }
-    public boolean isWorkingOn(Context context, Product product){
+    public boolean isWorkingOn(Context context, String product){
         SQLUtility db = SQLUtility.prepareDataBase(context);
-        //ArrayList<Product> products = db.getAllMembersProducts(this.idProfile);
-        //db.close();
-        //for (int i=0; i<products.size(); i++){
-        //    if(products.get(i).getName().equals(product.getName())){
-        //        return true;
-        //    }
-        //}
-        //TODO
-        return false;
+        ArrayList<String> products = db.getAllMembersProductsNames(this.idProfile);
+        db.close();
+        return products.contains(product);
     }
 
     public String getIdentifier(){return this.getLogin();}
@@ -307,7 +283,10 @@ public class Member implements Namable {
             System.err.println("Role updated in the instance but NOT in the DB !");
         }
     }
-    public void setSuppliers(ArrayList<Supplier> suppliers){
+    public void setSuppliers(Context context,ArrayList<Supplier> suppliers){
         this.suppliers = suppliers;
+        if( ! this.updateMemberInDB(context)){
+            System.err.println("Suppliers list updated in the instance but NOT in the DB !");
+        }
     }
 }

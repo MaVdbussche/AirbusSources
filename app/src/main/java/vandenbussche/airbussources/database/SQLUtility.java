@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Set;
 
 import vandenbussche.airbussources.core.Member;
 import vandenbussche.airbussources.core.Product;
@@ -100,7 +101,8 @@ public class SQLUtility extends SQLiteOpenHelper {
         if (c.moveToFirst()) {
             requestResult = new ArrayList<>();
             for (int i = 0; i < c.getCount(); i++) {
-                requestResult.add(c.getString(0));  //0 since there will never be multiple columns in this Cursor, given the method's specification
+                requestResult.add(c.getString(0));
+                //0 since there will never be multiple columns in this Cursor, given the method's specs
                 c.moveToNext();
             }
         }
@@ -111,8 +113,8 @@ public class SQLUtility extends SQLiteOpenHelper {
     /**
      * Returns all the DB entries (and all the columns of these entries) matching the conditions expressed in the passed arguments
      * @param table the DB table the query is run on
-     * @param columns  he columns of the found entries you want in the Cursor. Passing null will return all columns of the given row
-     * @param conditionSQL the SQLite WHERE clause. Passing null will all the rows of the table
+     * @param columns the columns of the found entries you want in the Cursor. Passing null will return all columns of the given row
+     * @param conditionSQL the SQLite WHERE clause. Passing null will return all the rows of the table
      * @param orderBy the SQLite ORDERBY clause. Passing null means the results wont be ordered in a specific way
      * @return A Cursor containing the query result
      */
@@ -162,9 +164,10 @@ public class SQLUtility extends SQLiteOpenHelper {
 
     /**
      * Returns all the Suppliers associated with the given Member.
-     * Note that those Supplier instances also hold a list of te Products they are working on.
+     * Note that those Supplier instances also hold a list of the Products
+     * from this Supplier the given Member is working on.
      * @param  IDProfile the IDProfile of the user we are looking for
-     * @return An ArrayList<String> containing all the suppliers associated with this member in the DB.
+     * @return An ArrayList<Supplier> containing all the suppliers associated with this member in the DB.
      * @throws SQLiteException if an error occurred while accessing the DB
      */
     public ArrayList<Supplier> getAllMembersSuppliers(String IDProfile) throws SQLiteException{
@@ -173,11 +176,7 @@ public class SQLUtility extends SQLiteOpenHelper {
         ArrayList<String> suppliersNames = getAllMembersSuppliersNames(IDProfile);
         for ( String name : suppliersNames )
         {
-            returnedList.add( new Supplier(name, getRelevantSuppliersProducts(IDProfile,name), getNegotiationState(IDProfile, name)) );
-            for ( Product product : returnedList.get(returnedList.size()-1).getProducts() )
-            {
-                product.setCFT(getCFTState(IDProfile, product.getName()));
-            }
+            returnedList.add( new Supplier(name, getRelevantSuppliersProducts(IDProfile,name), getNegotiationState(IDProfile,name)) );
         }
         return returnedList;
     }
@@ -191,25 +190,35 @@ public class SQLUtility extends SQLiteOpenHelper {
     public ArrayList<Product> getAllSuppliersProducts(String supplier){
 
         ArrayList<String> names = getAllSuppliersProductsNames(supplier);
-        ArrayList<Product> result = new ArrayList<>(names.size());
+        ArrayList<Product> returnedList = new ArrayList<>(names.size());
         for( String name : names ){
-            result.add(new Product(name));
+            returnedList.add( new Product(name) );
         }
-
-        return result;
+        return returnedList;
     }
 
     /**
      * Returns all the Products associated with the given Supplier the given Member is working on
      * @param IDProfile the Member we are looking for
-     * @param  supplier the name of the supplier we are looking for
-     * @return An ArrayList<Product> containing all the products associated with this supplier and this Member in the DB.
+     * @param  supplier the name of the Supplier we are looking for
+     * @return An ArrayList<Product> containing all the products associated
+     * with this supplier and this Member in the DB.
      * @throws SQLiteException if an error occurred while accessing the DB
      */
     public ArrayList<Product> getRelevantSuppliersProducts(String IDProfile, String supplier){
 
-        //TODO (see Notes on phone)
-        return null;    //For compiler
+        ArrayList<Product> returnedList = new ArrayList<>();
+        Cursor c = getEntriesFromDB("Member_Supplier_Product",
+                new String[]{"Product", "CFT"},
+                "Member=\""+IDProfile+"\" AND Supplier=\""+supplier+"\"",
+                null
+        );
+        if(c.moveToFirst()){
+            boolean cft = ( c.getString(c.getColumnIndex("CFT")).equals("1") );
+            returnedList.add(new Product( c.getString(c.getColumnIndex("Product")), cft) );
+        }
+        c.close();
+        return returnedList;
     }
 
     /**
@@ -217,10 +226,11 @@ public class SQLUtility extends SQLiteOpenHelper {
      * They are not ordered in any way: if you want them to be ordered by Supplier, use
      * getAllMemberSuppliers instead and query the Products list in those Supplier instances.
      * This makes this function quite useless in my opinion, but it's there in case one ever need it.
-     * @param  IDProfile the IDProfile of the user we are looking for
-     * @return An ArrayList<ArrayList<String>> containing all the products associated with this member in the DB.
+     * @param IDProfile the IDProfile of the user we are looking for
+     * @return An ArrayList<Product> containing all the products associated with this member in the DB.
      * @throws SQLiteException if an error occurred while accessing the DB
      */
+    /**
     public ArrayList<Product> getAllMembersProducts(String IDProfile) throws SQLiteException{
 
         ArrayList<Supplier> suppliers = getAllMembersSuppliers(IDProfile);
@@ -235,6 +245,7 @@ public class SQLUtility extends SQLiteOpenHelper {
         }
         return returnedList;
     }
+     **/
 
     public ArrayList<String> getAllSuppliersNames() throws SQLiteException {
 
@@ -268,7 +279,12 @@ public class SQLUtility extends SQLiteOpenHelper {
 
     public ArrayList<String> getAllMembersSuppliersNames(String IDProfile){
 
-        return getElementFromDB("Member_Supplier", "Supplier", "Member=\""+IDProfile+"\"");
+        return getElementFromDB("Member_Supplier_Product", "Supplier", "Member=\""+IDProfile+"\"");
+    }
+
+    public ArrayList<String> getAllMembersProductsNames(String IDProfile){
+
+        return getElementFromDB("Member_Supplier_Product", "Product", "Member=\""+IDProfile+"\"");
     }
 
     /**
@@ -279,13 +295,9 @@ public class SQLUtility extends SQLiteOpenHelper {
      */
     public boolean getNegotiationState(String IDProfile, String supplier) {
 
-        ArrayList<String> resultsAsStrings = getElementFromDB("Member_Supplier", "Negotiation", "Member=\"" + IDProfile + "\" AND Supplier=\"" + supplier + "\"");
-        if (resultsAsStrings.size() < 1) {
+        ArrayList<String> resultsAsStrings = getElementFromDB("Member_Supplier_Product", "Negotiation", "Member=\""+IDProfile+"\" AND Supplier=\""+supplier+"\"");
+        if (resultsAsStrings.size() == 0) {
             System.err.println("Problem in the database structure ! (No such Member-Supplier association)");
-            System.err.println("Location : getNegotiationState in SQLUtility");
-            throw new SQLiteException();
-        } else if (resultsAsStrings.size() > 1) {
-            System.err.println("Problem in the database structure ! (Redundancy of this Member-Supplier association)");
             System.err.println("Location : getNegotiationState in SQLUtility");
             throw new SQLiteException();
         }
@@ -296,17 +308,13 @@ public class SQLUtility extends SQLiteOpenHelper {
      * Returns the CFT state between the given Member and Product
      * @param IDProfile the Member to be looked for
      * @param product the Product to be looked for
-     * @return the negotiation state as a boolean
+     * @return the CFT state as a boolean
      */
     public boolean getCFTState(String IDProfile, String product) {
 
-        ArrayList<String> resultsAsStrings = getElementFromDB("Member_Product", "CFT", "Member=\"" +IDProfile+ "\" AND Product=\"" +product+ "\"");
-        if (resultsAsStrings.size() < 1) {
+        ArrayList<String> resultsAsStrings = getElementFromDB("Member_Supplier_Product", "CFT", "Member=\""+IDProfile+"\" AND Product=\""+product+"\"");
+        if (resultsAsStrings.size() == 0) {
             System.err.println("Problem in the database structure ! (No such Member-Product association)");
-            System.err.println("Location : getCFTState in SQLUtility");
-            throw new SQLiteException();
-        } else if (resultsAsStrings.size() > 1) {
-            System.err.println("Problem in the database structure ! (Redundancy of this Member-Product association)");
             System.err.println("Location : getCFTState in SQLUtility");
             throw new SQLiteException();
         }
@@ -322,30 +330,52 @@ public class SQLUtility extends SQLiteOpenHelper {
      */
     public boolean addToMemberTable(ContentValues values){
 
-        return (myDB.insert("Member", null, values) != -1);
-
+        if(values.keySet().size() == 7) {
+            return (myDB.insert("Member", null, values) != -1);
+        } else {
+            return false;
+        }
     }
 
     /**
-     * Adds new entries to the Member_Product table.
-     * The ArrayList products contains all the products to be added to the table
-     * @param login the user the given products should be associated with
-     * @param products the products that should be added to the table facing the given member
+     * Adds new entries to the Member_Supplier_Product table.
+     * The ArrayList <#param>suppliers</#param> contains all the Suppliers to be added to the table
+     * Those Supplier instances must hold the correct Product instances (including CFT state)
+     * @param IDProfile the Member the given Suppliers should be associated with
+     * @param suppliers the Suppliers that should be added to the table facing the given Member
      * @return true if the insertion succeeded, false otherwise
      */
-    public boolean addToMemberProductTable(String login, ArrayList<Product> products){
-        ContentValues values = new ContentValues(products.size());
-        for (int i = 0; i < products.size(); i++) {
-            values.put("\"Member\"", login);
-            values.put("\"Product\"", products.get(i).getName());
-            if(products.get(i).getIsOnCFT()) {
-                values.put("\"CFT\"", 1);
+    public boolean addToMemberSupplierProductTable(String IDProfile, ArrayList<Supplier> suppliers){
+        ContentValues values = new ContentValues();
+        boolean flag;
+
+        for (int i = 0; i < suppliers.size(); i++) {
+            Supplier supplier = suppliers.get(i);
+
+            values.put("\"Member\"", IDProfile);
+            values.put("\"Supplier\"", supplier.getName());
+            if(supplier.getNegotiationState()) {
+                values.put("\"Negotiation\"", "1");
             } else {
-                values.put("\"CFT\"", 0);
+                values.put("\"Negotiation\"", "0");
             }
 
+            ArrayList<Product> products = supplier.getProducts();
+
+            for (Product product : products) {
+                values.put("\"Product\"", product.getName());
+                if(product.getIsOnCFT()) {
+                    values.put("\"CFT\"", 1);
+                } else {
+                    values.put("\"CFT\"", 0);
+                }
+                flag = ( myDB.insert("Member_Supplier_Product", null, values) == -1 );
+                if(flag){
+                    return false;
+                }
+            }
         }
-        return (myDB.insert("Member_Product", null, values) != -1);
+        return true;
     }
 
     /**
@@ -356,6 +386,7 @@ public class SQLUtility extends SQLiteOpenHelper {
      *                  Make sure the Supplier instances contain the correct isOnNegotiation boolean !
      * @return true if the insertion succeeded, false otherwise
      */
+    /**
     public boolean addToMemberSupplierTable(String login, ArrayList<Supplier> suppliers){
         ContentValues values = new ContentValues(suppliers.size());
         for (int i = 0; i < suppliers.size(); i++) {
@@ -369,31 +400,30 @@ public class SQLUtility extends SQLiteOpenHelper {
         }
         return (myDB.insert("Member_Supplier", null, values) != -1);
     }
+     **/
 
     /**
      * Checks if a member with this login exists in the DB, then edits its information with the new values
      * @param idProfile the member whose information will be modified
-     * @param newValues a map from column names to new column values. Can not be null, nor contain null values
+     * @param values a map from column names to new column values. Can not be null, nor contain null values
      * @return True if the update succeeded, false otherwise
      */
-    public boolean updateMemberBasicInfo(String idProfile, ContentValues newValues){
+    public boolean updateMemberBasicInfo(String idProfile, ContentValues values){
         if( ! this.idProfileExistsInDB(idProfile)){
             return false;
         } else {
+            ContentValues newValues = new ContentValues();
+            newValues.put("\"IDProfile\"", values.getAsString("IDProfile"));
+            newValues.put("\"Password\"", values.getAsString("Password"));
+            newValues.put("\"Name\"", values.getAsString("Name"));
+            newValues.put("\"Surname\"", values.getAsString("Surname"));
+            newValues.put("\"Role\"", values.getAsString("Role"));
+            newValues.put("\"Commodity\"", values.getAsString("Commodity"));
+            newValues.put("\"BU\"", values.getAsString("BU"));
             return (
-                    myDB.update("Member", newValues, "IDProfile = \"" + idProfile + "\"", null) == 1
-            ); //TODO Care: values should be preceded & followed by a " symbol
+                    myDB.update("Member", newValues, "IDProfile = \""+idProfile+"\"", null) == 1
+            );
         }
-
-        //String instruction = "UPDATE User SET "+
-                //"Mail=\'"+newValues.get(0)+"\',"+
-                //"Name=\'"+newValues.get(1)+"\',"+
-                //"Age="+newValues.get(2)+","+
-                //"Sex=\'"+newValues.get(3)+"\',"+
-                //"Address=\'"+newValues.get(4)+"\',"+
-                //"Password=\'"+newValues.get(5)+"\'"+"" +
-                //"WHERE Mail="+"'"+userEmail+"'"+";";
-        //myDB.execSQL(instruction);
     }
 
     /**
@@ -418,14 +448,14 @@ public class SQLUtility extends SQLiteOpenHelper {
             contentValues.put("Commodity", newValues.get(5));
             contentValues.put("BU", newValues.get(6));
             return (
-                    myDB.update("Member", contentValues, "IDProfile = \"" + idProfile + "\"", null) == 1
+                    myDB.update("Member", contentValues, "IDProfile = \""+idProfile+"\"", null) == 1
             );
         }
     }
 
     /**
-     * Removes a member from the DB
-     * @param login the login of the menber to remove
+     * Removes a Member from the DB
+     * @param login the login of the Member to remove
      * @return true if deletion has succeeded, false otherwise
      */
     public boolean deleteFromMemberTable(String login){
