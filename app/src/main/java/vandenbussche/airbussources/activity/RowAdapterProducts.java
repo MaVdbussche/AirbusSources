@@ -50,7 +50,7 @@ public class RowAdapterProducts extends ArrayAdapter<Product> {
         if(element != null) {
             String id = element.getIdentifier();
             viewHolder.name.setText(id);
-            ((CheckedTextView) viewHolder.name).setChecked(relevantMember.isWorkingOn(getContext(), element));
+            ((CheckedTextView) viewHolder.name).setChecked(relevantMember.isWorkingOn(getContext(), element.getName()));
             viewHolder.column3CheckBox.setChecked(Member.isThereACFTOn(getContext(), relevantMember, element));
         }
         return convertView;

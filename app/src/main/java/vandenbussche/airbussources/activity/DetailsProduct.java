@@ -24,10 +24,12 @@ public class DetailsProduct extends AppCompatActivity {
         setContentView(R.layout.activity_details_product);
 
         ActionBar ab = getSupportActionBar();
-        ab.setHomeButtonEnabled(true);
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setTitle(R.string.product_screenTitle);
-        ab.show();
+        if(ab != null) {
+            ab.setHomeButtonEnabled(true);
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setTitle(R.string.product_screenTitle);
+            ab.show();
+        }
 
         screenTitle = (TextView) findViewById(R.id.productScreenTitle);
         suppliersTitle = (TextView) findViewById(R.id.productSupppliersTitle);

@@ -27,10 +27,12 @@ public class SearchByProduct extends AppCompatActivity {
         setContentView(R.layout.activity_searchbyproduct);
 
         ActionBar ab = getSupportActionBar();
-        ab.setHomeButtonEnabled(true);
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setTitle(R.string.searchByProduct_title);
-        ab.show();
+        if(ab != null) {
+            ab.setHomeButtonEnabled(true);
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setTitle(R.string.searchByProduct_title);
+            ab.show();
+        }
 
         screenTitle = (TextView) findViewById(R.id.searchByProductTitle);
 

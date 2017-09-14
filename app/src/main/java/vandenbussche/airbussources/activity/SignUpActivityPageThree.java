@@ -42,10 +42,12 @@ public class SignUpActivityPageThree extends AppCompatActivity {
         final ArrayList<Integer> tickedNegotiations = new ArrayList<>();
 
         ActionBar ab = getSupportActionBar();
-        ab.setHomeButtonEnabled(true);
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setTitle(R.string.signup_screen_title_3);
-        ab.show();
+        if(ab != null) {
+            ab.setHomeButtonEnabled(true);
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setTitle(R.string.signup_screen_title_3);
+            ab.show();
+        }
 
         titleColumn1 = (TextView) findViewById(R.id.signupScreen3_Suppliers_TitleColumn1);
         titleColumn3 = (TextView) findViewById(R.id.signupScreen3_Suppliers_TitleColumn3);
@@ -61,14 +63,12 @@ public class SignUpActivityPageThree extends AppCompatActivity {
                 if(view instanceof CheckedTextView && tickedNegotiations.get(position) == 0) {
                     //If one ticks column 2 and column 3 is NOT checked
                     System.out.println("Click ! (column 2, column 3 is NOT checked yet");
-                    if (((CheckedTextView) view).isChecked()) {
+                    if ( ! ((CheckedTextView) view).isChecked() ) {
                         //If it is being "checked on"
-                        ((CheckedTextView) view).setChecked(true);
                         tickedSuppliersNames.set(position, ((CheckedTextView) view).getText().toString());
                         tickedNegotiations.set(position, 0);
                     } else {
                         //If it is being "checked off"
-                        ((CheckedTextView) view).setChecked(false);
                         tickedSuppliersNames.set(position, null);
                         tickedNegotiations.set(position, 0);
                     }
@@ -80,9 +80,7 @@ public class SignUpActivityPageThree extends AppCompatActivity {
                         System.out.println("How could this happen ?");
                     } else {
                         //If it is being "checked off"
-                        ((CheckedTextView) view).setChecked(false);
                         CheckBox checkBox = (CheckBox) parent.getSelectedView().findViewById(R.id.rowItemCheckTablesCheckBox);
-                        checkBox.setChecked(false);
                         tickedSuppliersNames.set(position, null);
                         tickedNegotiations.set(position, 0);
                     }
@@ -102,7 +100,6 @@ public class SignUpActivityPageThree extends AppCompatActivity {
                     if(((CheckBox) view).isChecked()){
                         //If it is being "checked on"
                         CheckedTextView checkedTextView = (CheckedTextView) parent.getSelectedView().findViewById(R.id.rowItemCheckTablesItemNameCheckedTextView);
-                        checkedTextView.setChecked(true);
                         tickedSuppliersNames.set(position, checkedTextView.getText().toString());
                         tickedNegotiations.set(position, 1);
                     } else {

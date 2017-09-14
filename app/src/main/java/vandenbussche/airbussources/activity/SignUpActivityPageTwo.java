@@ -39,10 +39,12 @@ public class SignUpActivityPageTwo extends AppCompatActivity {
         final Intent inputIntent = getIntent();
 
         ActionBar ab = getSupportActionBar();
-        ab.setHomeButtonEnabled(true);
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setTitle(R.string.signup_screen_title_2);
-        ab.show();
+        if(ab != null) {
+            ab.setHomeButtonEnabled(true);
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setTitle(R.string.signup_screen_title_2);
+            ab.show();
+        }
 
         toScreen3 = (Button) findViewById(R.id.signupScreen2ButtonNext);
 

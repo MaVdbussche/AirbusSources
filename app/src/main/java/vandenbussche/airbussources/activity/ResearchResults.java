@@ -33,10 +33,12 @@ public class ResearchResults extends AppCompatActivity {
         setContentView(R.layout.activity_research_results);
 
         ActionBar ab = getSupportActionBar();
-        ab.setHomeButtonEnabled(true);
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setTitle(R.string.researchResults_screenTitle);
-        ab.show();
+        if(ab != null) {
+            ab.setHomeButtonEnabled(true);
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setTitle(R.string.researchResults_screenTitle);
+            ab.show();
+        }
 
         listView= (ListView) findViewById(R.id.listView);
 

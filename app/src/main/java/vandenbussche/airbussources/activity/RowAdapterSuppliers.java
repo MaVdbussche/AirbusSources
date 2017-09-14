@@ -49,7 +49,7 @@ public class RowAdapterSuppliers extends ArrayAdapter<Supplier> {
         if(element != null) {
             String id = element.getIdentifier();
             viewHolder.name.setText(id);
-            ((CheckedTextView) viewHolder.name).setChecked(relevantMember.isWorkingWith(getContext(), element));
+            ((CheckedTextView) viewHolder.name).setChecked(relevantMember.isWorkingWith(getContext(), element.getName()));
             viewHolder.column3CheckBox.setChecked(Member.isThereANegotiationBetween(getContext(), relevantMember, element));
         }
         return convertView;

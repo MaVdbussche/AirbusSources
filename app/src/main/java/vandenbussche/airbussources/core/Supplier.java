@@ -25,4 +25,8 @@ public class Supplier implements Namable {
     public String getName(){return this.name;}
     public ArrayList<Product> getProducts(){return this.products;}
     public boolean getNegotiationState(){return this.isOnNegotiation;}
+
+    public void setProducts(ArrayList<Product> products){
+        this.products = products;
+    }
 }

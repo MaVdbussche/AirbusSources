@@ -27,10 +27,12 @@ public class SearchBySupplier extends AppCompatActivity {
         setContentView(R.layout.activity_searchbysupplier);
 
         ActionBar ab = getSupportActionBar();
-        ab.setHomeButtonEnabled(true);
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setTitle(R.string.searchBySupplier_title);
-        ab.show();
+        if(ab != null) {
+            ab.setHomeButtonEnabled(true);
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setTitle(R.string.searchBySupplier_title);
+            ab.show();
+        }
 
         screenTitle = (TextView) findViewById(R.id.searchBySupplierTitle);
 

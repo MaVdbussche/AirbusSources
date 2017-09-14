@@ -28,10 +28,12 @@ public class MainMenu extends AppCompatActivity {
         setContentView(R.layout.activity_mainmenu);
 
         ActionBar ab = getSupportActionBar();
-        ab.setHomeButtonEnabled(true);
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setTitle(R.string.mainMenu_screen_title);
-        ab.show();
+        if(ab != null) {
+            ab.setHomeButtonEnabled(true);
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setTitle(R.string.mainMenu_screen_title);
+            ab.show();
+        }
 
         screenTitle = (TextView) findViewById(R.id.welcomeTitle);
         screenTitle.setText("Welcome, "+ Member.connectedMember.getFirstName()+" "+Member.connectedMember.getName()+" !");

@@ -24,10 +24,12 @@ public class DetailsMember extends AppCompatActivity {
         setContentView(R.layout.activity_details_member);
 
         ActionBar ab = getSupportActionBar();
-        ab.setHomeButtonEnabled(true);
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setTitle(R.string.member_screenTitle);
-        ab.show();
+        if(ab != null) {
+            ab.setHomeButtonEnabled(true);
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setTitle(R.string.member_screenTitle);
+            ab.show();
+        }
 
         screenTitle = (TextView) findViewById(R.id.memberScreenTitle);
         details = (TextView) findViewById(R.id.memberDetails);

@@ -85,10 +85,10 @@ public class SQLUtility extends SQLiteOpenHelper {
      * @param conditionSQL A filter declaring which rows to return, formatted as an SQL WHERE clause (excluding the WHERE itself).
      *                     Passing null will return all rows for the given table and column.
      * @throws SQLiteException if an error occurs while reading the DB
-     * @return An ArrayList<String> containing all the results, or null if there was none
+     * @return An ArrayList<String> containing all the results, or an empty list if there was none
      */
     public ArrayList<String> getElementFromDB(String table, String column, String conditionSQL) throws SQLiteException{
-        ArrayList<String> requestResult = null;
+        ArrayList<String> requestResult = new ArrayList<>();
         Cursor c = myDB.query("\""+table+"\"",
                 new String[]{"\""+column+"\""},
                 conditionSQL,
@@ -99,7 +99,6 @@ public class SQLUtility extends SQLiteOpenHelper {
                 null
         );
         if (c.moveToFirst()) {
-            requestResult = new ArrayList<>();
             for (int i = 0; i < c.getCount(); i++) {
                 requestResult.add(c.getString(0));
                 //0 since there will never be multiple columns in this Cursor, given the method's specs
@@ -192,13 +191,13 @@ public class SQLUtility extends SQLiteOpenHelper {
         ArrayList<String> names = getAllSuppliersProductsNames(supplier);
         ArrayList<Product> returnedList = new ArrayList<>(names.size());
         for( String name : names ){
-            returnedList.add( new Product(name) );
+            returnedList.add( new Product(name, false) );
         }
         return returnedList;
     }
 
     /**
-     * Returns all the Products associated with the given Supplier the given Member is working on
+     * Returns all the Products associated with the given Suppliers the given Member is working on
      * @param IDProfile the Member we are looking for
      * @param  supplier the name of the Supplier we are looking for
      * @return An ArrayList<Product> containing all the products associated

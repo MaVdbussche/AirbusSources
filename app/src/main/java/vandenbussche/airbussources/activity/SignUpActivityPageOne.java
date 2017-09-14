@@ -35,10 +35,12 @@ public class SignUpActivityPageOne extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
 
         ActionBar ab = getSupportActionBar();
-        ab.setHomeButtonEnabled(true);
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setTitle(R.string.signup_screen_title_1);
-        ab.show();
+        if(ab != null) {
+            ab.setHomeButtonEnabled(true);
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setTitle(R.string.signup_screen_title_1);
+            ab.show();
+        }
 
         welcomeText = (TextView) findViewById(R.id.signupScreen1WelcomeTextView);
 

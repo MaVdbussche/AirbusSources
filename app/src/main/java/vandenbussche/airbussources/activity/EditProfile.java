@@ -31,10 +31,12 @@ public class EditProfile extends AppCompatActivity {
         setContentView(R.layout.activity_editprofile);
 
         ActionBar ab = getSupportActionBar();
-        ab.setHomeButtonEnabled(true);
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setTitle(R.string.editprofile_screen_title);
-        ab.show();
+        if(ab != null) {
+            ab.setHomeButtonEnabled(true);
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setTitle(R.string.editprofile_screen_title);
+            ab.show();
+        }
 
         nameText = (TextView) findViewById(R.id.editMemberScreenTitle);
         memberBU = (TextView) findViewById(R.id.editMemberDetailsBU);

@@ -199,7 +199,7 @@ public class Member implements Namable {
         SQLUtility db = SQLUtility.prepareDataBase(context);
         ArrayList<String> list = db.getElementFromDB("Member_Supplier_Product", "Negotiation", "Member = \""+member.idProfile+"\" AND Supplier = \""+supplier.getName()+"\"");
         db.close();
-        if(list==null){
+        if(list.size() == 0){
             //There is no such match in the DB
             return false;
         }
@@ -283,10 +283,13 @@ public class Member implements Namable {
             System.err.println("Role updated in the instance but NOT in the DB !");
         }
     }
-    public void setSuppliers(Context context,ArrayList<Supplier> suppliers){
+    public void setSuppliers(Context context, ArrayList<Supplier> suppliers){
         this.suppliers = suppliers;
         if( ! this.updateMemberInDB(context)){
             System.err.println("Suppliers list updated in the instance but NOT in the DB !");
         }
+    }
+    public void setSuppliers(ArrayList<Supplier> suppliers){
+        this.suppliers = suppliers;
     }
 }

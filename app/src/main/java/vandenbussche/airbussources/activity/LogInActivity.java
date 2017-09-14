@@ -32,10 +32,12 @@ public class LogInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         ActionBar ab = getSupportActionBar();
-        ab.setHomeButtonEnabled(true);
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setTitle(R.string.start_button_login);
-        ab.show();
+        if(ab != null) {
+            ab.setHomeButtonEnabled(true);
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setTitle(R.string.start_button_login);
+            ab.show();
+        }
 
         image = (ImageView) findViewById(R.id.airbusLogo);
         login = (EditText) findViewById(R.id.login_field);
