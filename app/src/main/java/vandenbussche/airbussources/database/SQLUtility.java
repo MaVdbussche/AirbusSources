@@ -51,7 +51,7 @@ public class SQLUtility extends SQLiteOpenHelper {
     private SQLUtility(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
-        DATABASE_PATH = context.getFilesDir().getPath();
+        DATABASE_PATH = context.getFilesDir().getPath()+"/";
     }
 
     /**

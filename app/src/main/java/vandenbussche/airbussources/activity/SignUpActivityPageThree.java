@@ -27,19 +27,16 @@ public class SignUpActivityPageThree extends AppCompatActivity {
     private ListView listSuppliersToTick;
     private Button toScreen4;
 
-    Member inputMember;
+    //Member inputMember;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup3);
 
-        final Intent inputIntent = getIntent();
+        //final Intent inputIntent = getIntent();
 
-        inputMember = Member.connectedMember; //new Member(inputIntent.getStringExtra("Login"), inputIntent.getStringExtra("Password"), inputIntent.getStringExtra("First Name"), inputIntent.getStringExtra("Name"), inputIntent.getStringExtra("Business Unit"), inputIntent.getStringExtra("Commodity"), inputIntent.getStringExtra("Role"));
-
-        final ArrayList<String> tickedSuppliersNames = new ArrayList<>();
-        final ArrayList<Integer> tickedNegotiations = new ArrayList<>();
+        //inputMember = Member.connectedMember; //new Member(inputIntent.getStringExtra("Login"), inputIntent.getStringExtra("Password"), inputIntent.getStringExtra("First Name"), inputIntent.getStringExtra("Name"), inputIntent.getStringExtra("Business Unit"), inputIntent.getStringExtra("Commodity"), inputIntent.getStringExtra("Role"));
 
         ActionBar ab = getSupportActionBar();
         if(ab != null) {
@@ -56,78 +53,15 @@ public class SignUpActivityPageThree extends AppCompatActivity {
 
         displayAllSuppliersTickable();
 
-        listSuppliersToTick.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        toScreen4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-                System.out.println("Click !");
-                if(view instanceof CheckedTextView && tickedNegotiations.get(position) == 0) {
-                    //If one ticks column 2 and column 3 is NOT checked
-                    System.out.println("Click ! (column 2, column 3 is NOT checked yet");
-                    if ( ! ((CheckedTextView) view).isChecked() ) {
-                        //If it is being "checked on"
-                        tickedSuppliersNames.set(position, ((CheckedTextView) view).getText().toString());
-                        tickedNegotiations.set(position, 0);
-                    } else {
-                        //If it is being "checked off"
-                        tickedSuppliersNames.set(position, null);
-                        tickedNegotiations.set(position, 0);
-                    }
-                } else if (view instanceof CheckedTextView && tickedNegotiations.get(position) != 0){
-                    //If one ticks column 2 and column 3 IS already checked
-                    System.out.println("Click ! (column 2, column 3 IS already checked)");
-                    if (((CheckedTextView) view).isChecked()) {
-                        //If it is being "checked on"
-                        System.out.println("How could this happen ?");
-                    } else {
-                        //If it is being "checked off"
-                        CheckBox checkBox = (CheckBox) parent.getSelectedView().findViewById(R.id.rowItemCheckTablesCheckBox);
-                        tickedSuppliersNames.set(position, null);
-                        tickedNegotiations.set(position, 0);
-                    }
-                } else if(view instanceof CheckBox && tickedSuppliersNames.get(position) != null){
-                    //If one ticks column 3 and column 2 is already ticked
-                    System.out.println("Click ! (column 3, column 2 is already ticked on)");
-                    if(((CheckBox) view).isChecked()){
-                        //If it is being "checked on"
-                        tickedNegotiations.set(position, 1);
-                    } else {
-                        //If it is being "checked off"
-                        tickedNegotiations.set(position, 0);
-                    }
-                } else if(view instanceof CheckBox && tickedSuppliersNames.get(position) == null){
-                    //If one ticks column 3 while column 2 is NOT ticked
-                    System.out.println("Click ! (column 3, column 2 is NOT ticked on yet)");
-                    if(((CheckBox) view).isChecked()){
-                        //If it is being "checked on"
-                        CheckedTextView checkedTextView = (CheckedTextView) parent.getSelectedView().findViewById(R.id.rowItemCheckTablesItemNameCheckedTextView);
-                        tickedSuppliersNames.set(position, checkedTextView.getText().toString());
-                        tickedNegotiations.set(position, 1);
-                    } else {
-                        //If it is being "checked off"
-                        System.out.println("How could this happen -?");
-                        tickedNegotiations.set(position, 0);
-                    }
-                }
+                Intent intent = new Intent(SignUpActivityPageThree.this, SignUpActivityPageFour.class);
+                //Member.connectedMember = inputMember;
+                startActivity(intent);
             }
         });
-
-        toScreen4.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        ArrayList<Supplier> selectedSuppliers = new ArrayList<>();
-                        for(int i=0; i<tickedSuppliersNames.size(); i++){
-                            selectedSuppliers.add(new Supplier(tickedSuppliersNames.get(i), null, (tickedNegotiations.get(i)==1)));
-                        }
-                        inputMember.setSuppliers(selectedSuppliers);
-
-                        Intent intent = new Intent(SignUpActivityPageThree.this, SignUpActivityPageFour.class);
-                        Member.connectedMember = inputMember;
-                        startActivity(intent);
-                    }
-                }
-        );
     }
 
     private void displayAllSuppliersTickable(){
@@ -140,7 +74,7 @@ public class SignUpActivityPageThree extends AppCompatActivity {
         for(int i=0; i<namesList.size(); i++){
             suppliersList.add(new Supplier(namesList.get(i), null, false));
         }
-        RowAdapterSuppliers adapter = new RowAdapterSuppliers(SignUpActivityPageThree.this, suppliersList, inputMember);
+        RowAdapterSuppliers adapter = new RowAdapterSuppliers(SignUpActivityPageThree.this, suppliersList);
         listSuppliersToTick.setAdapter(adapter);
     }
 }

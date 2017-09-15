@@ -8,33 +8,38 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CheckedTextView;
-import android.widget.TextView;
+import android.widget.CompoundButton;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import vandenbussche.airbussources.R;
 import vandenbussche.airbussources.core.Member;
 import vandenbussche.airbussources.core.Supplier;
+import vandenbussche.airbussources.database.SQLUtility;
 
 public class RowAdapterSuppliers extends ArrayAdapter<Supplier> {
 
-    private Member relevantMember;
+    private boolean[][] dataStorage;
 
-    public RowAdapterSuppliers(Context context, @NonNull List<Supplier> elements, Member member){
-        super(context, 0, elements);
-        this.relevantMember = member;
+    public RowAdapterSuppliers(Context context, @NonNull List<Supplier> elements){
+        super(context, R.layout.row_item_check_tables, elements);
+        dataStorage = new boolean[elements.size()][2];
+        updateDataStorage();
+
     }
 
     @Override
     @NonNull
-    public View getView(int position, View convertView, @NonNull ViewGroup parent){
-        ViewHolder viewHolder;
+    public View getView(final int position, View convertView, @NonNull ViewGroup parent){
+        final ViewHolder viewHolder;
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.row_item_check_tables, parent, false);
         }
-        viewHolder = (ViewHolder) convertView.getTag();
-        if (viewHolder == null) //If this view has never been instantiated before
-        {
+        //viewHolder = (ViewHolder) convertView.getTag();
+        //if (viewHolder == null) //If this view has never been instantiated before
+        //{
             viewHolder = new ViewHolder();
             //viewHolder.image = (ImageView) convertView.findViewById(R.id.imageView);
             viewHolder.name = (CheckedTextView) convertView.findViewById(R.id.rowItemCheckTablesItemNameCheckedTextView);
@@ -43,16 +48,151 @@ public class RowAdapterSuppliers extends ArrayAdapter<Supplier> {
             //viewHolder.nbr = (TextView) convertView.findViewById(R.id.textView4);
             //viewHolder.time = (TextView) convertView.findViewById(R.id.textView5);
             convertView.setTag(viewHolder);
-        }
+        //}
         //Gives the relevant values to the layout Views
-        Supplier element = getItem(position);
+        final Supplier element = getItem(position);
         if(element != null) {
             String id = element.getIdentifier();
             viewHolder.name.setText(id);
-            ((CheckedTextView) viewHolder.name).setChecked(relevantMember.isWorkingWith(getContext(), element.getName()));
-            viewHolder.column3CheckBox.setChecked(Member.isThereANegotiationBetween(getContext(), relevantMember, element));
+            viewHolder.name.setChecked(dataStorage[position][0]);
+            viewHolder.column3CheckBox.setChecked(dataStorage[position][1]);
         }
+        viewHolder.name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view){
+                System.out.println("Click !");
+                if(viewHolder.name.isChecked()){
+                    //Ticking OFF column 2
+                    viewHolder.name.setChecked(false);
+                    viewHolder.column3CheckBox.setChecked(false);
+                    dataStorage[position][0] = false;
+                    dataStorage[position][1] = false;
+                    if(Member.connectedMember.getSuppliers() != null){
+                        Member.connectedMember.setSuppliers(
+                                removeFromName(Member.connectedMember.getSuppliers(),
+                                                viewHolder.name.getText().toString()
+                                )
+                        );
+
+                    } else {
+                        System.err.println("How could this happen ? (line "+(new Exception().getStackTrace()[0].getLineNumber())+")");
+                        System.err.println("Ticking off from a null Suppliers list");
+                    }
+                } else if ( ! viewHolder.name.isChecked()) {
+                    //Ticking ON column 2
+                    viewHolder.name.setChecked(true);
+                    viewHolder.column3CheckBox.setChecked(false);//Since it could not be on yet anyways
+                    dataStorage[position][0] = true;
+                    dataStorage[position][1] = false;
+                    if(Member.connectedMember.getSuppliers() == null){
+                        Member.connectedMember.setSuppliers(new ArrayList<Supplier>());
+                    }
+                    Member.connectedMember.getSuppliers().set(position,
+                            new Supplier(viewHolder.name.getText().toString(), null, false)
+                    );
+                }
+            }
+        });
+        viewHolder.column3CheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(buttonView.isChecked()){
+                    //Ticking ON column 3
+                    if(viewHolder.name.isChecked()){
+                        //Ticking ON column 3, column 2 was ON
+                        dataStorage[position][0] = true;
+                        dataStorage[position][1] = true;
+                        Member.connectedMember.setSuppliers(
+                                alterFromName(Member.connectedMember.getSuppliers(),
+                                                viewHolder.name.getText().toString(),
+                                                true)
+                        );
+                    } else {
+                        //Ticking ON column 3, column 2 was OFF
+                        viewHolder.name.setChecked(true);
+                        dataStorage[position][0] = true;
+                        dataStorage[position][1] = true;
+                        if(Member.connectedMember.getSuppliers() == null){
+                            Member.connectedMember.setSuppliers(new ArrayList<Supplier>());
+                        }
+                        Member.connectedMember.getSuppliers().add(position,
+                                new Supplier(viewHolder.name.getText().toString(), null, true)
+                        );
+                    }
+                } else {
+                    //Ticking OFF column 3
+                    if( ! viewHolder.name.isChecked()){
+                        //Ticking OFF column 3, column 2 was OFF
+                        dataStorage[position][0] = false;
+                        dataStorage[position][1] = false;
+                        System.out.println("How could this happen ? (line "+(new Exception().getStackTrace()[0].getLineNumber())+")");
+                        System.out.println("Ticking off column 3 while column 2 was OFF");
+                    } else {
+                        //Ticking OFF column 3, column 2 was ON
+                        dataStorage[position][0] = true;
+                        dataStorage[position][1] = false;
+                        Member.connectedMember.setSuppliers(
+                                alterFromName(Member.connectedMember.getSuppliers(),
+                                        viewHolder.name.getText().toString(),
+                                        false)
+                        );
+                    }
+                }
+            }
+        });
         return convertView;
+    }
+
+    /**
+     * Removes the first Supplier in the list whose name equals <#param>name</#param>
+     * Note : There is no way to know if the returned ArrayList is actually
+     * any different from the one passed in argument (i.e. if no Supplier was removed)
+     * @param suppliers The ArrayList<Supplier> to remove the name from
+     * @param name The name of the Supplier we want to remove from the list
+     * @return The updated ArrayList
+     */
+    private ArrayList<Supplier> removeFromName(ArrayList<Supplier> suppliers, String name){
+        for (Supplier supplier : suppliers) {
+            if (supplier.getName().equals(name)){
+                suppliers.remove(supplier);
+                return suppliers;
+            }
+        }
+        return suppliers;
+    }
+    /**
+     * Modifies the first Supplier in the list whose name equals <#param>name</#param>
+     * to put its negotiationState attribute to <#param>negotiationState</#param>
+     * Note : There is no way to know if the returned ArrayList is actually
+     * any different from the one passed in argument (i.e. if no Supplier was modified)
+     * @param suppliers The ArrayList<Supplier> to alter the Supplier from
+     * @param name The name of the Supplier to alter
+     * @param negotiationState the negotiationState wewant to apply to this Supplier
+     * @return The updated ArrayList
+     */
+    private ArrayList<Supplier> alterFromName(ArrayList<Supplier> suppliers, String name, boolean negotiationState){
+        for (Supplier supplier : suppliers) {
+            if(supplier.getName().equals(name)){
+                supplier.setNegotiationState(negotiationState);
+                return suppliers;
+            }
+        }
+        return suppliers;
+    }
+
+    private void updateDataStorage(){
+        SQLUtility db = SQLUtility.prepareDataBase(getContext());
+        ArrayList<String> allSupplierNames = db.getAllSuppliersNames();
+        ArrayList<String> relevantSuppliersNames = db.getAllMembersSuppliersNames(Member.connectedMember.getLogin());
+        Collections.sort(allSupplierNames);
+        Collections.sort(relevantSuppliersNames);
+
+        for(int i=0; i<dataStorage.length; i++){
+            dataStorage[i][0] = relevantSuppliersNames.contains(allSupplierNames.get(i));
+            dataStorage[i][1] = Member.isThereANegotiationBetween(getContext(),
+                    Member.connectedMember,
+                    new Supplier(allSupplierNames.get(i),null));
+        }
     }
 
     /**
@@ -61,8 +201,8 @@ public class RowAdapterSuppliers extends ArrayAdapter<Supplier> {
     private class ViewHolder
     {
         //public ImageView image;
-        TextView name;
-        TextView details;
+        CheckedTextView name;
+        //TextView details;
         CheckBox column3CheckBox;
         //public TextView time;
     }

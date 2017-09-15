@@ -30,4 +30,8 @@ public class Product implements Comparable, Namable {
         return this.name.compareTo(((Product) other).getName());
     }
 
+    public String toString(){
+        return this.name;
+    }
+
 }

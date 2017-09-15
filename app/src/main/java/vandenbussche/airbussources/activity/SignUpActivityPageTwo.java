@@ -36,7 +36,7 @@ public class SignUpActivityPageTwo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup2);
 
-        final Intent inputIntent = getIntent();
+        //final Intent inputIntent = getIntent();
 
         ActionBar ab = getSupportActionBar();
         if(ab != null) {
@@ -57,7 +57,7 @@ public class SignUpActivityPageTwo extends AppCompatActivity {
         roles = (RadioGroup) findViewById(R.id.rolesRadioGroup);
 
         SQLUtility db = SQLUtility.prepareDataBase(this);
-        final ArrayList<String> listBusinessUnits = db.getAllSuppliersNames();
+        final ArrayList<String> listBusinessUnits = db.getAllBUsNames();
         final ArrayList<String> listCommodities = db.getAllCommoditiesNames();
         final ArrayList<String> listRoles = db.getAllRolesNames();
         db.close();

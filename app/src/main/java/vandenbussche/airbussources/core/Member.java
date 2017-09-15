@@ -22,7 +22,6 @@ public class Member implements Namable {
     private String commodity;
     private String role;
     private ArrayList<Supplier> suppliers;
-    private ArrayList<Product> products;
 
     public static Member connectedMember;
 
@@ -229,6 +228,14 @@ public class Member implements Namable {
         db.close();
         return suppliers.contains(supplier);
     }
+    public boolean isWorkingWith(String supplier){
+        for (Supplier localSupplier : this.suppliers) {
+            if(localSupplier.getName().equals(supplier)){
+                return true;
+            }
+        }
+        return false;
+    }
     public boolean isWorkingOn(Context context, String product){
         SQLUtility db = SQLUtility.prepareDataBase(context);
         ArrayList<String> products = db.getAllMembersProductsNames(this.idProfile);
@@ -291,5 +298,9 @@ public class Member implements Namable {
     }
     public void setSuppliers(ArrayList<Supplier> suppliers){
         this.suppliers = suppliers;
+    }
+
+    public String toString(){
+        return this.idProfile;
     }
 }
