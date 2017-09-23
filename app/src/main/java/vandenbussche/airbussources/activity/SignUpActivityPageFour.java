@@ -1,6 +1,5 @@
 package vandenbussche.airbussources.activity;
 
-import android.content.Intent;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -25,8 +24,6 @@ import vandenbussche.airbussources.core.Supplier;
 import vandenbussche.airbussources.database.SQLUtility;
 
 public class SignUpActivityPageFour extends AppCompatActivity {
-
-    Intent inputIntent;
 
     private TextView titleColumn1;
     private TextView titleColumn3;

@@ -85,8 +85,11 @@ public class RowAdapterSuppliers extends ArrayAdapter<Supplier> {
                     dataStorage[position][0] = true;
                     dataStorage[position][1] = false;
                     if(Member.connectedMember.getSuppliers() == null){
-                        Member.connectedMember.setSuppliers(new ArrayList<Supplier>());
+                        ArrayList<Supplier> placeHolder = new ArrayList<>();
+                        placeHolder.add(new Supplier("Placeholder", null));
+                        Member.connectedMember.setSuppliers(placeHolder);
                     }
+                    Member.connectedMember.getSuppliers().ensureCapacity(dataStorage.length);
                     Member.connectedMember.getSuppliers().set(position,
                             new Supplier(viewHolder.name.getText().toString(), null, false)
                     );
@@ -172,7 +175,7 @@ public class RowAdapterSuppliers extends ArrayAdapter<Supplier> {
      */
     private ArrayList<Supplier> alterFromName(ArrayList<Supplier> suppliers, String name, boolean negotiationState){
         for (Supplier supplier : suppliers) {
-            if(supplier.getName().equals(name)){
+            if (supplier.getName().equals(name)) {
                 supplier.setNegotiationState(negotiationState);
                 return suppliers;
             }
