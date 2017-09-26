@@ -22,7 +22,7 @@ public class RowAdapterProducts extends ArrayAdapter<Product> {
     private Member relevantMember;
 
     public RowAdapterProducts(Context context, @NonNull List<Product> elements, Member member){
-        super(context, 0, elements);
+        super(context, R.layout.row_item_check_tables, elements);
         this.relevantMember = member;
     }
 

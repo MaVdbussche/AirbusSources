@@ -5,10 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -16,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import vandenbussche.airbussources.R;
-import vandenbussche.airbussources.core.Member;
 import vandenbussche.airbussources.core.Supplier;
 import vandenbussche.airbussources.database.SQLUtility;
 
@@ -27,17 +23,12 @@ public class SignUpActivityPageThree extends AppCompatActivity {
     private ListView listSuppliersToTick;
     private Button toScreen4;
 
-    //Member inputMember;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup3);
-
-        //final Intent inputIntent = getIntent();
-
-        //inputMember = Member.connectedMember; //new Member(inputIntent.getStringExtra("Login"), inputIntent.getStringExtra("Password"), inputIntent.getStringExtra("First Name"), inputIntent.getStringExtra("Name"), inputIntent.getStringExtra("Business Unit"), inputIntent.getStringExtra("Commodity"), inputIntent.getStringExtra("Role"));
 
         ActionBar ab = getSupportActionBar();
         if(ab != null) {

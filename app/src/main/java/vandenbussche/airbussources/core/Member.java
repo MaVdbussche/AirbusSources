@@ -151,7 +151,7 @@ public class Member implements Namable {
         ContentValues values = new ContentValues();
         values.put("\"IDProfile\"", this.idProfile);
         values.put("\"Password\"", this.password);
-        values.put("\"First Name\"", this.firstName);
+        values.put("\"Surname\"", this.firstName);
         values.put("\"Name\"", this.surname);
         values.put("\"BU\"", this.bu);
         values.put("\"Commodity\"", this.commodity);
@@ -180,7 +180,7 @@ public class Member implements Namable {
         ContentValues values = new ContentValues();
         values.put("\"IDProfile\"", this.idProfile);
         values.put("\"Password\"", this.password);
-        values.put("\"First Name\"", this.firstName);
+        values.put("\"Surname\"", this.firstName);
         values.put("\"Name\"", this.surname);
         values.put("\"BU\"", this.bu);
         values.put("\"Commodity\"", this.commodity);

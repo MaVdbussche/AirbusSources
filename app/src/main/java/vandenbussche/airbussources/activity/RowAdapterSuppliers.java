@@ -21,19 +21,19 @@ import vandenbussche.airbussources.database.SQLUtility;
 
 public class RowAdapterSuppliers extends ArrayAdapter<Supplier> {
 
-    private boolean[][] dataStorage;
+    private boolean[] dataStorageSupplier;
+    private boolean[] dataStorageNegotiation;
 
     public RowAdapterSuppliers(Context context, @NonNull List<Supplier> elements){
         super(context, R.layout.row_item_check_tables, elements);
-        dataStorage = new boolean[elements.size()][2];
         updateDataStorage();
-
     }
 
     @Override
     @NonNull
     public View getView(final int position, View convertView, @NonNull ViewGroup parent){
         final ViewHolder viewHolder;
+
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.row_item_check_tables, parent, false);
         }
@@ -54,8 +54,8 @@ public class RowAdapterSuppliers extends ArrayAdapter<Supplier> {
         if(element != null) {
             String id = element.getIdentifier();
             viewHolder.name.setText(id);
-            viewHolder.name.setChecked(dataStorage[position][0]);
-            viewHolder.column3CheckBox.setChecked(dataStorage[position][1]);
+            viewHolder.name.setChecked(dataStorageSupplier[position]);
+            viewHolder.column3CheckBox.setChecked(dataStorageNegotiation[position]);
         }
         viewHolder.name.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,8 +65,8 @@ public class RowAdapterSuppliers extends ArrayAdapter<Supplier> {
                     //Ticking OFF column 2
                     viewHolder.name.setChecked(false);
                     viewHolder.column3CheckBox.setChecked(false);
-                    dataStorage[position][0] = false;
-                    dataStorage[position][1] = false;
+                    dataStorageSupplier[position] = false;
+                    dataStorageNegotiation[position] = false;
                     if(Member.connectedMember.getSuppliers() != null){
                         Member.connectedMember.setSuppliers(
                                 removeFromName(Member.connectedMember.getSuppliers(),
@@ -81,21 +81,20 @@ public class RowAdapterSuppliers extends ArrayAdapter<Supplier> {
                 } else if ( ! viewHolder.name.isChecked()) {
                     //Ticking ON column 2
                     viewHolder.name.setChecked(true);
-                    viewHolder.column3CheckBox.setChecked(false);//Since it could not be on yet anyways
-                    dataStorage[position][0] = true;
-                    dataStorage[position][1] = false;
-                    if(Member.connectedMember.getSuppliers() == null){
-                        ArrayList<Supplier> placeHolder = new ArrayList<>();
-                        placeHolder.add(new Supplier("Placeholder", null));
-                        Member.connectedMember.setSuppliers(placeHolder);
+                    viewHolder.column3CheckBox.setChecked(false);   //Since it could not be on yet anyways
+                    dataStorageSupplier[position] = true;
+                    dataStorageNegotiation[position] = false;
+
+                    ArrayList<Supplier> suppliers = Member.connectedMember.getSuppliers();
+                    if(suppliers == null){
+                        suppliers = new ArrayList<>();
                     }
-                    Member.connectedMember.getSuppliers().ensureCapacity(dataStorage.length);
-                    Member.connectedMember.getSuppliers().set(position,
-                            new Supplier(viewHolder.name.getText().toString(), null, false)
-                    );
+                    suppliers.add( new Supplier(viewHolder.name.getText().toString(), null, false) );
+                    Member.connectedMember.setSuppliers(suppliers);
                 }
             }
         });
+
         viewHolder.column3CheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -103,8 +102,8 @@ public class RowAdapterSuppliers extends ArrayAdapter<Supplier> {
                     //Ticking ON column 3
                     if(viewHolder.name.isChecked()){
                         //Ticking ON column 3, column 2 was ON
-                        dataStorage[position][0] = true;
-                        dataStorage[position][1] = true;
+                        dataStorageSupplier[position] = true;
+                        dataStorageNegotiation[position] = true;
                         Member.connectedMember.setSuppliers(
                                 alterFromName(Member.connectedMember.getSuppliers(),
                                                 viewHolder.name.getText().toString(),
@@ -113,27 +112,25 @@ public class RowAdapterSuppliers extends ArrayAdapter<Supplier> {
                     } else {
                         //Ticking ON column 3, column 2 was OFF
                         viewHolder.name.setChecked(true);
-                        dataStorage[position][0] = true;
-                        dataStorage[position][1] = true;
+                        dataStorageSupplier[position] = true;
+                        dataStorageNegotiation[position] = true;
                         if(Member.connectedMember.getSuppliers() == null){
                             Member.connectedMember.setSuppliers(new ArrayList<Supplier>());
                         }
-                        Member.connectedMember.getSuppliers().add(position,
-                                new Supplier(viewHolder.name.getText().toString(), null, true)
-                        );
+                        Member.connectedMember.getSuppliers().add( new Supplier(viewHolder.name.getText().toString(), null, true) );
                     }
                 } else {
                     //Ticking OFF column 3
                     if( ! viewHolder.name.isChecked()){
                         //Ticking OFF column 3, column 2 was OFF
-                        dataStorage[position][0] = false;
-                        dataStorage[position][1] = false;
+                        dataStorageSupplier[position] = false;
+                        dataStorageNegotiation[position] = false;
                         System.out.println("How could this happen ? (line "+(new Exception().getStackTrace()[0].getLineNumber())+")");
                         System.out.println("Ticking off column 3 while column 2 was OFF");
                     } else {
                         //Ticking OFF column 3, column 2 was ON
-                        dataStorage[position][0] = true;
-                        dataStorage[position][1] = false;
+                        dataStorageSupplier[position] = true;   //This one stays on
+                        dataStorageNegotiation[position] = false;
                         Member.connectedMember.setSuppliers(
                                 alterFromName(Member.connectedMember.getSuppliers(),
                                         viewHolder.name.getText().toString(),
@@ -170,7 +167,7 @@ public class RowAdapterSuppliers extends ArrayAdapter<Supplier> {
      * any different from the one passed in argument (i.e. if no Supplier was modified)
      * @param suppliers The ArrayList<Supplier> to alter the Supplier from
      * @param name The name of the Supplier to alter
-     * @param negotiationState the negotiationState wewant to apply to this Supplier
+     * @param negotiationState the negotiationState we want to apply to this Supplier
      * @return The updated ArrayList
      */
     private ArrayList<Supplier> alterFromName(ArrayList<Supplier> suppliers, String name, boolean negotiationState){
@@ -190,9 +187,12 @@ public class RowAdapterSuppliers extends ArrayAdapter<Supplier> {
         Collections.sort(allSupplierNames);
         Collections.sort(relevantSuppliersNames);
 
-        for(int i=0; i<dataStorage.length; i++){
-            dataStorage[i][0] = relevantSuppliersNames.contains(allSupplierNames.get(i));
-            dataStorage[i][1] = Member.isThereANegotiationBetween(getContext(),
+        dataStorageSupplier = new boolean[allSupplierNames.size()];
+        dataStorageNegotiation = new boolean[allSupplierNames.size()];
+
+        for(int i=0; i<dataStorageSupplier.length; i++){
+            dataStorageSupplier[i] = relevantSuppliersNames.contains(allSupplierNames.get(i));
+            dataStorageNegotiation[i] = Member.isThereANegotiationBetween(getContext(),
                     Member.connectedMember,
                     new Supplier(allSupplierNames.get(i),null));
         }

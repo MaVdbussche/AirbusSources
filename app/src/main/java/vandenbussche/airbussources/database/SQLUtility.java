@@ -114,7 +114,7 @@ public class SQLUtility extends SQLiteOpenHelper {
      * @param table the DB table the query is run on
      * @param columns the columns of the found entries you want in the Cursor. Passing null will return all columns of the given row
      * @param conditionSQL the SQLite WHERE clause. Passing null will return all the rows of the table
-     * @param orderBy the SQLite ORDERBY clause. Passing null means the results wont be ordered in a specific way
+     * @param orderBy the SQLite ORDERBY clause. Passing null means the results won't be ordered in any specific way
      * @return A Cursor containing the query result
      */
     public Cursor getEntriesFromDB(String table, String[] columns, String conditionSQL, String orderBy){
@@ -287,6 +287,16 @@ public class SQLUtility extends SQLiteOpenHelper {
     }
 
     /**
+    public boolean isThereAssociation(String IDProfile, String supplier, String product){
+
+        Cursor c = getEntriesFromDB("Member_Supplier_Product",
+                                    new String[]{"Member", "Supplier", "Product"},
+                                    "")
+        return getElementFromDB("Member_Supplier_Product", "Product", "Member=\""+IDProfile+"\"");
+    }
+     **/
+
+    /**
      * Returns the negotiation state between the given Member and Supplier
      * @param IDProfile the Member to be looked for
      * @param supplier the supplier to be looked for
@@ -329,11 +339,11 @@ public class SQLUtility extends SQLiteOpenHelper {
      */
     public boolean addToMemberTable(ContentValues values){
 
-        if(values.keySet().size() == 7) {
+        //if(values.keySet().size() == 7) {
             return (myDB.insert("Member", null, values) != -1);
-        } else {
-            return false;
-        }
+        //} else {
+        //    return false;
+        //}
     }
 
     /**
