@@ -1,9 +1,12 @@
 package vandenbussche.airbussources.activity;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.support.v4.util.SparseArrayCompat;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +36,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     //private boolean[] dataStorageProduct;
     //private boolean[] dataStorageCFT;
+
+    private SparseArray<boolean[]> dataStorageProduct = new SparseArray<>();
+    private SparseArray<boolean[]> dataStorageCFT = new SparseArray<>();
 
     private HashMap<Integer, boolean[]> mapDataStorageProduct = new HashMap<>();
     private HashMap<Integer, boolean[]> mapDataStorageCFT = new HashMap<>();
@@ -95,10 +101,13 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     viewHolder.column3CheckBox.setChecked(false);
                     mapDataStorageProduct.get(groupPosition)[childPosition] = false;
                     mapDataStorageCFT.get(groupPosition)[childPosition] = false;
-                    if(listDataChild.get(listDataHeader.get(groupPosition)).size() > 0){
+
+                    if(listDataChild.get(listDataHeader.get(groupPosition)).size() > 0)    //If there are Products associated with this Supplier in the HashMap
+                    {
                         ArrayList<Product> currentProducts = currentSupplier.getProducts();
                         currentProducts = removeFromName(currentProducts, viewHolder.name.getText().toString());
-                        currentSupplier.setProducts(currentProducts);                                           //We update the connectedMember products
+                        currentSupplier.setProducts(currentProducts);                                        //We update the connectedMember products
+                        Member.connectedMember.getSuppliers().set(groupPosition, currentSupplier);
                     } else {
                         System.err.println("How could this happen ? (line "+(new Exception().getStackTrace()[0].getLineNumber())+")");
                         System.err.println("Ticking off from a null Products list");
@@ -115,6 +124,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     }
                     currentSupplier.getProducts().add( new Product(viewHolder.name.getText().toString(), false) );
                     Collections.sort(currentSupplier.getProducts());
+                    Member.connectedMember.getSuppliers().set(groupPosition, currentSupplier);
                 }
             }
         });
@@ -132,6 +142,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         ArrayList<Product> currentProducts = currentSupplier.getProducts();
                         currentProducts = alterFromName(currentProducts, viewHolder.name.getText().toString(), true);
                         currentSupplier.setProducts(currentProducts);
+                        Member.connectedMember.getSuppliers().set(groupPosition, currentSupplier);
 
                     } else {
                         //Ticking ON column 3, column 2 was OFF
@@ -145,15 +156,19 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         }
                         currentProducts.add(new Product(viewHolder.name.getText().toString(), true));
                         currentSupplier.setProducts(currentProducts);
+                        Member.connectedMember.getSuppliers().set(groupPosition, currentSupplier);
                     }
                 } else {
                     //Ticking OFF column 3
                     if( ! viewHolder.name.isChecked()){
                         //Ticking OFF column 3, column 2 was OFF
-                        mapDataStorageProduct.get(groupPosition)[childPosition] = false;
-                        mapDataStorageCFT.get(groupPosition)[childPosition] = false;
-                        System.out.println("How could this happen ? (line "+(new Exception().getStackTrace()[0].getLineNumber())+")");
-                        System.out.println("Ticking off column 3 while column 2 was OFF");
+                        System.out.println("This is the situation when a row gets out of view, which in fact ticks both views off.");
+                        System.out.println("Hence we don't touch their value in dataStorage in order to recover it later on, when the getView will be called again.");
+                        System.out.println("This could also have happened because of column 2 being ticked off while column 3 was ticked.");
+                        //mapDataStorageProduct.get(groupPosition)[childPosition] = false;
+                        //mapDataStorageCFT.get(groupPosition)[childPosition] = false;
+                        //System.out.println("How could this happen ? (line "+(new Exception().getStackTrace()[0].getLineNumber())+")");
+                        //System.out.println("Ticking off column 3 while column 2 was OFF");
                     } else {
                         //Ticking OFF column 3, column 2 was ON
                         mapDataStorageProduct.get(groupPosition)[childPosition] = true;   //This one stays on
@@ -162,6 +177,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         ArrayList<Product> currentProducts = currentSupplier.getProducts();
                         currentProducts = alterFromName(currentProducts, viewHolder.name.getText().toString(), false);
                         currentSupplier.setProducts(currentProducts);
+                        Member.connectedMember.getSuppliers().set(groupPosition, currentSupplier);
                     }
                 }
             }

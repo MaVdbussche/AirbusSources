@@ -123,10 +123,12 @@ public class RowAdapterSuppliers extends ArrayAdapter<Supplier> {
                     //Ticking OFF column 3
                     if( ! viewHolder.name.isChecked()){
                         //Ticking OFF column 3, column 2 was OFF
-                        dataStorageSupplier[position] = false;
-                        dataStorageNegotiation[position] = false;
-                        System.out.println("How could this happen ? (line "+(new Exception().getStackTrace()[0].getLineNumber())+")");
-                        System.out.println("Ticking off column 3 while column 2 was OFF");
+                        System.out.println("This is the situation when a row gets out of view, which in fact ticks both views off.");
+                        System.out.println("Hence we don't touch their value in dataStorage in order to recover it later on, when the getView will be called again.");
+                        //dataStorageSupplier[position] = true;
+                        //dataStorageNegotiation[position] = true;
+                        //System.out.println("How could this happen ? (line "+(new Exception().getStackTrace()[0].getLineNumber())+")");
+                        //System.out.println("Ticking off column 3 while column 2 was OFF");
                     } else {
                         //Ticking OFF column 3, column 2 was ON
                         dataStorageSupplier[position] = true;   //This one stays on
@@ -183,9 +185,11 @@ public class RowAdapterSuppliers extends ArrayAdapter<Supplier> {
     private void updateDataStorage(){
         SQLUtility db = SQLUtility.prepareDataBase(getContext());
         ArrayList<String> allSupplierNames = db.getAllSuppliersNames();
-        ArrayList<String> relevantSuppliersNames = db.getAllMembersSuppliersNames(Member.connectedMember.getLogin());
+        ArrayList<String> relevantSuppliersNames = db.getAllMembersSuppliersNames(Member.connectedMember.getLogin());   //Will be empty during registering
         Collections.sort(allSupplierNames);
         Collections.sort(relevantSuppliersNames);
+
+        db.close();
 
         dataStorageSupplier = new boolean[allSupplierNames.size()];
         dataStorageNegotiation = new boolean[allSupplierNames.size()];
