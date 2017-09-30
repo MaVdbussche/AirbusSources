@@ -2,6 +2,7 @@ package vandenbussche.airbussources.activity;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,8 +31,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     // child data in format : header title, child title
     private HashMap<String, List<Product>> listDataChild;
 
-    private boolean[] dataStorageProduct;
-    private boolean[] dataStorageCFT;
+    //private boolean[] dataStorageProduct;
+    //private boolean[] dataStorageCFT;
+
+    private HashMap<Integer, boolean[]> mapDataStorageProduct = new HashMap<>();
+    private HashMap<Integer, boolean[]> mapDataStorageCFT = new HashMap<>();
 
     public ExpandableListAdapter(Context context, List<String> listDataHeader,
                                  HashMap<String, List<Product>> listChildData) {
@@ -56,7 +60,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         final ViewHolder viewHolder;
         final Supplier currentSupplier = Member.connectedMember.getSuppliers().get(groupPosition);
 
-        updateDataStorage(listDataHeader.get(groupPosition));
+        updateDataStorage(listDataHeader.get(groupPosition), groupPosition);
 
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.row_item_check_tables, parent, false);
@@ -78,8 +82,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         if(element != null) {
             String id = element.getIdentifier();
             viewHolder.name.setText(id);
-            viewHolder.name.setChecked(dataStorageProduct[childPosition]);
-            viewHolder.column3CheckBox.setChecked(dataStorageCFT[childPosition]);
+            viewHolder.name.setChecked(mapDataStorageProduct.get(groupPosition)[childPosition]);
+            viewHolder.column3CheckBox.setChecked(mapDataStorageProduct.get(groupPosition)[childPosition]);
         }
         viewHolder.name.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,8 +93,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     //Ticking OFF column 2
                     viewHolder.name.setChecked(false);
                     viewHolder.column3CheckBox.setChecked(false);
-                    dataStorageProduct[childPosition] = false;
-                    dataStorageCFT[childPosition] = false;
+                    mapDataStorageProduct.get(groupPosition)[childPosition] = false;
+                    mapDataStorageCFT.get(groupPosition)[childPosition] = false;
                     if(listDataChild.get(listDataHeader.get(groupPosition)).size() > 0){
                         ArrayList<Product> currentProducts = currentSupplier.getProducts();
                         currentProducts = removeFromName(currentProducts, viewHolder.name.getText().toString());
@@ -103,8 +107,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     //Ticking ON column 2
                     viewHolder.name.setChecked(true);
                     viewHolder.column3CheckBox.setChecked(false);   //Since it could not be on yet anyways
-                    dataStorageProduct[childPosition] = true;
-                    dataStorageCFT[childPosition] = false;
+                    mapDataStorageProduct.get(groupPosition)[childPosition] = true;
+                    mapDataStorageCFT.get(groupPosition)[childPosition] = false;
 
                     if(currentSupplier.getProducts() == null){
                         currentSupplier.setProducts( new ArrayList<Product>() );
@@ -122,8 +126,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     //Ticking ON column 3
                     if(viewHolder.name.isChecked()){
                         //Ticking ON column 3, column 2 was ON
-                        dataStorageProduct[childPosition] = true;
-                        dataStorageCFT[childPosition] = true;
+                        mapDataStorageProduct.get(groupPosition)[childPosition] = true;
+                        mapDataStorageCFT.get(groupPosition)[childPosition] = true;
 
                         ArrayList<Product> currentProducts = currentSupplier.getProducts();
                         currentProducts = alterFromName(currentProducts, viewHolder.name.getText().toString(), true);
@@ -132,8 +136,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     } else {
                         //Ticking ON column 3, column 2 was OFF
                         viewHolder.name.setChecked(true);
-                        dataStorageProduct[childPosition] = true;
-                        dataStorageCFT[childPosition] = true;
+                        mapDataStorageProduct.get(groupPosition)[childPosition] = true;
+                        mapDataStorageCFT.get(groupPosition)[childPosition] = true;
 
                         ArrayList<Product> currentProducts = currentSupplier.getProducts();
                         if (currentProducts == null){
@@ -146,14 +150,14 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     //Ticking OFF column 3
                     if( ! viewHolder.name.isChecked()){
                         //Ticking OFF column 3, column 2 was OFF
-                        dataStorageProduct[childPosition] = false;
-                        dataStorageProduct[childPosition] = false;
+                        mapDataStorageProduct.get(groupPosition)[childPosition] = false;
+                        mapDataStorageCFT.get(groupPosition)[childPosition] = false;
                         System.out.println("How could this happen ? (line "+(new Exception().getStackTrace()[0].getLineNumber())+")");
                         System.out.println("Ticking off column 3 while column 2 was OFF");
                     } else {
                         //Ticking OFF column 3, column 2 was ON
-                        dataStorageProduct[childPosition] = true;   //This one stays on
-                        dataStorageCFT[childPosition] = false;
+                        mapDataStorageProduct.get(groupPosition)[childPosition] = true;   //This one stays on
+                        mapDataStorageCFT.get(groupPosition)[childPosition] = false;
 
                         ArrayList<Product> currentProducts = currentSupplier.getProducts();
                         currentProducts = alterFromName(currentProducts, viewHolder.name.getText().toString(), false);
@@ -247,7 +251,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         return products;
     }
 
-    private void updateDataStorage(String supplier){
+    private void updateDataStorage(String supplier, Integer position){
         SQLUtility db = SQLUtility.prepareDataBase(this.context);
 
         ArrayList<String> allSuppliersProductsNames = db.getAllSuppliersProductsNames(supplier);
@@ -257,14 +261,14 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         Collections.sort(allSuppliersProductsNames);
         Collections.sort(allMembersSuppliersNames);
 
-        dataStorageProduct = new boolean[allSuppliersProductsNames.size()];
-        dataStorageCFT = new boolean[allSuppliersProductsNames.size()];
+        mapDataStorageProduct.put(position, new boolean[allSuppliersProductsNames.size()]);
+        mapDataStorageCFT.put(position, new boolean[allSuppliersProductsNames.size()]);
 
-        for(int i=0; i<dataStorageProduct.length; i++){
+        for(int i=0; i<mapDataStorageProduct.get(position).length; i++){
             for(int j=0; j<relevantProducts.size(); j++){
                 if (allSuppliersProductsNames.get(i).equals(relevantProducts.get(j).getName())){
-                    dataStorageProduct[i] = true;
-                    dataStorageCFT[i] = relevantProducts.get(j).getIsOnCFT();
+                    mapDataStorageProduct.get(position)[i] = true;
+                    mapDataStorageCFT.get(position)[i] = relevantProducts.get(j).getIsOnCFT();
                     break;
                 }
             }
