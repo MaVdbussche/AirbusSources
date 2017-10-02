@@ -48,6 +48,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         this.context = context;
         this.listDataHeader = listDataHeader;
         this.listDataChild = listChildData;
+        for(String supplier : listDataHeader) {
+            updateDataStorage(supplier, listDataHeader.indexOf(supplier));
+        }
     }
 
     @Override
@@ -66,7 +69,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         final ViewHolder viewHolder;
         final Supplier currentSupplier = Member.connectedMember.getSuppliers().get(groupPosition);
 
-        updateDataStorage(listDataHeader.get(groupPosition), groupPosition);
+        //updateDataStorage(listDataHeader.get(groupPosition), groupPosition);
 
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.row_item_check_tables, parent, false);
@@ -89,7 +92,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             String id = element.getIdentifier();
             viewHolder.name.setText(id);
             viewHolder.name.setChecked(mapDataStorageProduct.get(groupPosition)[childPosition]);
-            viewHolder.column3CheckBox.setChecked(mapDataStorageProduct.get(groupPosition)[childPosition]);
+            viewHolder.column3CheckBox.setChecked(mapDataStorageCFT.get(groupPosition)[childPosition]);
         }
         viewHolder.name.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,6 +132,65 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             }
         });
 
+        viewHolder.column3CheckBox.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v){
+                if(viewHolder.column3CheckBox.isChecked()){
+                    //Ticking ON column 3
+                    if(viewHolder.name.isChecked()){
+                        //Ticking ON column 3, column 2 was ON
+                        mapDataStorageProduct.get(groupPosition)[childPosition] = true;
+                        mapDataStorageCFT.get(groupPosition)[childPosition] = true;
+
+                        ArrayList<Product> currentProducts = currentSupplier.getProducts();
+                        currentProducts = alterFromName(currentProducts, viewHolder.name.getText().toString(), true);
+                        currentSupplier.setProducts(currentProducts);
+                        Member.connectedMember.getSuppliers().set(groupPosition, currentSupplier);
+                        System.out.println("Situation 1");
+
+                    } else {
+                        //Ticking ON column 3, column 2 was OFF
+                        viewHolder.name.setChecked(true);
+                        mapDataStorageProduct.get(groupPosition)[childPosition] = true;
+                        mapDataStorageCFT.get(groupPosition)[childPosition] = true;
+
+                        ArrayList<Product> currentProducts = currentSupplier.getProducts();
+                        if (currentProducts == null){
+                            currentProducts = new ArrayList<Product>();
+                        }
+                        currentProducts.add(new Product(viewHolder.name.getText().toString(), true));
+                        currentSupplier.setProducts(currentProducts);
+                        Member.connectedMember.getSuppliers().set(groupPosition, currentSupplier);
+                        System.out.println("Situation 2");
+                    }
+                } else {
+                    //Ticking OFF column 3
+                    if( ! viewHolder.name.isChecked()){
+                        //Ticking OFF column 3, column 2 was OFF
+                        //System.out.println("This is the situation when a row gets out of view, which in fact ticks both views off.");
+                        //System.out.println("Hence we don't touch their value in dataStorage in order to recover it later on, when the getView will be called again.");
+                        //System.out.println("This could also have happened because of column 2 being ticked off while column 3 was ticked.");
+                        //mapDataStorageProduct.get(groupPosition)[childPosition] = false;
+                        //mapDataStorageCFT.get(groupPosition)[childPosition] = false;
+                        System.out.println("How could this happen ? (line "+(new Exception().getStackTrace()[0].getLineNumber())+")");
+                        System.out.println("Ticking off column 3 while column 2 was OFF");
+                    } else {
+                        //Ticking OFF column 3, column 2 was ON
+                        mapDataStorageProduct.get(groupPosition)[childPosition] = true;   //This one stays on
+                        mapDataStorageCFT.get(groupPosition)[childPosition] = false;
+
+                        ArrayList<Product> currentProducts = currentSupplier.getProducts();
+                        currentProducts = alterFromName(currentProducts, viewHolder.name.getText().toString(), false);
+                        currentSupplier.setProducts(currentProducts);
+                        Member.connectedMember.getSuppliers().set(groupPosition, currentSupplier);
+                        System.out.println("Situation 3");
+                    }
+                }
+            }
+        });
+
+        /**
         viewHolder.column3CheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -182,6 +244,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 }
             }
         });
+         **/
         return convertView;
     }
 
@@ -276,6 +339,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
         Collections.sort(allSuppliersProductsNames);
         Collections.sort(allMembersSuppliersNames);
+        Collections.sort(relevantProducts);
 
         mapDataStorageProduct.put(position, new boolean[allSuppliersProductsNames.size()]);
         mapDataStorageCFT.put(position, new boolean[allSuppliersProductsNames.size()]);
@@ -285,7 +349,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 if (allSuppliersProductsNames.get(i).equals(relevantProducts.get(j).getName())){
                     mapDataStorageProduct.get(position)[i] = true;
                     mapDataStorageCFT.get(position)[i] = relevantProducts.get(j).getIsOnCFT();
-                    break;
                 }
             }
         }

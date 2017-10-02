@@ -119,6 +119,8 @@ public class Research {
         {
             //We get idProfiles of all matching members
             Cursor c = db.getEntriesFromDB("Member", new String[]{"IDProfile"}, "Name LIKE "+"\'%"+word+"%\'", null);
+            Cursor d = db.getEntriesFromDB("Member", new String[]{"IDProfile"}, "Surname LIKE "+"\'%"+word+"%\'", null);
+            Cursor e = db.getEntriesFromDB("Member", new String[]{"IDProfile"}, "BU LIKE "+"\'%"+word+"%\'", null);
             if(c.moveToFirst()){
                 //For all of those idProfiles
                 for(int i=0; i<c.getCount(); i++){
@@ -139,6 +141,47 @@ public class Research {
                 }
             }
             c.close();
+            if(d.moveToFirst()){
+                //For all of those idProfiles
+                for(int i=0; i<d.getCount(); i++){
+                    String idProfile = d.getString(d.getColumnIndex("IDProfile"));
+
+                    for (Result result : results){
+                        //If it is already contained in the list, we increase its pertinence
+                        if(idProfile.equals(result.value)){
+                            result.incrPertinence(1);
+                            flag = true;
+                        }
+                    }
+                    if( ! flag){
+                        //Otherwise we add it to the list
+                        results.add(new Result(idProfile));
+                    }
+                    d.moveToNext();
+                }
+            }
+            d.close();
+            if(e.moveToFirst()){
+                //For all of those idProfiles
+                for(int i=0; i<e.getCount(); i++){
+                    String idProfile = e.getString(e.getColumnIndex("IDProfile"));
+
+                    for (Result result : results){
+                        //If it is already contained in the list, we increase its pertinence
+                        if(idProfile.equals(result.value)){
+                            result.incrPertinence(1);
+                            flag = true;
+                        }
+                    }
+                    if( ! flag){
+                        //Otherwise we add it to the list
+                        results.add(new Result(idProfile));
+                    }
+                    e.moveToNext();
+                }
+            }
+            e.close();
+
             db.close();
         }
         //Now we have a list of Result instances, which we will copy in pertinence order into an ArrayList<String>

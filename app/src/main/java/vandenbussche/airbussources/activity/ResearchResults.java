@@ -23,14 +23,14 @@ public class ResearchResults extends AppCompatActivity {
 
     private ListView listView;
 
-    final Intent inputIntent = getIntent();
-    final String resultsType = inputIntent.getStringExtra("Research Type");
-    ArrayList<CharSequence> resultsIdentifiers = inputIntent.getExtras().getCharSequenceArrayList("resultsList");
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_research_results);
+
+        final Intent inputIntent = getIntent();
+        final String resultsType = inputIntent.getStringExtra("Research Type");
+        final ArrayList<CharSequence> resultsIdentifiers = inputIntent.getExtras().getCharSequenceArrayList("resultsList");
 
         ActionBar ab = getSupportActionBar();
         if(ab != null) {
@@ -44,7 +44,7 @@ public class ResearchResults extends AppCompatActivity {
 
         if(resultsIdentifiers.size() > 0)
         {
-            sendToAdapter(resultsIdentifiers);
+            sendToAdapter(resultsIdentifiers, resultsType);
         }
         else
         {
@@ -78,7 +78,7 @@ public class ResearchResults extends AppCompatActivity {
     }
 
 
-    private void sendToAdapter(List<CharSequence> elements){
+    private void sendToAdapter(List<CharSequence> elements, String resultsType){
 
         ArrayList<Namable> results = new ArrayList<>();
 
