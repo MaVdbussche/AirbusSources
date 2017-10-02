@@ -1,19 +1,14 @@
 package vandenbussche.airbussources.activity;
 
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Typeface;
-import android.support.v4.util.SparseArrayCompat;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
 import android.widget.CheckedTextView;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -33,12 +28,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private List<String> listDataHeader; // header titles
     // child data in format : header title, child title
     private HashMap<String, List<Product>> listDataChild;
-
-    //private boolean[] dataStorageProduct;
-    //private boolean[] dataStorageCFT;
-
-    private SparseArray<boolean[]> dataStorageProduct = new SparseArray<>();
-    private SparseArray<boolean[]> dataStorageCFT = new SparseArray<>();
 
     private HashMap<Integer, boolean[]> mapDataStorageProduct = new HashMap<>();
     private HashMap<Integer, boolean[]> mapDataStorageCFT = new HashMap<>();
@@ -69,23 +58,15 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         final ViewHolder viewHolder;
         final Supplier currentSupplier = Member.connectedMember.getSuppliers().get(groupPosition);
 
-        //updateDataStorage(listDataHeader.get(groupPosition), groupPosition);
 
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.row_item_check_tables, parent, false);
         }
-        //viewHolder = (ViewHolder) convertView.getTag();
-        //if (viewHolder == null) //If this view has never been instantiated before
-        //{
         viewHolder = new ViewHolder();
-        //viewHolder.image = (ImageView) convertView.findViewById(R.id.imageView);
         viewHolder.name = (CheckedTextView) convertView.findViewById(R.id.rowItemCheckTablesItemNameCheckedTextView);
         viewHolder.column3CheckBox = (CheckBox) convertView.findViewById(R.id.rowItemCheckTablesCheckBox);
-        //viewHolder.details = (TextView) convertView.findViewById(R.id.rowItemResearchResultsTextViewDetails);
-        //viewHolder.nbr = (TextView) convertView.findViewById(R.id.textView4);
-        //viewHolder.time = (TextView) convertView.findViewById(R.id.textView5);
         convertView.setTag(viewHolder);
-        //}
+
         //Gives the relevant values to the layout Views
         final Product element = listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition);
         if(element != null) {
@@ -168,11 +149,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     //Ticking OFF column 3
                     if( ! viewHolder.name.isChecked()){
                         //Ticking OFF column 3, column 2 was OFF
-                        //System.out.println("This is the situation when a row gets out of view, which in fact ticks both views off.");
-                        //System.out.println("Hence we don't touch their value in dataStorage in order to recover it later on, when the getView will be called again.");
-                        //System.out.println("This could also have happened because of column 2 being ticked off while column 3 was ticked.");
-                        //mapDataStorageProduct.get(groupPosition)[childPosition] = false;
-                        //mapDataStorageCFT.get(groupPosition)[childPosition] = false;
                         System.out.println("How could this happen ? (line "+(new Exception().getStackTrace()[0].getLineNumber())+")");
                         System.out.println("Ticking off column 3 while column 2 was OFF");
                     } else {

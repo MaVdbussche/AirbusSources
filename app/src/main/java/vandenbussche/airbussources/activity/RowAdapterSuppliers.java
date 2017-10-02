@@ -37,18 +37,11 @@ public class RowAdapterSuppliers extends ArrayAdapter<Supplier> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.row_item_check_tables, parent, false);
         }
-        //viewHolder = (ViewHolder) convertView.getTag();
-        //if (viewHolder == null) //If this view has never been instantiated before
-        //{
-            viewHolder = new ViewHolder();
-            //viewHolder.image = (ImageView) convertView.findViewById(R.id.imageView);
-            viewHolder.name = (CheckedTextView) convertView.findViewById(R.id.rowItemCheckTablesItemNameCheckedTextView);
-            viewHolder.column3CheckBox = (CheckBox) convertView.findViewById(R.id.rowItemCheckTablesCheckBox);
-            //viewHolder.details = (TextView) convertView.findViewById(R.id.rowItemResearchResultsTextViewDetails);
-            //viewHolder.nbr = (TextView) convertView.findViewById(R.id.textView4);
-            //viewHolder.time = (TextView) convertView.findViewById(R.id.textView5);
-            convertView.setTag(viewHolder);
-        //}
+        viewHolder = new ViewHolder();
+        viewHolder.name = (CheckedTextView) convertView.findViewById(R.id.rowItemCheckTablesItemNameCheckedTextView);
+        viewHolder.column3CheckBox = (CheckBox) convertView.findViewById(R.id.rowItemCheckTablesCheckBox);
+        convertView.setTag(viewHolder);
+
         //Gives the relevant values to the layout Views
         final Supplier element = getItem(position);
         if(element != null) {

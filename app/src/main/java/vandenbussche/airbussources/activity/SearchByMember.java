@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.StringTokenizer;
 
 import vandenbussche.airbussources.R;
 import vandenbussche.airbussources.core.Research;
