@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Set;
 
 import vandenbussche.airbussources.core.Member;
@@ -201,7 +202,7 @@ public class SQLUtility extends SQLiteOpenHelper {
      * @param IDProfile the Member we are looking for
      * @param  supplier the name of the Supplier we are looking for
      * @return An ArrayList<Product> containing all the products associated
-     * with this supplier and this Member in the DB.
+     * with this supplier and this Member in the DB. This list is ordered alphabetically.
      * @throws SQLiteException if an error occurred while accessing the DB
      */
     public ArrayList<Product> getRelevantSuppliersProducts(String IDProfile, String supplier){
@@ -213,9 +214,13 @@ public class SQLUtility extends SQLiteOpenHelper {
                 null
         );
         if(c.moveToFirst()){
-            boolean cft = ( c.getString(c.getColumnIndex("CFT")).equals("1") );
-            returnedList.add(new Product( c.getString(c.getColumnIndex("Product")), cft) );
+            for(int i=0; i<c.getCount(); i++){
+                boolean cft = (c.getString(c.getColumnIndex("CFT")).equals("1"));
+                returnedList.add(new Product(c.getString(c.getColumnIndex("Product")), cft));
+                c.moveToNext();
+            }
         }
+        Collections.sort(returnedList);
         c.close();
         return returnedList;
     }
