@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import vandenbussche.airbussources.R;
+import vandenbussche.airbussources.core.Member;
 import vandenbussche.airbussources.core.Product;
 import vandenbussche.airbussources.core.Supplier;
 import vandenbussche.airbussources.database.SQLUtility;
@@ -28,13 +29,12 @@ public class DetailsMember extends AppCompatActivity {
     private ExpandableListView listProducts;
     private ListView listSuppliers;
 
+    private Member currentMember;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details_member);
-
-        Intent inputIntent = getIntent();
-        String idProfile = inputIntent.getStringExtra("Member");
 
         ActionBar ab = getSupportActionBar();
         if(ab != null) {
@@ -51,10 +51,21 @@ public class DetailsMember extends AppCompatActivity {
         listProducts = (ExpandableListView) findViewById(R.id.memberProductsListView);
         listSuppliers = (ListView) findViewById(R.id.memberSuppliersListView);
 
+        Intent inputIntent = getIntent();
+        String idProfile = inputIntent.getStringExtra("Member");
         SQLUtility db = SQLUtility.prepareDataBase(DetailsMember.this);
         ArrayList<String> basicInfo = db.getMemberBasicInfo(idProfile);//{IDProfile, password, name, surname, role, commodity, business unit}
-        String fullName = basicInfo.get(2) + basicInfo.get(3);
-        String fullDetails = basicInfo.get(6)+"-"+basicInfo.get(5)+"-"+basicInfo.get(4);
+
+        currentMember = new Member(idProfile,
+                                    basicInfo.get(1),
+                                    basicInfo.get(2),
+                                    basicInfo.get(3),
+                                    basicInfo.get(6),
+                                    basicInfo.get(5),
+                                    basicInfo.get(4));
+        String fullName = currentMember.getFirstName()+" "+currentMember.getName();
+        String fullDetails = currentMember.getBu()+" - "+currentMember.getCommodity()+" - "+currentMember.getRole();
+
         screenTitle.setText(fullName);
         details.setText(fullDetails);
 
@@ -63,9 +74,9 @@ public class DetailsMember extends AppCompatActivity {
         Collections.sort(suppliersNamesList);
         ArrayList<Supplier> suppliersList = new ArrayList<Supplier>(suppliersNamesList.size());
         for(int i=0; i<suppliersNamesList.size(); i++){
-            suppliersList.add(new Supplier(suppliersNamesList.get(i), null, false));
+            suppliersList.add(new Supplier(suppliersNamesList.get(i), null, db.getNegotiationState(idProfile, suppliersNamesList.get(i))));
         }
-        RowAdapterSuppliers adapter = new RowAdapterSuppliers(DetailsMember.this, suppliersList);
+        RowAdapterSuppliers adapter = new RowAdapterSuppliers(DetailsMember.this, suppliersList, currentMember);
         listSuppliers.setAdapter(adapter);
 
         //Products list
@@ -75,8 +86,8 @@ public class DetailsMember extends AppCompatActivity {
         for(int i=0; i<listDataHeader.size(); i++){
             listDataChild.put(suppliersNamesList.get(i), db.getRelevantSuppliersProducts(idProfile, suppliersNamesList.get(i)));
         }
-        ExpandableListAdapter expandableListAdapter = new ExpandableListAdapter(DetailsMember.this, listDataHeader, listDataChild);
-        listProducts.setAdapter(expandableListAdapter);
+        ExpandableListAdapterProducts expandableListAdapterProducts = new ExpandableListAdapterProducts(DetailsMember.this, listDataHeader, listDataChild);
+        listProducts.setAdapter(expandableListAdapterProducts);
         db.close();
     }
 }

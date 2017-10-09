@@ -65,17 +65,25 @@
     <string name="supplier_screen_title">[insert supplier name]</string>
     <string name="supplier_productsgrid_title">Products :</string>
     <string name="supplier_membersgrid_title">People :</string>
+    <string name="supplier_membersgrid_titleColumn1">Relationship :</string>
+    <string name="supplier_membersgrid_titleColumn3">Neg. planned :</string>
 
     <string name="member_screenTitle">Member Details</string>
     <string name="member_screen_title">[insert member name]</string>
     <string name="member_details_title">[insert member details]</string>
-    <string name="member_productsgrid_title">Products :</string>
     <string name="member_suppliersgrid_title">Suppliers :</string>
+    <string name="member_suppliersgrid_titleColumn1">Relationship :</string>
+    <string name="member_suppliersgrid_titleColumn3">Neg. planned :</string>
+    <string name="member_productsgrid_title">Products :</string>
+    <string name="member_productsgrid_titleColumn1">Working on :</string>
+    <string name="member_productsgrid_titleColumn3">CFT planned :</string>
 
     <string name="product_screenTitle">Product Details</string>
     <string name="product_screen_title">[insert product name]</string>
     <string name="product_suppliersgrid_title">Suppliers :</string>
     <string name="product_membersgrid_title">People :</string>
+    <string name="product_membersgrid_titleColumn1">Working on this :</string>
+    <string name="product_membersgrid_titleColumn3">CFT planned :</string>
 
     <string name="editprofile_screen_title">Profile Editor</string>
     <string name="editprofile_screen_title_button">edit</string>

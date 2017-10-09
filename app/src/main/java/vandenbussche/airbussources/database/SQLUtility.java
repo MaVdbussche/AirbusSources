@@ -565,7 +565,7 @@ public class SQLUtility extends SQLiteOpenHelper {
         }catch (SQLiteException e){
             throw new SQLiteException("Error while opening the DB");
         }
-        db.myDB.execSQL("PRAGMA foreign_keys = ON;");
+        //db.myDB.execSQL("PRAGMA foreign_keys = ON;");
         return db;
     }
 

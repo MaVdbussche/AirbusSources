@@ -66,7 +66,7 @@ public class SignUpActivityPageThree extends AppCompatActivity {
         for(int i=0; i<namesList.size(); i++){
             suppliersList.add(new Supplier(namesList.get(i), null, false));
         }
-        RowAdapterSuppliers adapter = new RowAdapterSuppliers(SignUpActivityPageThree.this, suppliersList);
+        RowAdapterSuppliersTickable adapter = new RowAdapterSuppliersTickable(SignUpActivityPageThree.this, suppliersList);
         listSuppliersToTick.setAdapter(adapter);
     }
 }

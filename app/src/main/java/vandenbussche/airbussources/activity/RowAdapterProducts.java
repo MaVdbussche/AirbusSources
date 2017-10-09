@@ -19,6 +19,9 @@ import vandenbussche.airbussources.core.Product;
 
 public class RowAdapterProducts extends ArrayAdapter<Product> {
 
+    //TODO This class has no use right now
+
+
     private Member relevantMember;
 
     public RowAdapterProducts(Context context, @NonNull List<Product> elements, Member member){
@@ -51,10 +54,12 @@ public class RowAdapterProducts extends ArrayAdapter<Product> {
             String id = element.getIdentifier();
             viewHolder.name.setText(id);
             ((CheckedTextView) viewHolder.name).setChecked(relevantMember.isWorkingOn(getContext(), element.getName()));
-            viewHolder.column3CheckBox.setChecked(Member.isThereACFTOn(getContext(), relevantMember, element));
+            viewHolder.column3CheckBox.setChecked(Member.isThereACFTOn(getContext(), relevantMember, element.getName(), "ProductName"));
         }
         return convertView;
     }
+
+    //There is no clickListener, as those are read-only views
 
     /**
      * Stores important information about an element to be displayed in the Adapter

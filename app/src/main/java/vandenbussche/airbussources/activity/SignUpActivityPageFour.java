@@ -88,7 +88,7 @@ public class SignUpActivityPageFour extends AppCompatActivity {
 
         db.close();
 
-        ExpandableListAdapter adapter = new ExpandableListAdapter(SignUpActivityPageFour.this, listDataHeader, listDataChild);
+        ExpandableListAdapterProductsTickable adapter = new ExpandableListAdapterProductsTickable(SignUpActivityPageFour.this, listDataHeader, listDataChild);
         listProductsToTick.setAdapter(adapter);
     }
 }

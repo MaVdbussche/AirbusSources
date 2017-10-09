@@ -1,6 +1,5 @@
 package vandenbussche.airbussources.activity;
 
-
 import android.content.Context;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
@@ -22,7 +21,7 @@ import vandenbussche.airbussources.core.Product;
 import vandenbussche.airbussources.core.Supplier;
 import vandenbussche.airbussources.database.SQLUtility;
 
-public class ExpandableListAdapter extends BaseExpandableListAdapter {
+public class ExpandableListAdapterProductsTickable extends BaseExpandableListAdapter {
 
     private Context context;
     private List<String> listDataHeader; // header titles
@@ -32,8 +31,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private HashMap<Integer, boolean[]> mapDataStorageProduct = new HashMap<>();
     private HashMap<Integer, boolean[]> mapDataStorageCFT = new HashMap<>();
 
-    public ExpandableListAdapter(Context context, List<String> listDataHeader,
-                                 HashMap<String, List<Product>> listChildData) {
+    public ExpandableListAdapterProductsTickable(Context context, List<String> listDataHeader,
+                                                 HashMap<String, List<Product>> listChildData) {
         this.context = context;
         this.listDataHeader = listDataHeader;
         this.listDataChild = listChildData;

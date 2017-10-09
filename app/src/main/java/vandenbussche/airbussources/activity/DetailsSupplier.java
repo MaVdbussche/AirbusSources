@@ -39,6 +39,6 @@ public class DetailsSupplier extends AppCompatActivity {
         listMembers = (ExpandableListView) findViewById(R.id.supplierMembersListView);
 
         //listProducts.setAdapter(null);//TODO
-        //listMembers.setAdapter(null);//TODO (ExpandableListAdapter) (The idea is to group members by Business Unit)
+        //listMembers.setAdapter(null);//TODO (ExpandableListAdapterProductsTickable) (The idea is to group members by Business Unit)
     }
 }

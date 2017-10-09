@@ -193,10 +193,10 @@ public class Member implements Namable {
         }
     }
 
-    public static boolean isThereANegotiationBetween(Context context, Member member, Supplier supplier){
+    public static boolean isThereANegotiationBetween(Context context, Member member, String supplier){
 
         SQLUtility db = SQLUtility.prepareDataBase(context);
-        ArrayList<String> list = db.getElementFromDB("Member_Supplier_Product", "Negotiation", "Member = \""+member.idProfile+"\" AND Supplier = \""+supplier.getName()+"\"");
+        ArrayList<String> list = db.getElementFromDB("Member_Supplier_Product", "Negotiation", "Member = \""+member.idProfile+"\" AND Supplier = \""+supplier+"\"");
         db.close();
         if(list.size() == 0){
             //There is no such match in the DB
@@ -209,10 +209,10 @@ public class Member implements Namable {
         }
         return list.get(0).equals("1");
     }
-    public static boolean isThereACFTOn(Context context, Member member, Product product){
+    public static boolean isThereACFTOn(Context context, Member member, String supplier, String product){
 
         SQLUtility db = SQLUtility.prepareDataBase(context);
-        ArrayList<String> list = db.getElementFromDB("Member_Supplier_Product", "CFT", "Member =\""+member.idProfile+"\" AND Product = \""+product.getName()+"\"");
+        ArrayList<String> list = db.getElementFromDB("Member_Supplier_Product", "CFT", "Member =\""+member.idProfile+"\" AND Product = \""+product+"\" AND Supplier = \""+supplier+"\"");
         db.close();
         if(list.size() != 1){
             System.out.println("Redundancy detected in the database ! Please check the Member_Supplier_Product table. Returning false");

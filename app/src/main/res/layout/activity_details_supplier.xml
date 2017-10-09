@@ -32,8 +32,8 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginTop="22dp"
-        app:layout_constraintTop_toBottomOf="@+id/supplierScreenTitle" />
+        tools:layout_editor_absoluteY="64dp"
+        app:layout_constraintHorizontal_bias="0.503" />
 
     <ListView
         android:id="@+id/supplierProductsListView"
@@ -45,7 +45,7 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="25dp"
         app:layout_constraintTop_toBottomOf="@+id/supplierProductsTitle" />
 
     <TextView
@@ -59,20 +59,46 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="25dp"
         app:layout_constraintBottom_toTopOf="@+id/supplierMembersListView" />
 
-    <ExpandableListView
+    <TextView
+        android:id="@+id/memberProductsTitleColumn1"
+        android:layout_width="217dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:text="@string/supplier_membersgrid_titleColumn1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_editor_absoluteY="314dp"
+        app:layout_constraintHorizontal_bias="0.205" />
+
+    <TextView
+        android:id="@+id/memberProductsTitleColumn3"
+        android:layout_width="89dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:text="@string/supplier_membersgrid_titleColumn3"
+        app:layout_constraintHorizontal_bias="0.888"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_editor_absoluteY="314dp" />
+
+    <ListView
         android:id="@+id/supplierMembersListView"
         android:layout_width="306dp"
         android:layout_height="150dp"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="30dp"
         android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginRight="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="50dp"
-        app:layout_constraintHorizontal_bias="0.505"
-        tools:layout_editor_absoluteY="313dp" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
