@@ -7,7 +7,7 @@ package vandenbussche.airbussources.core;
 public interface Namable {
 
     /**
-     * Returns the String used to identify this object. Can be basically anything, as long as identifies the object self-sufficiently
+     * Returns the String used to identify this object. Can be basically anything, as long as it identifies the object self-sufficiently in the database
      * @return the identifier of this object
      */
     String getIdentifier();

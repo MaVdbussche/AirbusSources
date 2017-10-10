@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import vandenbussche.airbussources.core.Member;
+import vandenbussche.airbussources.core.Namable;
 import vandenbussche.airbussources.core.Product;
 import vandenbussche.airbussources.core.Supplier;
 
@@ -279,6 +280,47 @@ public class SQLUtility extends SQLiteOpenHelper {
     public ArrayList<String> getAllSuppliersProductsNames(String supplier){
 
         return getElementFromDB("Suppl_Prod", "Product", "Supplier=\""+supplier+"\"");
+    }
+
+    public ArrayList<String> getAllSuppliersMembersNames(String supplier){
+
+        ArrayList<String> idProfiles = new ArrayList<>();
+        ArrayList<String> returnedList = new ArrayList<>();
+        Cursor c = getEntriesFromDB("Member_Supplier_Product", new String[]{"Member"}, "Supplier=\""+supplier+"\"", null);  //This Cursor should be a couple rows long
+        if(c.moveToFirst()){
+            for(int i=0; i<c.getCount(); i++){
+                String idProfile = c.getString(c.getColumnIndex("Member"));
+                if( ! idProfiles.contains(idProfile)){
+                    idProfiles.add(idProfile);
+                    Cursor d = getEntriesFromDB("Member", new String[]{"Name", "Surname"}, "IDProfile = \""+idProfile+"\"", null);
+                    returnedList.add(d.getString(d.getColumnIndex("Name")) + d.getString(d.getColumnIndex("Surname")));
+                    d.close();
+                }
+            }
+        }
+        c.close();
+        return returnedList;
+    }
+
+    public ArrayList<String> getAllSuppliersMembersIDProfiles(String supplier){
+
+        ArrayList<String> idProfiles = new ArrayList<>();
+        Cursor c = getEntriesFromDB("Member_Supplier_Product", new String[]{"Member"}, "Supplier=\""+supplier+"\"", null);  //This Cursor should be a couple rows long
+        if(c.moveToFirst()){
+            for(int i=0; i<c.getCount(); i++){
+                String idProfile = c.getString(c.getColumnIndex("Member"));
+                if( ! idProfiles.contains(idProfile)){
+                    idProfiles.add(idProfile);
+                }
+            }
+        }
+        c.close();
+        return idProfiles;
+    }
+
+    public ArrayList<String> getAllProductsSuppliersNames(String product){
+
+        return getElementFromDB("Suppl_Prod", "Supplier", "Product=\""+product+"\"");
     }
 
     public ArrayList<String> getAllMembersSuppliersNames(String IDProfile){

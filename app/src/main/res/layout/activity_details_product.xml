@@ -89,7 +89,7 @@
         app:layout_constraintRight_toRightOf="parent"
         tools:layout_editor_absoluteY="319dp" />
 
-    <ListView
+    <ExpandableListView
         android:id="@+id/productMembersListView"
         android:layout_width="306dp"
         android:layout_height="150dp"

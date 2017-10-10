@@ -2,6 +2,7 @@ package vandenbussche.airbussources.activity;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +44,7 @@ public class RowAdapterResearchResults extends ArrayAdapter<Namable> {
             convertView.setTag(viewHolder);
         }
         //Gives the relevant values to the layout Views
-        Namable element = getItem(position);
+        Namable element = (Namable) getItem(position);
         if (element instanceof Member) {
             String fullName = ((Member) element).getFirstName() + " " + ((Member) element).getName();
             String details = ((Member) element).getBu() + " - " + ((Member) element).getCommodity();

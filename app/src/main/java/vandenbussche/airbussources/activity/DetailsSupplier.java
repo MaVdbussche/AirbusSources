@@ -1,13 +1,21 @@
 package vandenbussche.airbussources.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import vandenbussche.airbussources.R;
+import vandenbussche.airbussources.core.Member;
+import vandenbussche.airbussources.core.Namable;
+import vandenbussche.airbussources.core.Product;
+import vandenbussche.airbussources.core.Supplier;
+import vandenbussche.airbussources.database.SQLUtility;
 
 public class DetailsSupplier extends AppCompatActivity {
 
@@ -16,7 +24,7 @@ public class DetailsSupplier extends AppCompatActivity {
     private TextView membersTitle;
 
     private ListView listProducts;
-    private ExpandableListView listMembers;
+    private ListView listMembers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,14 +39,33 @@ public class DetailsSupplier extends AppCompatActivity {
             ab.show();
         }
 
+        Intent inputIntent = getIntent();
+        String supplierName = inputIntent.getStringExtra("Supplier");
+
         screenTitle = (TextView) findViewById(R.id.supplierScreenTitle);
         productsTitle = (TextView) findViewById(R.id.supplierProductsTitle);
         membersTitle = (TextView) findViewById(R.id.supplierMembersTitle);
 
         listProducts = (ListView) findViewById(R.id.supplierProductsListView);
-        listMembers = (ExpandableListView) findViewById(R.id.supplierMembersListView);
+        listMembers = (ListView) findViewById(R.id.supplierMembersListView);
 
-        //listProducts.setAdapter(null);//TODO
-        //listMembers.setAdapter(null);//TODO (ExpandableListAdapterProductsTickable) (The idea is to group members by Business Unit)
+        screenTitle.setText(supplierName);
+
+        SQLUtility db = SQLUtility.prepareDataBase(DetailsSupplier.this);
+        List<Product> products = db.getAllSuppliersProducts(supplierName);
+        List<Namable> productsAsNamables = new ArrayList<Namable>();
+        for (Product product : products) {
+            productsAsNamables.add(product);
+        }   //I am aware this whole block of code is pointless, but I can not think of a better way to cast my Products to Namables at the moment
+        RowAdapterResearchResults adapterProducts = new RowAdapterResearchResults(DetailsSupplier.this, productsAsNamables);
+        listProducts.setAdapter(adapterProducts);
+
+        ArrayList<String> membersIDProfiles = db.getAllSuppliersMembersIDProfiles(supplierName);
+        ArrayList<Member> members = new ArrayList<>();
+        for (String idProfile : membersIDProfiles) {
+            members.add(new Member(DetailsSupplier.this, idProfile));
+        }
+        RowAdapterMembers adapterMembers = new RowAdapterMembers(DetailsSupplier.this, members, null, new Supplier(supplierName, null));
+        listMembers.setAdapter(adapterMembers);
     }
 }

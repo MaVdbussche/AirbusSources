@@ -1,6 +1,6 @@
 package vandenbussche.airbussources.core;
 
-public class Product implements Comparable, Namable {
+public class Product implements Namable, Comparable<Product>  {
 
     private String name;
     private boolean isOnCFT;
@@ -23,8 +23,8 @@ public class Product implements Comparable, Namable {
     public void setName(String s){this.name = s;}
     public void setCFT(boolean b){this.isOnCFT = b;}
 
-    public int compareTo(Object other) throws ClassCastException{
-        if( ! (other instanceof Product)){
+    public int compareTo(Product other) throws ClassCastException{
+        if( other != null){
             throw new ClassCastException("Could not compare those, as one of them is not a Product and/or is null");
         }
         return this.name.compareTo(((Product) other).getName());

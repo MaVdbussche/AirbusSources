@@ -22,8 +22,6 @@ import vandenbussche.airbussources.core.Supplier;
 public class RowAdapterSuppliers extends ArrayAdapter<Supplier> {
 
 
-    //TODO Code has been copy-pasted from RowAdapterProducts, is it correct ? To double-check !
-
     private Member relevantMember;
 
     public RowAdapterSuppliers(Context context, @NonNull List<Supplier> elements, Member member){

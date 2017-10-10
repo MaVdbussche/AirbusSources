@@ -1,9 +1,15 @@
 package vandenbussche.airbussources.core;
 
+import android.content.Context;
+import android.database.Cursor;
+
 import java.util.ArrayList;
+import java.util.Collections;
+
+import vandenbussche.airbussources.database.SQLUtility;
 
 
-public class Supplier implements Namable {
+public class Supplier implements Namable, Comparable<Supplier> {
 
     private String name;
     private ArrayList<Product> products;
@@ -20,6 +26,20 @@ public class Supplier implements Namable {
         this.isOnNegotiation = isOnNegotiation;
     }
 
+    public boolean isInRelationshipWith(Context context, String memberIDProfile){
+        SQLUtility db = SQLUtility.prepareDataBase(context);
+        Cursor c = db.getEntriesFromDB("Member_Supplier_Product",
+                                        new String[]{"Member", "Supplier"},
+                                        "Member = \""+memberIDProfile+"\" AND Supplier = \""+this.getName()+"\"", null);
+        if(c.getCount() > 0){
+            c.close();
+            return true;
+        } else {
+            c.close();
+            return false;
+        }
+    }
+
     public String getIdentifier(){return this.getName();}
 
     public String getName(){return this.name;}
@@ -27,6 +47,7 @@ public class Supplier implements Namable {
     public boolean getNegotiationState(){return this.isOnNegotiation;}
 
     public void setProducts(ArrayList<Product> products){
+        Collections.sort(products);
         this.products = products;
     }
     public void setNegotiationState(boolean b){
@@ -35,6 +56,13 @@ public class Supplier implements Namable {
 
     public String toString(){
         return this.name;
+    }
+
+    public int compareTo(Supplier other){
+        if( other != null){
+            throw new ClassCastException("Could not compare those, as one of them is not a Product and/or is null");
+        }
+        return this.name.compareTo(((Supplier) other).getName());
     }
 
     public boolean equals(Object o) {

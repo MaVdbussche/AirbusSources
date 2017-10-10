@@ -24,21 +24,24 @@ import vandenbussche.airbussources.database.SQLUtility;
 /**
  * Adapter to be displayed in the details activities. Its views are NOT clickable in any way, they are just read-only values
  */
-public class ExpandableListAdapterProducts extends BaseExpandableListAdapter {
+public class ExpandableListAdapterMembers extends BaseExpandableListAdapter {
 
     private Context context;
-    private List<String> listDataHeader; // header titles
+    private Product relevantProduct;
+    private List<String> listDataHeader; // header titles (Suppliers names)
     // child data in format : header title, child title
-    private HashMap<String, List<Product>> listDataChild;
+    private HashMap<String, List<Member>> listDataChild;
 
-    private HashMap<Integer, boolean[]> mapDataStorageProduct = new HashMap<>();
+    private HashMap<Integer, boolean[]> mapDataStorageProduct = new HashMap<>();    //Should always be true
     private HashMap<Integer, boolean[]> mapDataStorageCFT = new HashMap<>();
 
-    public ExpandableListAdapterProducts(Context context, List<String> listDataHeader,
-                                                 HashMap<String, List<Product>> listChildData) {
+    public ExpandableListAdapterMembers(Context context, List<String> listDataHeader,
+                                            HashMap<String, List<Member>> listChildData,
+                                            Product relevantProduct) {
         this.context = context;
         this.listDataHeader = listDataHeader;
         this.listDataChild = listChildData;
+        this.relevantProduct = relevantProduct;
         for(String supplier : listDataHeader) {
             updateDataStorage(supplier, listDataHeader.indexOf(supplier));
         }
@@ -69,7 +72,7 @@ public class ExpandableListAdapterProducts extends BaseExpandableListAdapter {
         convertView.setTag(viewHolder);
 
         //Gives the relevant values to the layout Views
-        final Product element = listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition);
+        final Member element = listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition);
         if(element != null) {
             String id = element.getIdentifier();
             viewHolder.name.setText(id);
@@ -129,24 +132,17 @@ public class ExpandableListAdapterProducts extends BaseExpandableListAdapter {
     private void updateDataStorage(String supplier, Integer position){
         SQLUtility db = SQLUtility.prepareDataBase(this.context);
 
-        ArrayList<String> allSuppliersProductsNames = db.getAllSuppliersProductsNames(supplier);
-        //ArrayList<String> allMembersSuppliersNames = db.getAllMembersSuppliersNames(Member.connectedMember.getLogin());
-        ArrayList<Product> relevantProducts = db.getRelevantSuppliersProducts(Member.connectedMember.getLogin(), supplier);
+        ArrayList<String> allSuppliersMembersNames = db.getAllSuppliersMembersNames(supplier);
+        ArrayList<String> allSuppliersMembersIDProfiles = db.getAllSuppliersMembersIDProfiles(supplier);
 
-        Collections.sort(allSuppliersProductsNames);
-        //Collections.sort(allMembersSuppliersNames);
-        Collections.sort(relevantProducts);
+        Collections.sort(allSuppliersMembersNames);
 
-        mapDataStorageProduct.put(position, new boolean[allSuppliersProductsNames.size()]);
-        mapDataStorageCFT.put(position, new boolean[allSuppliersProductsNames.size()]);
+        mapDataStorageProduct.put(position, new boolean[allSuppliersMembersNames.size()]);
+        mapDataStorageCFT.put(position, new boolean[allSuppliersMembersNames.size()]);
 
         for(int i=0; i<mapDataStorageProduct.get(position).length; i++){
-            for(int j=0; j<relevantProducts.size(); j++){
-                if (allSuppliersProductsNames.get(i).equals(relevantProducts.get(j).getName())){
-                    mapDataStorageProduct.get(position)[i] = true;
-                    mapDataStorageCFT.get(position)[i] = relevantProducts.get(j).getIsOnCFT();
-                }
-            }
+            mapDataStorageProduct.get(position)[i] = true;  //TODO
+            mapDataStorageCFT.get(position)[i] = Member.isThereACFTOn(context, allSuppliersMembersIDProfiles.get(i), supplier, relevantProduct.getName());
         }
     }
 

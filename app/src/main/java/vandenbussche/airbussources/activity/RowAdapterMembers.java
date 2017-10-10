@@ -2,6 +2,7 @@ package vandenbussche.airbussources.activity;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,19 +15,22 @@ import java.util.List;
 
 import vandenbussche.airbussources.R;
 import vandenbussche.airbussources.core.Member;
+import vandenbussche.airbussources.core.Namable;
 import vandenbussche.airbussources.core.Product;
+import vandenbussche.airbussources.core.Supplier;
 
 
-public class RowAdapterProducts extends ArrayAdapter<Product> {
+public class RowAdapterMembers extends ArrayAdapter<Member> {
 
     //TODO This class has no use right now
 
+    private Product relevantProduct;
+    private Supplier relevantSupplier;
 
-    private Member relevantMember;
-
-    public RowAdapterProducts(Context context, @NonNull List<Product> elements, Member member){
+    public RowAdapterMembers(Context context, @NonNull List<Member> elements, @Nullable Product product, @Nullable Supplier supplier){
         super(context, R.layout.row_item_check_tables, elements);
-        this.relevantMember = member;
+        this.relevantProduct = product;
+        this.relevantSupplier = supplier;
     }
 
     @Override
@@ -49,12 +53,18 @@ public class RowAdapterProducts extends ArrayAdapter<Product> {
             convertView.setTag(viewHolder);
         }
         //Gives the relevant values to the layout Views
-        Product element = getItem(position);
+        Member element = getItem(position);
         if(element != null) {
-            String id = element.getIdentifier();
-            viewHolder.name.setText(id);
-            ((CheckedTextView) viewHolder.name).setChecked(relevantMember.isWorkingOn(getContext(), element.getName()));
-            viewHolder.column3CheckBox.setChecked(Member.isThereACFTOn(getContext(), relevantMember, element.getName(), "ProductName"));
+            if(relevantProduct==null && relevantSupplier!=null) {
+                //This means we are in the DetailsSupplier activity
+                String id = element.getIdentifier();
+                viewHolder.name.setText(id);
+                ((CheckedTextView) viewHolder.name).setChecked(element.isWorkingWith(getContext(), relevantSupplier.getName()));
+                viewHolder.column3CheckBox.setChecked(Member.isThereANegotiationBetween(getContext(), element, relevantSupplier.getName()));
+            } else {
+                System.out.println("This should not have happened !");
+                System.out.println("Location : RowAdapterMembers line "+new Exception().getStackTrace()[0].getLineNumber()+".");
+            }
         }
         return convertView;
     }

@@ -6,6 +6,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import vandenbussche.airbussources.R;
 import vandenbussche.airbussources.database.SQLUtility;
@@ -209,10 +210,28 @@ public class Member implements Namable {
         }
         return list.get(0).equals("1");
     }
-    public static boolean isThereACFTOn(Context context, Member member, String supplier, String product){
+
+    public static boolean isThereANegotiationBetween(Context context, String member, String supplier){
 
         SQLUtility db = SQLUtility.prepareDataBase(context);
-        ArrayList<String> list = db.getElementFromDB("Member_Supplier_Product", "CFT", "Member =\""+member.idProfile+"\" AND Product = \""+product+"\" AND Supplier = \""+supplier+"\"");
+        ArrayList<String> list = db.getElementFromDB("Member_Supplier_Product", "Negotiation", "Member = \""+member+"\" AND Supplier = \""+supplier+"\"");
+        db.close();
+        if(list.size() == 0){
+            //There is no such match in the DB
+            return false;
+        }
+        if(list.size() != 1){
+            System.out.println("Redundancy detected in the database ! Please check the Member_Supplier_Product table. Returning false");
+            System.out.println("Location : method isThereANegotiationBetween in class Member");
+            return false;
+        }
+        return list.get(0).equals("1");
+    }
+
+    public static boolean isThereACFTOn(Context context, String member, String supplier, String product){
+
+        SQLUtility db = SQLUtility.prepareDataBase(context);
+        ArrayList<String> list = db.getElementFromDB("Member_Supplier_Product", "CFT", "Member =\""+member+"\" AND Product = \""+product+"\" AND Supplier = \""+supplier+"\"");
         db.close();
         if(list.size() != 1){
             System.out.println("Redundancy detected in the database ! Please check the Member_Supplier_Product table. Returning false");
@@ -291,6 +310,7 @@ public class Member implements Namable {
         }
     }
     public void setSuppliers(Context context, ArrayList<Supplier> suppliers){
+        Collections.sort(suppliers);
         this.suppliers = suppliers;
         if( ! this.updateMemberInDB(context)){
             System.err.println("Suppliers list updated in the instance but NOT in the DB !");
