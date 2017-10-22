@@ -36,6 +36,7 @@ public class DetailsMember extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details_member);
 
+
         ActionBar ab = getSupportActionBar();
         if(ab != null) {
             ab.setHomeButtonEnabled(true);
@@ -43,6 +44,7 @@ public class DetailsMember extends AppCompatActivity {
             ab.setTitle(R.string.member_screenTitle);
             ab.show();
         }
+
 
         screenTitle = (TextView) findViewById(R.id.memberScreenTitle);
         details = (TextView) findViewById(R.id.memberDetails);
@@ -86,8 +88,8 @@ public class DetailsMember extends AppCompatActivity {
         for(int i=0; i<listDataHeader.size(); i++){
             listDataChild.put(suppliersNamesList.get(i), db.getRelevantSuppliersProducts(idProfile, suppliersNamesList.get(i)));
         }
+        db.close();
         ExpandableListAdapterProducts expandableListAdapterProducts = new ExpandableListAdapterProducts(DetailsMember.this, listDataHeader, listDataChild);
         listProducts.setAdapter(expandableListAdapterProducts);
-        db.close();
     }
 }

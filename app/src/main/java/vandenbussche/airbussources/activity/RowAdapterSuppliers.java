@@ -25,7 +25,7 @@ public class RowAdapterSuppliers extends ArrayAdapter<Supplier> {
     private Member relevantMember;
 
     public RowAdapterSuppliers(Context context, @NonNull List<Supplier> elements, Member member){
-        super(context, R.layout.row_item_check_tables, elements);
+        super(context, R.layout.row_item_check_tables_small, elements);
         this.relevantMember = member;
     }
 
@@ -34,15 +34,15 @@ public class RowAdapterSuppliers extends ArrayAdapter<Supplier> {
     public View getView(int position, View convertView, @NonNull ViewGroup parent){
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.row_item_check_tables, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.row_item_check_tables_small, parent, false);
         }
         ViewHolder viewHolder = (ViewHolder) convertView.getTag();
         if (viewHolder == null) //If this view has never been instantiated before
         {
             viewHolder = new ViewHolder();
             //viewHolder.image = (ImageView) convertView.findViewById(R.id.imageView);
-            viewHolder.name = (CheckedTextView) convertView.findViewById(R.id.rowItemCheckTablesItemNameCheckedTextView);
-            viewHolder.column3CheckBox = (CheckBox) convertView.findViewById(R.id.rowItemCheckTablesCheckBox);
+            viewHolder.name = (CheckedTextView) convertView.findViewById(R.id.rowItemCheckTablesSmallItemNameCheckedTextView);
+            viewHolder.column3CheckBox = (CheckBox) convertView.findViewById(R.id.rowItemCheckTablesSmallCheckBox);
             //viewHolder.details = (TextView) convertView.findViewById(R.id.rowItemResearchResultsTextViewDetails);
             //viewHolder.nbr = (TextView) convertView.findViewById(R.id.textView4);
             //viewHolder.time = (TextView) convertView.findViewById(R.id.textView5);
@@ -53,7 +53,7 @@ public class RowAdapterSuppliers extends ArrayAdapter<Supplier> {
         if(element != null) {
             String id = element.getIdentifier();
             viewHolder.name.setText(id);
-            ((CheckedTextView) viewHolder.name).setChecked(relevantMember.isWorkingOn(getContext(), element.getName()));
+            ((CheckedTextView) viewHolder.name).setChecked(relevantMember.isWorkingWith(getContext(), element.getName())); //TODO
             viewHolder.column3CheckBox.setChecked(Member.isThereANegotiationBetween(getContext(), relevantMember, element.getName()));
         }
         return convertView;

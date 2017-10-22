@@ -61,11 +61,11 @@ public class ExpandableListAdapterProducts extends BaseExpandableListAdapter {
         final Supplier currentSupplier = Member.connectedMember.getSuppliers().get(groupPosition);
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.row_item_check_tables, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.row_item_check_tables_small, parent, false);
         }
         viewHolder = new ViewHolder();
-        viewHolder.name = (CheckedTextView) convertView.findViewById(R.id.rowItemCheckTablesItemNameCheckedTextView);
-        viewHolder.column3CheckBox = (CheckBox) convertView.findViewById(R.id.rowItemCheckTablesCheckBox);
+        viewHolder.name = (CheckedTextView) convertView.findViewById(R.id.rowItemCheckTablesSmallItemNameCheckedTextView);
+        viewHolder.column3CheckBox = (CheckBox) convertView.findViewById(R.id.rowItemCheckTablesSmallCheckBox);
         convertView.setTag(viewHolder);
 
         //Gives the relevant values to the layout Views
@@ -133,6 +133,7 @@ public class ExpandableListAdapterProducts extends BaseExpandableListAdapter {
         //ArrayList<String> allMembersSuppliersNames = db.getAllMembersSuppliersNames(Member.connectedMember.getLogin());
         ArrayList<Product> relevantProducts = db.getRelevantSuppliersProducts(Member.connectedMember.getLogin(), supplier);
 
+        db.close();
         Collections.sort(allSuppliersProductsNames);
         //Collections.sort(allMembersSuppliersNames);
         Collections.sort(relevantProducts);

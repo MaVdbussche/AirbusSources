@@ -12,7 +12,7 @@ import java.util.List;
 
 import vandenbussche.airbussources.R;
 import vandenbussche.airbussources.core.Member;
-import vandenbussche.airbussources.core.Namable;
+import vandenbussche.airbussources.core.Nameable;
 import vandenbussche.airbussources.core.Product;
 import vandenbussche.airbussources.core.Supplier;
 import vandenbussche.airbussources.database.SQLUtility;
@@ -53,11 +53,9 @@ public class DetailsSupplier extends AppCompatActivity {
 
         SQLUtility db = SQLUtility.prepareDataBase(DetailsSupplier.this);
         List<Product> products = db.getAllSuppliersProducts(supplierName);
-        List<Namable> productsAsNamables = new ArrayList<Namable>();
-        for (Product product : products) {
-            productsAsNamables.add(product);
-        }   //I am aware this whole block of code is pointless, but I can not think of a better way to cast my Products to Namables at the moment
-        RowAdapterResearchResults adapterProducts = new RowAdapterResearchResults(DetailsSupplier.this, productsAsNamables);
+        List<Nameable> productsAsNameables = new ArrayList<Nameable>();
+        productsAsNameables.addAll(products);  //I can not think of a better way to cast my Products to Nameables at the moment TODO
+        RowAdapterResearchResults adapterProducts = new RowAdapterResearchResults(DetailsSupplier.this, productsAsNameables);
         listProducts.setAdapter(adapterProducts);
 
         ArrayList<String> membersIDProfiles = db.getAllSuppliersMembersIDProfiles(supplierName);
@@ -65,6 +63,7 @@ public class DetailsSupplier extends AppCompatActivity {
         for (String idProfile : membersIDProfiles) {
             members.add(new Member(DetailsSupplier.this, idProfile));
         }
+        db.close();
         RowAdapterMembers adapterMembers = new RowAdapterMembers(DetailsSupplier.this, members, null, new Supplier(supplierName, null));
         listMembers.setAdapter(adapterMembers);
     }

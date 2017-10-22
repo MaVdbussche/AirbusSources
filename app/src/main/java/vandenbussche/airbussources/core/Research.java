@@ -6,10 +6,9 @@ import android.database.Cursor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.Set;
 
-import vandenbussche.airbussources.activity.SearchByMember;
 import vandenbussche.airbussources.database.SQLUtility;
 
 /**
@@ -23,11 +22,11 @@ public class Research {
         this.context = c;
     }
 
-    private class Result implements Comparable {
-        Object value;
+    private class Result implements Comparable<Result> {
+        String value;
         int pertinence;
 
-        Result(Object value){
+        Result(String value){
             this.value = value;
             this.pertinence = 0;
         }
@@ -40,11 +39,11 @@ public class Research {
             this.pertinence = pertinence - i;
             return this.pertinence;
         }
-        public int compareTo(Object o) throws ClassCastException {
-            if( ! (o instanceof Result)){
-                throw new ClassCastException("Could not compare those, as one of them is not a Result instance");
-            }
-            return this.pertinence - ((Result) o).pertinence;
+        public int compareTo(Result o) throws ClassCastException {
+            //if( o == null){
+                //throw new ClassCastException("Could not compare those, as one of them is not a Result instance");
+            //}
+            return this.pertinence - o.pertinence;
         }
     }
 
@@ -63,14 +62,11 @@ public class Research {
         for (String word:research)
         {
             ArrayList<String> resultsForOneWord = db.getElementFromDB("Product", "Name", "Name LIKE "+"\'%"+word+"%\'");
-            db.close();
             //Now we will add all the results for this word (there will in fact probably only be one most of the time)
             //to the global result ArrayList.
-            //This looks pretty inefficient to me, but can't think of anything better right now
-            for (String oneResult:resultsForOneWord){
-                result.add(oneResult);
-            }
+            result.addAll(resultsForOneWord);
         }
+        db.close();
         order(result);
         return result;
     }
@@ -90,14 +86,11 @@ public class Research {
         for (String word:research)
         {
             ArrayList<String> resultsForOneWord = db.getElementFromDB("Supplier", "Name", "Name LIKE "+"\'%"+word+"%\'");
-            db.close();
             //Now we will add all the results for this word (there will in fact probably only be one most of the time)
             //to the global result ArrayList.
-            //This looks pretty inefficient to me, but can't think of anything better right now
-            for (String oneResult:resultsForOneWord){
-                result.add(oneResult);
-            }
+            result.addAll(resultsForOneWord);
         }
+        db.close();
         order(result);
         return result;
     }
@@ -110,7 +103,7 @@ public class Research {
      */
     public ArrayList<String> getMembersIdProfiles(Context context, ArrayList<String> research){
         SQLUtility db = SQLUtility.prepareDataBase(context);
-        ArrayList<Result> results = new ArrayList<>();
+        ArrayList<Result> resultsIDProfiles = new ArrayList<>();
         ArrayList<String> returnedList = new ArrayList<>();
         boolean flag = false;
 
@@ -119,14 +112,12 @@ public class Research {
         {
             //We get idProfiles of all matching members
             Cursor c = db.getEntriesFromDB("Member", new String[]{"IDProfile"}, "Name LIKE "+"\'%"+word+"%\'", null);
-            Cursor d = db.getEntriesFromDB("Member", new String[]{"IDProfile"}, "Surname LIKE "+"\'%"+word+"%\'", null);
-            Cursor e = db.getEntriesFromDB("Member", new String[]{"IDProfile"}, "BU LIKE "+"\'%"+word+"%\'", null);
             if(c.moveToFirst()){
                 //For all of those idProfiles
                 for(int i=0; i<c.getCount(); i++){
                     String idProfile = c.getString(c.getColumnIndex("IDProfile"));
 
-                    for (Result result : results){
+                    for (Result result : resultsIDProfiles){
                         //If it is already contained in the list, we increase its pertinence
                         if(idProfile.equals(result.value)){
                             result.incrPertinence(1);
@@ -135,18 +126,19 @@ public class Research {
                     }
                     if( ! flag){
                         //Otherwise we add it to the list
-                        results.add(new Result(idProfile));
+                        resultsIDProfiles.add(new Result(idProfile));
                     }
                     c.moveToNext();
                 }
             }
             c.close();
+            Cursor d = db.getEntriesFromDB("Member", new String[]{"IDProfile"}, "Surname LIKE "+"\'%"+word+"%\'", null);
             if(d.moveToFirst()){
                 //For all of those idProfiles
                 for(int i=0; i<d.getCount(); i++){
                     String idProfile = d.getString(d.getColumnIndex("IDProfile"));
 
-                    for (Result result : results){
+                    for (Result result : resultsIDProfiles){
                         //If it is already contained in the list, we increase its pertinence
                         if(idProfile.equals(result.value)){
                             result.incrPertinence(1);
@@ -155,18 +147,19 @@ public class Research {
                     }
                     if( ! flag){
                         //Otherwise we add it to the list
-                        results.add(new Result(idProfile));
+                        resultsIDProfiles.add(new Result(idProfile));
                     }
                     d.moveToNext();
                 }
             }
             d.close();
+            Cursor e = db.getEntriesFromDB("Member", new String[]{"IDProfile"}, "BU LIKE "+"\'%"+word+"%\'", null);
             if(e.moveToFirst()){
                 //For all of those idProfiles
                 for(int i=0; i<e.getCount(); i++){
                     String idProfile = e.getString(e.getColumnIndex("IDProfile"));
 
-                    for (Result result : results){
+                    for (Result result : resultsIDProfiles){
                         //If it is already contained in the list, we increase its pertinence
                         if(idProfile.equals(result.value)){
                             result.incrPertinence(1);
@@ -175,19 +168,19 @@ public class Research {
                     }
                     if( ! flag){
                         //Otherwise we add it to the list
-                        results.add(new Result(idProfile));
+                        resultsIDProfiles.add(new Result(idProfile));
                     }
                     e.moveToNext();
                 }
             }
             e.close();
 
-            db.close();
         }
+        db.close();
         //Now we have a list of Result instances, which we will copy in pertinence order into an ArrayList<String>
-        Collections.sort(results);
-        for(int i=0; i<results.size(); i++){
-            returnedList.add((String) results.get(i).value);
+        Collections.sort(resultsIDProfiles);
+        for(int i=0; i<resultsIDProfiles.size(); i++){
+            returnedList.add(resultsIDProfiles.get(i).value);
         }
         return returnedList;
     }
@@ -199,8 +192,12 @@ public class Research {
      */
     private static ArrayList<String> order(ArrayList<String> list){
 
-        ArrayList<String> result = new ArrayList<>(new LinkedHashSet<>(list));
-        Collections.sort(result);
-        return result;
+        ArrayList<String> al = new ArrayList<>();
+        Set<String> hs = new HashSet<>();
+
+        hs.addAll(list);
+        al.addAll(hs);
+
+        return al;
     }
 }

@@ -15,7 +15,6 @@ import java.util.List;
 
 import vandenbussche.airbussources.R;
 import vandenbussche.airbussources.core.Member;
-import vandenbussche.airbussources.core.Namable;
 import vandenbussche.airbussources.core.Product;
 import vandenbussche.airbussources.core.Supplier;
 
@@ -28,7 +27,7 @@ public class RowAdapterMembers extends ArrayAdapter<Member> {
     private Supplier relevantSupplier;
 
     public RowAdapterMembers(Context context, @NonNull List<Member> elements, @Nullable Product product, @Nullable Supplier supplier){
-        super(context, R.layout.row_item_check_tables, elements);
+        super(context, R.layout.row_item_check_tables_small, elements);
         this.relevantProduct = product;
         this.relevantSupplier = supplier;
     }
@@ -38,15 +37,15 @@ public class RowAdapterMembers extends ArrayAdapter<Member> {
     public View getView(int position, View convertView, @NonNull ViewGroup parent){
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.row_item_check_tables, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.row_item_check_tables_small, parent, false);
         }
         ViewHolder viewHolder = (ViewHolder) convertView.getTag();
         if (viewHolder == null) //If this view has never been instantiated before
         {
             viewHolder = new ViewHolder();
             //viewHolder.image = (ImageView) convertView.findViewById(R.id.imageView);
-            viewHolder.name = (CheckedTextView) convertView.findViewById(R.id.rowItemCheckTablesItemNameCheckedTextView);
-            viewHolder.column3CheckBox = (CheckBox) convertView.findViewById(R.id.rowItemCheckTablesCheckBox);
+            viewHolder.name = (CheckedTextView) convertView.findViewById(R.id.rowItemCheckTablesSmallItemNameCheckedTextView);
+            viewHolder.column3CheckBox = (CheckBox) convertView.findViewById(R.id.rowItemCheckTablesSmallCheckBox);
             //viewHolder.details = (TextView) convertView.findViewById(R.id.rowItemResearchResultsTextViewDetails);
             //viewHolder.nbr = (TextView) convertView.findViewById(R.id.textView4);
             //viewHolder.time = (TextView) convertView.findViewById(R.id.textView5);
@@ -57,7 +56,7 @@ public class RowAdapterMembers extends ArrayAdapter<Member> {
         if(element != null) {
             if(relevantProduct==null && relevantSupplier!=null) {
                 //This means we are in the DetailsSupplier activity
-                String id = element.getIdentifier();
+                String id = element.getFirstName()+" "+element.getName();
                 viewHolder.name.setText(id);
                 ((CheckedTextView) viewHolder.name).setChecked(element.isWorkingWith(getContext(), relevantSupplier.getName()));
                 viewHolder.column3CheckBox.setChecked(Member.isThereANegotiationBetween(getContext(), element, relevantSupplier.getName()));

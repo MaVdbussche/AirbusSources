@@ -2,6 +2,7 @@ package vandenbussche.airbussources.core;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteException;
 
@@ -13,7 +14,7 @@ import vandenbussche.airbussources.database.SQLUtility;
 import vandenbussche.airbussources.exception.InvalidFieldException;
 import vandenbussche.airbussources.exception.InvalidPasswordException;
 
-public class Member implements Namable {
+public class Member implements Nameable {
 
     private String idProfile;
     private String password;
@@ -228,10 +229,10 @@ public class Member implements Namable {
         return list.get(0).equals("1");
     }
 
-    public static boolean isThereACFTOn(Context context, String member, String supplier, String product){
+    public static boolean isThereACFTOn(Context context, String memberIDProfile, String supplier, String product){
 
         SQLUtility db = SQLUtility.prepareDataBase(context);
-        ArrayList<String> list = db.getElementFromDB("Member_Supplier_Product", "CFT", "Member =\""+member+"\" AND Product = \""+product+"\" AND Supplier = \""+supplier+"\"");
+        ArrayList<String> list = db.getElementFromDB("Member_Supplier_Product", "CFT", "Member =\""+memberIDProfile+"\" AND Product = \""+product+"\" AND Supplier = \""+supplier+"\"");
         db.close();
         if(list.size() != 1){
             System.out.println("Redundancy detected in the database ! Please check the Member_Supplier_Product table. Returning false");
@@ -255,11 +256,18 @@ public class Member implements Namable {
         }
         return false;
     }
-    public boolean isWorkingOn(Context context, String product){
+    public static boolean isThereWorkOn(Context context, String memberIDProfile, String supplier, String product){
         SQLUtility db = SQLUtility.prepareDataBase(context);
-        ArrayList<String> products = db.getAllMembersProductsNames(this.idProfile);
-        db.close();
-        return products.contains(product);
+        Cursor cursor = db.getEntriesFromDB("Member_supplier_Product", new String[]{"Member"}, "Member =\""+memberIDProfile+"\" AND Product = \""+product+"\" AND Supplier = \""+supplier+"\"", null);
+        if(cursor.moveToFirst()){
+            cursor.close();
+            db.close();
+            return true;
+        } else {
+            cursor.close();
+            db.close();
+            return false;
+        }
     }
 
     public String getIdentifier(){return this.getLogin();}

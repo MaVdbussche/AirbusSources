@@ -49,7 +49,10 @@ public class SearchByMember extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Research research = new Research(SearchByMember.this);
-                        ArrayList<String> researchWords = new ArrayList<>(Arrays.asList(nameField.getText().toString().split(" ")));
+                        ArrayList<String> researchWords = new ArrayList<>();
+                        researchWords.addAll(Arrays.asList(nameField.getText().toString().split(" ")));
+                        researchWords.addAll(Arrays.asList(surnameField.getText().toString().split(" ")));
+                        researchWords.addAll(Arrays.asList(buField.getText().toString().split(" ")));
                         ArrayList<String> idProfiles = research.getMembersIdProfiles(SearchByMember.this, researchWords);
                         ArrayList<CharSequence> researchResult = new ArrayList<CharSequence>(idProfiles);
 

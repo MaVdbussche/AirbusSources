@@ -45,7 +45,8 @@ public class SearchByProduct extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Research research = new Research(SearchByProduct.this);
-                        ArrayList<String> researchWords = new ArrayList<>(Arrays.asList(nameField.getText().toString().split(" ")));
+                        ArrayList<String> researchWords = new ArrayList<>();
+                        researchWords.addAll(Arrays.asList(nameField.getText().toString().split(" ")));
                         ArrayList<CharSequence> researchResult = new ArrayList<CharSequence>(research.getProductsNames(SearchByProduct.this, researchWords));
 
                         Intent intent = new Intent(SearchByProduct.this, ResearchResults.class);

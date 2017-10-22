@@ -312,6 +312,7 @@ public class ExpandableListAdapterProductsTickable extends BaseExpandableListAda
         ArrayList<String> allMembersSuppliersNames = db.getAllMembersSuppliersNames(Member.connectedMember.getLogin());
         ArrayList<Product> relevantProducts = db.getRelevantSuppliersProducts(Member.connectedMember.getLogin(), supplier);
 
+        db.close();
         Collections.sort(allSuppliersProductsNames);
         Collections.sort(allMembersSuppliersNames);
         Collections.sort(relevantProducts);

@@ -2,7 +2,6 @@ package vandenbussche.airbussources.activity;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,15 +12,15 @@ import java.util.List;
 
 import vandenbussche.airbussources.R;
 import vandenbussche.airbussources.core.Member;
-import vandenbussche.airbussources.core.Namable;
+import vandenbussche.airbussources.core.Nameable;
 import vandenbussche.airbussources.core.Product;
 import vandenbussche.airbussources.core.Supplier;
 
 
-public class RowAdapterResearchResults extends ArrayAdapter<Namable> {
+public class RowAdapterResearchResults extends ArrayAdapter<Nameable> {
 
 
-    public RowAdapterResearchResults(Context context, @NonNull List<Namable> elements){
+    public RowAdapterResearchResults(Context context, @NonNull List<Nameable> elements){
         super(context, 0, elements);
     }
 
@@ -44,7 +43,7 @@ public class RowAdapterResearchResults extends ArrayAdapter<Namable> {
             convertView.setTag(viewHolder);
         }
         //Gives the relevant values to the layout Views
-        Namable element = (Namable) getItem(position);
+        Nameable element = getItem(position);
         if (element instanceof Member) {
             String fullName = ((Member) element).getFirstName() + " " + ((Member) element).getName();
             String details = ((Member) element).getBu() + " - " + ((Member) element).getCommodity();
@@ -53,9 +52,11 @@ public class RowAdapterResearchResults extends ArrayAdapter<Namable> {
         } else if (element instanceof Supplier) {
             String id = element.getIdentifier();
             viewHolder.name.setText(id);
+            viewHolder.details.setText("");
         } else if (element instanceof Product) {
             String id = element.getIdentifier();
             viewHolder.name.setText(id);
+            viewHolder.details.setText("");
         }
 
         return convertView;

@@ -15,7 +15,7 @@ import java.util.List;
 
 import vandenbussche.airbussources.R;
 import vandenbussche.airbussources.core.Member;
-import vandenbussche.airbussources.core.Namable;
+import vandenbussche.airbussources.core.Nameable;
 import vandenbussche.airbussources.core.Product;
 import vandenbussche.airbussources.core.Supplier;
 import vandenbussche.airbussources.database.SQLUtility;
@@ -57,7 +57,7 @@ public class DetailsProduct extends AppCompatActivity {
         SQLUtility db = SQLUtility.prepareDataBase(DetailsProduct.this);
         List<String> relevantSupplierNames = db.getAllProductsSuppliersNames(productName);
         Collections.sort(relevantSupplierNames);
-        List<Namable> relevantSuppliers = new ArrayList<>();
+        List<Nameable> relevantSuppliers = new ArrayList<>();
         for (String name : relevantSupplierNames){
             relevantSuppliers.add(new Supplier(name, null));
         }
@@ -74,6 +74,7 @@ public class DetailsProduct extends AppCompatActivity {
             }
             listDataChild.put(relevantSupplierNames.get(i), relevantMembers);
         }
+        db.close();
         ExpandableListAdapterMembers adapterMembers = new ExpandableListAdapterMembers(DetailsProduct.this, listDataHeader, listDataChild, new Product(productName));
         listMembers.setAdapter(adapterMembers);
     }

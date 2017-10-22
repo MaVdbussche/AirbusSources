@@ -9,7 +9,7 @@ import java.util.Collections;
 import vandenbussche.airbussources.database.SQLUtility;
 
 
-public class Supplier implements Namable, Comparable<Supplier> {
+public class Supplier implements Nameable, Comparable<Supplier> {
 
     private String name;
     private ArrayList<Product> products;
@@ -33,9 +33,11 @@ public class Supplier implements Namable, Comparable<Supplier> {
                                         "Member = \""+memberIDProfile+"\" AND Supplier = \""+this.getName()+"\"", null);
         if(c.getCount() > 0){
             c.close();
+            db.close();
             return true;
         } else {
             c.close();
+            db.close();
             return false;
         }
     }

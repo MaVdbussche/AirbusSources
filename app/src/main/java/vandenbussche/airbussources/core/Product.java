@@ -1,6 +1,6 @@
 package vandenbussche.airbussources.core;
 
-public class Product implements Namable, Comparable<Product>  {
+public class Product implements Nameable, Comparable<Product>  {
 
     private String name;
     private boolean isOnCFT;

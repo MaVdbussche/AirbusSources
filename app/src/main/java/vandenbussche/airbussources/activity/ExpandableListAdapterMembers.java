@@ -61,20 +61,19 @@ public class ExpandableListAdapterMembers extends BaseExpandableListAdapter {
     public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
         final ViewHolder viewHolder;
-        final Supplier currentSupplier = Member.connectedMember.getSuppliers().get(groupPosition);
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.row_item_check_tables, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.row_item_check_tables_small, parent, false);
         }
         viewHolder = new ViewHolder();
-        viewHolder.name = (CheckedTextView) convertView.findViewById(R.id.rowItemCheckTablesItemNameCheckedTextView);
-        viewHolder.column3CheckBox = (CheckBox) convertView.findViewById(R.id.rowItemCheckTablesCheckBox);
+        viewHolder.name = (CheckedTextView) convertView.findViewById(R.id.rowItemCheckTablesSmallItemNameCheckedTextView);
+        viewHolder.column3CheckBox = (CheckBox) convertView.findViewById(R.id.rowItemCheckTablesSmallCheckBox);
         convertView.setTag(viewHolder);
 
         //Gives the relevant values to the layout Views
         final Member element = listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition);
         if(element != null) {
-            String id = element.getIdentifier();
+            String id = element.getFirstName()+" "+element.getName();
             viewHolder.name.setText(id);
             viewHolder.name.setChecked(mapDataStorageProduct.get(groupPosition)[childPosition]);
             viewHolder.column3CheckBox.setChecked(mapDataStorageCFT.get(groupPosition)[childPosition]);
@@ -135,13 +134,14 @@ public class ExpandableListAdapterMembers extends BaseExpandableListAdapter {
         ArrayList<String> allSuppliersMembersNames = db.getAllSuppliersMembersNames(supplier);
         ArrayList<String> allSuppliersMembersIDProfiles = db.getAllSuppliersMembersIDProfiles(supplier);
 
+        db.close();
         Collections.sort(allSuppliersMembersNames);
 
         mapDataStorageProduct.put(position, new boolean[allSuppliersMembersNames.size()]);
         mapDataStorageCFT.put(position, new boolean[allSuppliersMembersNames.size()]);
 
         for(int i=0; i<mapDataStorageProduct.get(position).length; i++){
-            mapDataStorageProduct.get(position)[i] = true;  //TODO
+            mapDataStorageProduct.get(position)[i] = Member.isThereWorkOn(context, allSuppliersMembersIDProfiles.get(i), supplier, relevantProduct.getName());
             mapDataStorageCFT.get(position)[i] = Member.isThereACFTOn(context, allSuppliersMembersIDProfiles.get(i), supplier, relevantProduct.getName());
         }
     }

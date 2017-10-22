@@ -13,10 +13,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Set;
 
-import vandenbussche.airbussources.core.Member;
-import vandenbussche.airbussources.core.Namable;
 import vandenbussche.airbussources.core.Product;
 import vandenbussche.airbussources.core.Supplier;
 
@@ -120,7 +117,7 @@ public class SQLUtility extends SQLiteOpenHelper {
      * @return A Cursor containing the query result
      */
     public Cursor getEntriesFromDB(String table, String[] columns, String conditionSQL, String orderBy){
-        Cursor c = myDB.query("\""+table+"\"",
+        Cursor cursor = myDB.query("\""+table+"\"",
                 columns,
                 conditionSQL,
                 null,
@@ -129,7 +126,7 @@ public class SQLUtility extends SQLiteOpenHelper {
                 orderBy,
                 null
         );
-        return c;
+        return cursor;
     }
 
     /**
@@ -293,7 +290,10 @@ public class SQLUtility extends SQLiteOpenHelper {
                 if( ! idProfiles.contains(idProfile)){
                     idProfiles.add(idProfile);
                     Cursor d = getEntriesFromDB("Member", new String[]{"Name", "Surname"}, "IDProfile = \""+idProfile+"\"", null);
-                    returnedList.add(d.getString(d.getColumnIndex("Name")) + d.getString(d.getColumnIndex("Surname")));
+                    if(d.moveToFirst()) {
+                        returnedList.add(
+                                d.getString(0).concat(" ").concat(d.getString(1)));
+                    }
                     d.close();
                 }
             }
@@ -333,15 +333,14 @@ public class SQLUtility extends SQLiteOpenHelper {
         return getElementFromDB("Member_Supplier_Product", "Product", "Member=\""+IDProfile+"\"");
     }
 
-    /**
     public boolean isThereAssociation(String IDProfile, String supplier, String product){
 
         Cursor c = getEntriesFromDB("Member_Supplier_Product",
                                     new String[]{"Member", "Supplier", "Product"},
-                                    "")
-        return getElementFromDB("Member_Supplier_Product", "Product", "Member=\""+IDProfile+"\"");
+                                    "", null);
+
+        return true;
     }
-     **/
 
     /**
      * Returns the negotiation state between the given Member and Supplier
