@@ -24,7 +24,7 @@ public class Product implements Nameable, Comparable<Product>  {
     public void setCFT(boolean b){this.isOnCFT = b;}
 
     public int compareTo(Product other) throws ClassCastException{
-        if( other != null){
+        if( other == null){
             throw new ClassCastException("Could not compare those, as one of them is not a Product and/or is null");
         }
         return this.name.compareTo(((Product) other).getName());
