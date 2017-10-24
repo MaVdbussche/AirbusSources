@@ -96,5 +96,6 @@
     <string name="researchResults_noResultsFound">No matching results found</string>
 
     <string name="rowItem_defaultText">[Insert element here]</string>
+    <string name="rowItem_NoProdFound">No products found for this Supplier</string>
 
 </resources>

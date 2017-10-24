@@ -58,7 +58,7 @@ public class ExpandableListAdapterProducts extends BaseExpandableListAdapter {
     public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
         final ViewHolder viewHolder;
-        final Supplier currentSupplier = Member.connectedMember.getSuppliers().get(groupPosition);
+        //final Supplier currentSupplier = Member.connectedMember.getSuppliers().get(groupPosition);
 
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.row_item_check_tables_small, parent, false);
@@ -73,10 +73,20 @@ public class ExpandableListAdapterProducts extends BaseExpandableListAdapter {
         if(element != null) {
             String id = element.getIdentifier();
             viewHolder.name.setText(id);
-            viewHolder.name.setChecked(mapDataStorageProduct.get(groupPosition)[childPosition]);
-            viewHolder.column3CheckBox.setChecked(mapDataStorageCFT.get(groupPosition)[childPosition]);
-        }
 
+            boolean[] array = mapDataStorageProduct.get(groupPosition);
+            if(array.length > 0) {
+                viewHolder.name.setChecked(array[childPosition]);
+            } //else {
+                //viewHolder.name.setText(R.string.rowItem_NoProdFound);
+            //}
+
+            array = mapDataStorageCFT.get(groupPosition);
+            if(array.length > 0) {
+                viewHolder.column3CheckBox.setChecked(array[childPosition]);
+            }
+        }
+        viewHolder.column3CheckBox.setHeight(viewHolder.name.getHeight());
         return convertView;
     }
 

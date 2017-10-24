@@ -32,7 +32,7 @@ public class StartActivity extends AppCompatActivity {
         logInButton = (Button) findViewById(R.id.buttonConnect);
 
         try {
-            image.setImageBitmap(BitmapFactory.decodeStream(getApplicationContext().getAssets().open("airbus-logo-large.png")));
+            image.setImageBitmap(BitmapFactory.decodeStream(getApplicationContext().getAssets().open("CrossProc_logo.png")));
         } catch (IOException e) {
             //Do nothing if the asset doesn't load properly (default image will be displayed)
         }

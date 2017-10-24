@@ -27,7 +27,7 @@ public class SignUpActivityPageTwo extends AppCompatActivity {
     private ScrollView rolesScrollView;
 
     private RadioGroup businessUnits;
-    private RadioGroup commodities;
+    //private RadioGroup commodities;
     private RadioGroup roles;
 
 
@@ -53,7 +53,7 @@ public class SignUpActivityPageTwo extends AppCompatActivity {
         rolesScrollView = (ScrollView) findViewById(R.id.rolesRadioGroupScrollView);
 
         businessUnits = (RadioGroup) findViewById(R.id.businessUnitsRadioGroup);
-        commodities = (RadioGroup) findViewById(R.id.commoditiesRadioGroup);
+        //commodities = (RadioGroup) findViewById(R.id.commoditiesRadioGroup);
         roles = (RadioGroup) findViewById(R.id.rolesRadioGroup);
 
         SQLUtility db = SQLUtility.prepareDataBase(this);
@@ -67,11 +67,11 @@ public class SignUpActivityPageTwo extends AppCompatActivity {
             button.setText(listBusinessUnits.get(i));
             businessUnits.addView(button);
         }
-        for (int i = 0; i < listCommodities.size(); i++) {
-            RadioButton button = new RadioButton(this);
-            button.setText(listCommodities.get(i));
-            commodities.addView(button);
-        }
+        //for (int i = 0; i < listCommodities.size(); i++) {
+        //    RadioButton button = new RadioButton(this);
+        //    button.setText(listCommodities.get(i));
+        //    commodities.addView(button);
+        //}
         for (int i = 0; i < listRoles.size(); i++) {
             RadioButton button = new RadioButton(this);
             button.setText(listRoles.get(i));
@@ -83,14 +83,14 @@ public class SignUpActivityPageTwo extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         RadioButton bu = (RadioButton) findViewById(businessUnits.getCheckedRadioButtonId());
-                        RadioButton commodity = (RadioButton) findViewById(commodities.getCheckedRadioButtonId());
+                        //RadioButton commodity = (RadioButton) findViewById(commodities.getCheckedRadioButtonId());
                         RadioButton role = (RadioButton) findViewById(roles.getCheckedRadioButtonId());
                         if( (businessUnits.getCheckedRadioButtonId()==-1) || (bu.getText().toString()).equals(getString(R.string.signup_businessUnits_default)) ){
                             Toast t = Toast.makeText(SignUpActivityPageTwo.this, "Please select a Business Unit", Toast.LENGTH_SHORT);
                             t.show();
-                        } else if( (commodities.getCheckedRadioButtonId()==-1) || (commodity.getText().toString()).equals(getString(R.string.signup_commodities_default)) ){
-                            Toast t = Toast.makeText(SignUpActivityPageTwo.this, "Please select a Commodity", Toast.LENGTH_SHORT);
-                            t.show();
+                        //} else if( (commodities.getCheckedRadioButtonId()==-1) || (commodity.getText().toString()).equals(getString(R.string.signup_commodities_default)) ){
+                            //Toast t = Toast.makeText(SignUpActivityPageTwo.this, "Please select a Commodity", Toast.LENGTH_SHORT);
+                            //t.show();
                         } else if( (roles.getCheckedRadioButtonId()==-1) || (role.getText().toString()).equals(getString(R.string.signup_roles_default)) ){
                             Toast t = Toast.makeText(SignUpActivityPageTwo.this, "Please select a Role", Toast.LENGTH_SHORT);
                             t.show();
@@ -102,7 +102,7 @@ public class SignUpActivityPageTwo extends AppCompatActivity {
                                     m.getFirstName(),
                                     m.getName(),
                                     bu.getText().toString(),
-                                    commodity.getText().toString(),
+                                    //commodity.getText().toString(),
                                     role.getText().toString()
                             );
                             Intent intent = new Intent(SignUpActivityPageTwo.this, SignUpActivityPageThree.class);

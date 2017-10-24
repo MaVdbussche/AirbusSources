@@ -62,8 +62,8 @@ public class SQLUtility extends SQLiteOpenHelper {
     public boolean idProfileExistsInDB(String IDProfile) throws SQLiteException {
         Cursor c = myDB.query("\"Member\"",
                 new String[]{"\"IDProfile\""},
-                "IDProfile=?",
-                new String[]{IDProfile},
+                "IDProfile = \""+IDProfile+"\"",
+                null,
                 null,
                 null,
                 null
@@ -404,29 +404,32 @@ public class SQLUtility extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         boolean flag;
 
-        for (int i = 0; i < suppliers.size(); i++) {
-            Supplier supplier = suppliers.get(i);
+        if(suppliers != null) {
+            for (int i = 0; i < suppliers.size(); i++) {
+                Supplier supplier = suppliers.get(i);
 
-            values.put("\"Member\"", IDProfile);
-            values.put("\"Supplier\"", supplier.getName());
-            if(supplier.getNegotiationState()) {
-                values.put("\"Negotiation\"", "1");
-            } else {
-                values.put("\"Negotiation\"", "0");
-            }
-
-            ArrayList<Product> products = supplier.getProducts();
-
-            for (Product product : products) {
-                values.put("\"Product\"", product.getName());
-                if(product.getIsOnCFT()) {
-                    values.put("\"CFT\"", 1);
+                values.put("\"Member\"", IDProfile);
+                values.put("\"Supplier\"", supplier.getName());
+                if (supplier.getNegotiationState()) {
+                    values.put("\"Negotiation\"", "1");
                 } else {
-                    values.put("\"CFT\"", 0);
+                    values.put("\"Negotiation\"", "0");
                 }
-                flag = ( myDB.insert("Member_Supplier_Product", null, values) == -1 );
-                if(flag){
-                    return false;
+
+                ArrayList<Product> products = supplier.getProducts();
+                if(products != null) {
+                    for (Product product : products) {
+                        values.put("\"Product\"", product.getName());
+                        if (product.getIsOnCFT()) {
+                            values.put("\"CFT\"", 1);
+                        } else {
+                            values.put("\"CFT\"", 0);
+                        }
+                        flag = (myDB.insert("Member_Supplier_Product", null, values) == -1);
+                        if (flag) {
+                            return false;
+                        }
+                    }
                 }
             }
         }

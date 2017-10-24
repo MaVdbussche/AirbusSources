@@ -46,7 +46,7 @@ public class RowAdapterResearchResults extends ArrayAdapter<Nameable> {
         Nameable element = getItem(position);
         if (element instanceof Member) {
             String fullName = ((Member) element).getFirstName() + " " + ((Member) element).getName();
-            String details = ((Member) element).getBu() + " - " + ((Member) element).getCommodity();
+            String details = ((Member) element).getBu(); //+ " - " + ((Member) element).getCommodity();
             viewHolder.name.setText(fullName);
             viewHolder.details.setText(details);
         } else if (element instanceof Supplier) {

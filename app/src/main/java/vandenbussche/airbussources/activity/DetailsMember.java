@@ -63,10 +63,9 @@ public class DetailsMember extends AppCompatActivity {
                                     basicInfo.get(2),
                                     basicInfo.get(3),
                                     basicInfo.get(6),
-                                    basicInfo.get(5),
                                     basicInfo.get(4));
         String fullName = currentMember.getFirstName()+" "+currentMember.getName();
-        String fullDetails = currentMember.getBu()+" - "+currentMember.getCommodity()+" - "+currentMember.getRole();
+        String fullDetails = currentMember.getBu()+"  -  "+currentMember.getRole();
 
         screenTitle.setText(fullName);
         details.setText(fullDetails);

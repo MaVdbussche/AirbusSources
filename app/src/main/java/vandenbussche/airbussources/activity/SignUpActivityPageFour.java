@@ -1,5 +1,6 @@
 package vandenbussche.airbussources.activity;
 
+import android.content.Intent;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -59,7 +60,9 @@ public class SignUpActivityPageFour extends AppCompatActivity {
                     public void onClick(View v) {
                         try {
                             Member m = Member.connectedMember;
-                            Member.connectedMember = new Member(SignUpActivityPageFour.this, m.getLogin(), m.getPassword(), m.getFirstName(), m.getName(), m.getBu(), m.getCommodity(), m.getRole(), m.getSuppliers());
+                            Member.connectedMember = new Member(SignUpActivityPageFour.this, m.getLogin(), m.getPassword(), m.getFirstName(), m.getName(), m.getBu(), m.getRole(), m.getSuppliers());
+                            Intent intent = new Intent(SignUpActivityPageFour.this, MainMenu.class);
+                            startActivity(intent);
                         } catch (SQLiteException e){
                             throw new SQLiteException(e.getMessage());
                         }
@@ -74,8 +77,10 @@ public class SignUpActivityPageFour extends AppCompatActivity {
         listDataHeader = new ArrayList<String>();
         listDataChild = new HashMap<String, List<Product>>();
 
-        for (Supplier supplier : Member.connectedMember.getSuppliers() ) {
-            listDataHeader.add(supplier.getName());
+        if(Member.connectedMember.getSuppliers() != null) {
+            for (Supplier supplier : Member.connectedMember.getSuppliers()) {
+                listDataHeader.add(supplier.getName());
+            }
         }
         //listDataHeader.addAll(db.getAllMembersSuppliersNames(Member.connectedMember.getLogin()));
         Collections.sort(listDataHeader);

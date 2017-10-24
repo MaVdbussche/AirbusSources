@@ -21,7 +21,7 @@ public class Member implements Nameable {
     private String firstName;
     private String surname;
     private String bu;
-    private String commodity;
+    //private String commodity;
     private String role;
     private ArrayList<Supplier> suppliers;
 
@@ -32,7 +32,7 @@ public class Member implements Nameable {
      * Please make sure the <#param>suppliers</#param> list contains valid Supplier instances
      * (that is, instances who contain the correct Products in them) !
      */
-    public Member(Context context, String idProfile, String password, String firstName, String surname, String bu, String commodity, String role, ArrayList<Supplier> suppliers)
+    public Member(Context context, String idProfile, String password, String firstName, String surname, String bu, String role, ArrayList<Supplier> suppliers)
             throws SQLiteException {
 
         this.idProfile = idProfile;
@@ -40,7 +40,7 @@ public class Member implements Nameable {
         this.firstName = firstName;
         this.surname = surname;
         this.bu = bu;
-        this.commodity = commodity;
+        //this.commodity = commodity;
         this.role = role;
         this.suppliers = suppliers;
 
@@ -56,13 +56,13 @@ public class Member implements Nameable {
      * Slightly easier constructor, used during registering, when some info aren't available yet.
      * This incomplete Member instance will NOT be sent to the DB !
      */
-    public Member(String idProfile, String password, String firstName, String surname, String bu, String commodity, String role){
+    public Member(String idProfile, String password, String firstName, String surname, String bu, String role){
         this.idProfile = idProfile;
         this.password = password;
         this.firstName = firstName;
         this.surname = surname;
         this.bu = bu;
-        this.commodity = commodity;
+        //this.commodity = commodity;
         this.role = role;
         this.suppliers = null;
     }
@@ -77,7 +77,7 @@ public class Member implements Nameable {
         this.firstName = firstName;
         this.surname = surname;
         this.bu = null;
-        this.commodity = null;
+        //this.commodity = null;
         this.role = null;
         this.suppliers = null;
     }
@@ -86,13 +86,13 @@ public class Member implements Nameable {
      * Slightly easier constructor, used during registering, when some info aren't available yet.
      * This incomplete Member instance will NOT be sent to the DB !
      */
-    public Member(String idProfile, String password, String firstName, String surname, String bu, String commodity, String role, ArrayList<Supplier> suppliers){
+    public Member(String idProfile, String password, String firstName, String surname, String bu, String role, ArrayList<Supplier> suppliers){
         this.idProfile = idProfile;
         this.password = password;
         this.firstName = firstName;
         this.surname = surname;
         this.bu = bu;
-        this.commodity = commodity;
+        //this.commodity = commodity;
         this.role = role;
         this.suppliers = suppliers;
     }
@@ -118,7 +118,7 @@ public class Member implements Nameable {
                 this.firstName = values.get(2);
                 this.surname = values.get(3);
                 this.role = values.get(4);
-                this.commodity = values.get(5);
+                //this.commodity = values.get(5);
                 this.bu = values.get(6);
                 this.suppliers = db.getAllMembersSuppliers(this.idProfile);
                 db.close();
@@ -141,7 +141,7 @@ public class Member implements Nameable {
             this.firstName = values.get(2);
             this.surname = values.get(3);
             this.role = values.get(4);
-            this.commodity = values.get(5);
+            //this.commodity = values.get(5);
             this.bu = values.get(6);
             this.suppliers = db.getAllMembersSuppliers(this.idProfile);
         }
@@ -156,7 +156,7 @@ public class Member implements Nameable {
         values.put("\"Surname\"", this.firstName);
         values.put("\"Name\"", this.surname);
         values.put("\"BU\"", this.bu);
-        values.put("\"Commodity\"", this.commodity);
+        values.put("\"Commodity\"", "");
         values.put("\"Role\"", this.role);
 
         SQLUtility db = SQLUtility.prepareDataBase(context);
@@ -185,7 +185,7 @@ public class Member implements Nameable {
         values.put("\"Surname\"", this.firstName);
         values.put("\"Name\"", this.surname);
         values.put("\"BU\"", this.bu);
-        values.put("\"Commodity\"", this.commodity);
+        values.put("\"Commodity\"", "");
         values.put("\"Role\"", this.role);
 
         try {
@@ -277,7 +277,7 @@ public class Member implements Nameable {
     public String getFirstName(){return firstName;}
     public String getName(){return surname;}
     public String getBu(){return bu;}
-    public String getCommodity(){return commodity;}
+    //public String getCommodity(){return commodity;}
     public String getRole(){return role;}
     public ArrayList<Supplier> getSuppliers(){return this.suppliers;}
 
@@ -305,12 +305,12 @@ public class Member implements Nameable {
             System.err.println("BU updated in the instance but NOT in the DB !");
         }
     }
-    public void setCommodity(Context context, String commodity){
-        this.commodity = commodity;
-        if( ! this.updateMemberInDB(context)){
-            System.err.println("Commodity updated in the instance but NOT in the DB !");
-        }
-    }
+    //public void setCommodity(Context context, String commodity){
+        //this.commodity = commodity;
+        //if( ! this.updateMemberInDB(context)){
+            //System.err.println("Commodity updated in the instance but NOT in the DB !");
+        //}
+    //}
     public void setRole(Context context, String role){
         this.role = role;
         if( ! this.updateMemberInDB(context)){
