@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import vandenbussche.airbussources.R;
 import vandenbussche.airbussources.core.Research;
@@ -49,11 +50,13 @@ public class SearchByMember extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Research research = new Research(SearchByMember.this);
-                        ArrayList<String> researchWords = new ArrayList<>();
-                        researchWords.addAll(Arrays.asList(nameField.getText().toString().split(" ")));
-                        researchWords.addAll(Arrays.asList(surnameField.getText().toString().split(" ")));
-                        researchWords.addAll(Arrays.asList(buField.getText().toString().split(" ")));
-                        ArrayList<String> idProfiles = research.getMembersIdProfiles(SearchByMember.this, researchWords);
+                        ArrayList<String> researchNames = new ArrayList<String>();
+                        ArrayList<String> researchBUs = new ArrayList<String>();
+                        researchNames.addAll(Arrays.asList(nameField.getText().toString().split(" ")));
+                        researchNames.addAll(Arrays.asList(surnameField.getText().toString().split(" ")));
+                        researchBUs.addAll(Arrays.asList(buField.getText().toString().split(" ")));
+                        ArrayList<String> idProfiles = research.getMembersIdProfilesByNames(SearchByMember.this, researchNames);
+                        idProfiles.addAll(research.getMembersIDProfilesByBU(SearchByMember.this, researchBUs));
                         ArrayList<CharSequence> researchResult = new ArrayList<CharSequence>(idProfiles);
 
                         Intent intent = new Intent(SearchByMember.this, ResearchResults.class);

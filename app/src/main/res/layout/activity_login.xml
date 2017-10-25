@@ -15,6 +15,7 @@
         android:layout_marginRight="8dp"
         android:hint="@string/login_loginField_title"
         android:textAlignment="center"
+        android:inputType="textPersonName"
         android:textColor="@android:color/darker_gray"
         android:textSize="18sp"
         android:textStyle="italic"

@@ -45,7 +45,7 @@ public class RowAdapterResearchResults extends ArrayAdapter<Nameable> {
         //Gives the relevant values to the layout Views
         Nameable element = getItem(position);
         if (element instanceof Member) {
-            String fullName = ((Member) element).getFirstName() + " " + ((Member) element).getName();
+            String fullName = ((Member) element).getName() + " " + ((Member) element).getFirstName();
             String details = ((Member) element).getBu(); //+ " - " + ((Member) element).getCommodity();
             viewHolder.name.setText(fullName);
             viewHolder.details.setText(details);

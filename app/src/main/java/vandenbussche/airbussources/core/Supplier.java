@@ -9,7 +9,7 @@ import java.util.Collections;
 import vandenbussche.airbussources.database.SQLUtility;
 
 
-public class Supplier implements Nameable, Comparable<Supplier> {
+public class Supplier implements Nameable {
 
     private String name;
     private ArrayList<Product> products;
@@ -60,8 +60,8 @@ public class Supplier implements Nameable, Comparable<Supplier> {
         return this.name;
     }
 
-    public int compareTo(Supplier other){
-        if( other != null){
+    public int compareTo(Nameable other){
+        if( ! (other instanceof Supplier)){
             throw new ClassCastException("Could not compare those, as one of them is not a Product and/or is null");
         }
         return this.name.compareTo(((Supplier) other).getName());

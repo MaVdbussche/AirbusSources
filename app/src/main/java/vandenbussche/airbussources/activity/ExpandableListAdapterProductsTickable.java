@@ -200,7 +200,7 @@ public class ExpandableListAdapterProductsTickable extends BaseExpandableListAda
                     if( ! viewHolder.name.isChecked()){
                         //Ticking OFF column 3, column 2 was OFF
                         System.out.println("This is the situation when a row gets out of view, which in fact ticks both views off.");
-                        System.out.println("Hence we don't touch their value in dataStorage in order to recover it later on, when the getView will be called again.");
+                        System.out.println("Hence we don't touch their value in dataStorage in rmvDuplicates to recover it later on, when the getView will be called again.");
                         System.out.println("This could also have happened because of column 2 being ticked off while column 3 was ticked.");
                         //mapDataStorageProduct.get(groupPosition)[childPosition] = false;
                         //mapDataStorageCFT.get(groupPosition)[childPosition] = false;

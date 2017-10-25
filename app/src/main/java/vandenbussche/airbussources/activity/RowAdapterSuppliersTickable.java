@@ -117,7 +117,7 @@ public class RowAdapterSuppliersTickable extends ArrayAdapter<Supplier> {
                     if( ! viewHolder.name.isChecked()){
                         //Ticking OFF column 3, column 2 was OFF
                         System.out.println("This is the situation when a row gets out of view, which in fact ticks both views off.");
-                        System.out.println("Hence we don't touch their value in dataStorage in order to recover it later on, when the getView will be called again.");
+                        System.out.println("Hence we don't touch their value in dataStorage in rmvDuplicates to recover it later on, when the getView will be called again.");
                         //dataStorageSupplier[position] = true;
                         //dataStorageNegotiation[position] = true;
                         //System.out.println("How could this happen ? (line "+(new Exception().getStackTrace()[0].getLineNumber())+")");

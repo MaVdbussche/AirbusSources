@@ -331,4 +331,17 @@ public class Member implements Nameable {
     public String toString(){
         return this.idProfile;
     }
+
+    /**
+     * Compares on the surname !
+     * @param o
+     * @return
+     */
+    public int compareTo(Nameable o){
+        if(o instanceof Member) {
+            return this.getName().compareTo(((Member) o).getName());
+        } else {
+            throw new ClassCastException();
+        }
+    }
 }

@@ -6,7 +6,6 @@ import android.database.Cursor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import vandenbussche.airbussources.database.SQLUtility;
@@ -67,7 +66,7 @@ public class Research {
             result.addAll(resultsForOneWord);
         }
         db.close();
-        order(result);
+        rmvDuplicates(result);
         return result;
     }
 
@@ -91,27 +90,27 @@ public class Research {
             result.addAll(resultsForOneWord);
         }
         db.close();
-        order(result);
+        rmvDuplicates(result);
         return result;
     }
 
     /**
      * This method provides all the members' names matching the research. Results should be sorted alphabetically.
      * I am not too happy with my code though and my come back on it later. But for now it should work at least.
-     * @param research the words the research is being performed on
+     * @param names the words the research is being performed on
      * @return An ArrayList<String> containing the idProfiles of the members matching the research
      */
-    public ArrayList<String> getMembersIdProfiles(Context context, ArrayList<String> research){
+    public ArrayList<String> getMembersIdProfilesByNames(Context context, ArrayList<String> names) {
         SQLUtility db = SQLUtility.prepareDataBase(context);
         ArrayList<Result> resultsIDProfiles = new ArrayList<>();
         ArrayList<String> returnedList = new ArrayList<>();
-        boolean flag = false;
+        boolean alreadyIn = false;
 
         //For each word typed in by the user
-        for (String word:research)
+        for (String word:names)
         {
             //We get idProfiles of all matching members
-            Cursor c = db.getEntriesFromDB("Member", new String[]{"IDProfile"}, "Name LIKE "+"\'%"+word+"%\'", null);
+            Cursor c = db.getEntriesFromDB("Member", new String[]{"IDProfile"}, "Name = \""+word+"\"", null);
             if(c.moveToFirst()){
                 //For all of those idProfiles
                 for(int i=0; i<c.getCount(); i++){
@@ -120,20 +119,22 @@ public class Research {
                     for (Result result : resultsIDProfiles){
                         //If it is already contained in the list, we increase its pertinence
                         if(idProfile.equals(result.value)){
+                            alreadyIn = true;
                             result.incrPertinence(1);
-                            flag = true;
                         }
                     }
-                    if( ! flag){
+                    if( ! alreadyIn){
                         //Otherwise we add it to the list
                         resultsIDProfiles.add(new Result(idProfile));
                     }
                     c.moveToNext();
+                    alreadyIn = false;
                 }
             }
             c.close();
             Cursor d = db.getEntriesFromDB("Member", new String[]{"IDProfile"}, "Surname LIKE "+"\'%"+word+"%\'", null);
             if(d.moveToFirst()){
+                System.out.println("Code exécuté");
                 //For all of those idProfiles
                 for(int i=0; i<d.getCount(); i++){
                     String idProfile = d.getString(d.getColumnIndex("IDProfile"));
@@ -141,56 +142,81 @@ public class Research {
                     for (Result result : resultsIDProfiles){
                         //If it is already contained in the list, we increase its pertinence
                         if(idProfile.equals(result.value)){
+                            alreadyIn = true;
                             result.incrPertinence(1);
-                            flag = true;
                         }
                     }
-                    if( ! flag){
+                    if( ! alreadyIn){
                         //Otherwise we add it to the list
                         resultsIDProfiles.add(new Result(idProfile));
                     }
                     d.moveToNext();
+                    alreadyIn = false;
                 }
             }
             d.close();
-            Cursor e = db.getEntriesFromDB("Member", new String[]{"IDProfile"}, "BU LIKE "+"\'%"+word+"%\'", null);
-            if(e.moveToFirst()){
-                //For all of those idProfiles
-                for(int i=0; i<e.getCount(); i++){
-                    String idProfile = e.getString(e.getColumnIndex("IDProfile"));
-
-                    for (Result result : resultsIDProfiles){
-                        //If it is already contained in the list, we increase its pertinence
-                        if(idProfile.equals(result.value)){
-                            result.incrPertinence(1);
-                            flag = true;
-                        }
-                    }
-                    if( ! flag){
-                        //Otherwise we add it to the list
-                        resultsIDProfiles.add(new Result(idProfile));
-                    }
-                    e.moveToNext();
-                }
-            }
-            e.close();
-
         }
         db.close();
-        //Now we have a list of Result instances, which we will copy in pertinence order into an ArrayList<String>
-        Collections.sort(resultsIDProfiles);
+        //Now we have a list of Result instances, which we will copy in alphabetical rmvDuplicates into an ArrayList<String>
         for(int i=0; i<resultsIDProfiles.size(); i++){
             returnedList.add(resultsIDProfiles.get(i).value);
         }
+        returnedList = rmvDuplicates(returnedList);
+        Collections.sort(returnedList);
         return returnedList;
     }
 
     /**
-     * This option removes all duplicates and sorts an ArrayList of Strings
+     * This method provides all the members' names matching the research. Results should be sorted alphabetically.
+     * I am not too happy with my code though and my come back on it later. But for now it should work at least.
+     * @param BUs the words the research is being performed on
+     * @return An ArrayList<String> containing the idProfiles of the members matching the research
+     */
+    public ArrayList<String> getMembersIDProfilesByBU(Context context, ArrayList<String> BUs) {
+        SQLUtility db = SQLUtility.prepareDataBase(context);
+        ArrayList<Result> resultsIDProfiles = new ArrayList<>();
+        ArrayList<String> returnedList = new ArrayList<>();
+        boolean alreadyIn = false;
+
+        for(String bu : BUs) {
+            Cursor e = db.getEntriesFromDB("Member", new String[]{"IDProfile"}, "BU LIKE " + "\'%" +bu+ "%\'", null);
+            if (e.moveToFirst()) {
+                //For all of those idProfiles
+                for (int i = 0; i < e.getCount(); i++) {
+                    String idProfile = e.getString(e.getColumnIndex("IDProfile"));
+
+                    for (Result result : resultsIDProfiles) {
+                        //If it is already contained in the list, we increase its pertinence
+                        if (idProfile.equals(result.value)) {
+                            result.incrPertinence(1);
+                            alreadyIn = true;
+                        }
+                    }
+                    if (!alreadyIn) {
+                        //Otherwise we add it to the list
+                        resultsIDProfiles.add(new Result(idProfile));
+                    }
+                    e.moveToNext();
+                    alreadyIn = false;
+                }
+            }
+            e.close();
+        }
+        //Now we have a list of Result instances, which we will copy in alphabetical rmvDuplicates into an ArrayList<String>
+        for(int i=0; i<resultsIDProfiles.size(); i++){
+            returnedList.add(resultsIDProfiles.get(i).value);
+        }
+        returnedList = rmvDuplicates(returnedList);
+        Collections.sort(returnedList);
+        return returnedList;
+    }
+
+    /**
+     * This option removes all duplicates from an ArrayList of Strings
      * @param list the list to be processed
      * @return an ArrayList<String> that is duplicate-free and ordered lexicographically
      */
-    private static ArrayList<String> order(ArrayList<String> list){
+    public static ArrayList<String> rmvDuplicates(ArrayList<String> list) {
 
         ArrayList<String> al = new ArrayList<>();
         Set<String> hs = new HashSet<>();

@@ -33,7 +33,7 @@ public class SQLUtility extends SQLiteOpenHelper {
      */
     private final Context context;
     /**
-     * The database version (should be incremented in order for the onUpgrade() method to be called).
+     * The database version (should be incremented in rmvDuplicates for the onUpgrade() method to be called).
      */
     private static final int DATABASE_VERSION = 1;
     /**
@@ -487,7 +487,7 @@ public class SQLUtility extends SQLiteOpenHelper {
     /**
      * Checks if a member with this login exists in the DB, then edits its information with the new values
      * @param idProfile the member whose information will be modified
-     * @param newValues an ArrayList<String> containing all the values of the updated member in the exact same order
+     * @param newValues an ArrayList<String> containing all the values of the updated member in the exact same rmvDuplicates
      *                  as the database columns (IDProfile, password, name, surname, role, commodity, business unit).
      *                  Since this method is very sensitive to errors, prefer the method using ContentValues when possible.
      *                  Can not be null, nor contain any null values
@@ -595,7 +595,7 @@ public class SQLUtility extends SQLiteOpenHelper {
     }
 
     /**
-     * Prepares the DB in order to be able to execute requests/insertions/etc. on it.
+     * Prepares the DB in rmvDuplicates to be able to execute requests/insertions/etc. on it.
      */
     public static SQLUtility prepareDataBase(Context context){
         SQLUtility db = new SQLUtility(context);

@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import vandenbussche.airbussources.R;
@@ -98,6 +99,7 @@ public class ResearchResults extends AppCompatActivity {
             System.out.println("Research Type received by sendToAdapter() is wrong ! No assumptions are made about what will happen next !");
         }
 
+        Collections.sort(results);
         RowAdapterResearchResults adapter = new RowAdapterResearchResults(ResearchResults.this, results);
         listView.setAdapter(adapter);
     }
