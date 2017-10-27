@@ -11,35 +11,36 @@
         android:id="@+id/login_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
+        android:fontFamily="sans-serif"
         android:hint="@string/login_loginField_title"
-        android:textAlignment="center"
         android:inputType="textPersonName"
-        android:textColor="@android:color/darker_gray"
+        android:textAppearance="@style/TextAppearance.AppCompat"
         android:textSize="18sp"
         android:textStyle="italic"
+        app:layout_constraintBottom_toTopOf="@+id/password_field"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="60dp"
-        app:layout_constraintBottom_toTopOf="@+id/password_field" />
+        app:layout_constraintRight_toRightOf="parent" />
 
     <EditText
         android:id="@+id/password_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
+        android:fontFamily="sans-serif"
         android:hint="@string/login_passwordField_title"
-        android:textAlignment="center"
-        android:textColor="@android:color/darker_gray"
-        android:textStyle="italic"
         android:inputType="textPassword"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textSize="18sp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toTopOf="@+id/button_login"
         app:layout_constraintHorizontal_bias="0.501"
-        android:layout_marginBottom="60dp"
-        app:layout_constraintBottom_toTopOf="@+id/button_login" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <ImageView
         android:id="@+id/airbusLogo"
@@ -58,14 +59,21 @@
 
     <Button
         android:id="@+id/button_login"
+        style="@android:style/Widget.Material.ActionMode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/start_button_login"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="16dp"
         android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginRight="8dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:fontFamily="sans-serif"
+        android:text="@string/start_button_login"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="16dp" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
