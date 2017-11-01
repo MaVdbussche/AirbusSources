@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Airbus Procurement Sourcing Tool</string>
+    <string name="app_name">CrossProc</string>
     <string name="field_hint">Type here...</string>
 
     <string name="start_button_login">Log in</string>

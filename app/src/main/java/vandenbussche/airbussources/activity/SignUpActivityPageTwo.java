@@ -49,7 +49,7 @@ public class SignUpActivityPageTwo extends AppCompatActivity {
         toScreen3 = (Button) findViewById(R.id.signupScreen2ButtonNext);
 
         businessUnitsScrollView = (ScrollView) findViewById(R.id.businessUnitsRadioGroupScrollView);
-        commoditiesScrollView = (ScrollView) findViewById(R.id.commoditiesRadioGroupScrollView);
+        //commoditiesScrollView = (ScrollView) findViewById(R.id.commoditiesRadioGroupScrollView);
         rolesScrollView = (ScrollView) findViewById(R.id.rolesRadioGroupScrollView);
 
         businessUnits = (RadioGroup) findViewById(R.id.businessUnitsRadioGroup);

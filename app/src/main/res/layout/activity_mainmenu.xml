@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPureWhite"
     tools:context="vandenbussche.airbussources.activity.MainMenu">
 
     <TextView
@@ -44,7 +45,7 @@
         android:layout_marginBottom="36dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/standard_button_shape"
         android:fontFamily="sans-serif"
         android:text="@string/mainMenu_buttonSearchByMember_title"
         android:textAlignment="center"
@@ -62,7 +63,7 @@
         android:layout_marginBottom="36dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/standard_button_shape"
         android:fontFamily="sans-serif"
         android:text="@string/mainMenu_buttonSearchByProduct_title"
         android:textAlignment="center"
@@ -80,7 +81,7 @@
         android:layout_marginBottom="36dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/standard_button_shape"
         android:fontFamily="sans-serif"
         android:text="@string/mainMenu_buttonSearchBySupplier_title"
         android:textAlignment="center"

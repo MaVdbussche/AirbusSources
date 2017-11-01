@@ -31,7 +31,7 @@ public class ResearchResults extends AppCompatActivity {
 
         final Intent inputIntent = getIntent();
         final String resultsType = inputIntent.getStringExtra("Research Type");
-        final ArrayList<CharSequence> resultsIdentifiers = inputIntent.getExtras().getCharSequenceArrayList("resultsList");
+        final ArrayList<CharSequence> resultsIdentifiers = inputIntent.getCharSequenceArrayListExtra("resultsList");
 
         ActionBar ab = getSupportActionBar();
         if(ab != null) {
@@ -99,7 +99,7 @@ public class ResearchResults extends AppCompatActivity {
             System.out.println("Research Type received by sendToAdapter() is wrong ! No assumptions are made about what will happen next !");
         }
 
-        Collections.sort(results);
+        //Collections.sort(results);
         RowAdapterResearchResults adapter = new RowAdapterResearchResults(ResearchResults.this, results);
         listView.setAdapter(adapter);
     }

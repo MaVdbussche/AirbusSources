@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPureWhite"
     tools:context="vandenbussche.airbussources.activity.StartActivity">
 
     <EditText
@@ -17,6 +18,7 @@
         android:fontFamily="sans-serif"
         android:hint="@string/login_loginField_title"
         android:inputType="textPersonName"
+        android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textSize="18sp"
         android:textStyle="italic"
@@ -34,6 +36,7 @@
         android:fontFamily="sans-serif"
         android:hint="@string/login_passwordField_title"
         android:inputType="textPassword"
+        android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textSize="18sp"
         android:textStyle="italic"
@@ -65,6 +68,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
+        android:background="@drawable/standard_button_shape"
         android:backgroundTint="@color/colorPrimary"
         android:fontFamily="sans-serif"
         android:text="@string/start_button_login"

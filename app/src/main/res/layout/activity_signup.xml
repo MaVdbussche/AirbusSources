@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPureWhite"
     tools:context="vandenbussche.airbussources.activity.StartActivity">
 
     <TextView
@@ -142,7 +143,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/standard_button_shape"
         android:fontFamily="sans-serif"
         android:text="@string/signup_buttonNext"
         android:textAlignment="center"

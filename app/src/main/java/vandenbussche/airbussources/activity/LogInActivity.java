@@ -44,7 +44,7 @@ public class LogInActivity extends AppCompatActivity {
         password = (EditText) findViewById(R.id.password_field);
 
         try {
-            image.setImageBitmap(BitmapFactory.decodeStream(getApplicationContext().getAssets().open("CrossProc_logo.png")));
+            image.setImageBitmap(BitmapFactory.decodeStream(getApplicationContext().getAssets().open("CrossProc_logo_noborder.png")));
         } catch (IOException e) {
             //Do nothing if the asset doesnt load properly (default image will be displayed)
         }

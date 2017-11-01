@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorPureWhite">
 
 
     <TextView
@@ -36,9 +37,8 @@
         android:layout_height="375dp"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@color/colorPrimary"
+        android:layout_marginStart="8dp"
         app:layout_constraintBottom_toTopOf="@+id/signupScreen3ButtonNext"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -54,7 +54,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/standard_button_shape"
         android:fontFamily="sans-serif"
         android:text="@string/signup_buttonNext"
         android:textAlignment="center"
