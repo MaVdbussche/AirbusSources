@@ -51,7 +51,7 @@
         android:layout_marginBottom="25dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/standard_button_shape"
         android:fontFamily="sans-serif"
         android:text="@string/searchByProduct_button_title"
         android:textAlignment="center"

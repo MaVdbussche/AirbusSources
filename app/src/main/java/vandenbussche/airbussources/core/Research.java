@@ -110,8 +110,9 @@ public class Research {
         for (String word:names)
         {
             //We get idProfiles of all matching members
-            Cursor c = db.getEntriesFromDB("Member", new String[]{"IDProfile"}, "Name = \""+word+"\"", null);
+            Cursor c = db.getEntriesFromDB("Member", new String[]{"IDProfile"}, "Name LIKE \'%"+word+"%\'", null);
             if(c.moveToFirst()){
+                System.out.println("We got a Cursor of size :"+ c.getCount());
                 //For all of those idProfiles
                 for(int i=0; i<c.getCount(); i++){
                     String idProfile = c.getString(c.getColumnIndex("IDProfile"));
@@ -132,7 +133,7 @@ public class Research {
                 }
             }
             c.close();
-            Cursor d = db.getEntriesFromDB("Member", new String[]{"IDProfile"}, "Surname LIKE "+"\'%"+word+"%\'", null);
+            Cursor d = db.getEntriesFromDB("Member", new String[]{"IDProfile"}, "Surname LIKE \'%"+word+"%\'", null);
             if(d.moveToFirst()){
                 System.out.println("Code exécuté");
                 //For all of those idProfiles
@@ -157,7 +158,7 @@ public class Research {
             d.close();
         }
         db.close();
-        //Now we have a list of Result instances, which we will copy in alphabetical rmvDuplicates into an ArrayList<String>
+        //Now we have a list of Result instances, which we will copy in alphabetical order into an ArrayList<String>
         for(int i=0; i<resultsIDProfiles.size(); i++){
             returnedList.add(resultsIDProfiles.get(i).value);
         }
@@ -202,6 +203,7 @@ public class Research {
             }
             e.close();
         }
+        db.close();
         //Now we have a list of Result instances, which we will copy in alphabetical rmvDuplicates into an ArrayList<String>
         for(int i=0; i<resultsIDProfiles.size(); i++){
             returnedList.add(resultsIDProfiles.get(i).value);

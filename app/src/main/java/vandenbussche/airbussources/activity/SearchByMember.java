@@ -52,9 +52,20 @@ public class SearchByMember extends AppCompatActivity {
                         Research research = new Research(SearchByMember.this);
                         ArrayList<String> researchNames = new ArrayList<String>();
                         ArrayList<String> researchBUs = new ArrayList<String>();
-                        researchNames.addAll(Arrays.asList(nameField.getText().toString().split(" ")));
-                        researchNames.addAll(Arrays.asList(surnameField.getText().toString().split(" ")));
-                        researchBUs.addAll(Arrays.asList(buField.getText().toString().split(" ")));
+                        String name = nameField.getText().toString();
+                        String surname = surnameField.getText().toString();
+                        String bu = buField.getText().toString();
+
+                        if( ! name.equals("")) {
+                            researchNames.addAll(Arrays.asList(name.split(" ")));
+                        }
+                        if( ! surname.equals("")) {
+                            researchNames.addAll(Arrays.asList(surname.split(" ")));
+                        }
+                        if( ! bu.equals("")) {
+                            researchBUs.addAll(Arrays.asList(bu.split(" ")));
+                        }
+
                         ArrayList<String> idProfiles = research.getMembersIdProfilesByNames(SearchByMember.this, researchNames);
                         idProfiles.addAll(research.getMembersIDProfilesByBU(SearchByMember.this, researchBUs));
                         ArrayList<CharSequence> researchResult = new ArrayList<CharSequence>(idProfiles);
