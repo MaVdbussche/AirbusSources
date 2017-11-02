@@ -19,7 +19,7 @@
     <string name="signup_screen_title_2">Register (2/4)</string>
     <string name="signup_screen_title_3">Register (3/4)</string>
     <string name="signup_screen_title_4">Register (4/4)</string>
-    <string name="signup_screen_1_welcome">Welcome to the Airbus Procurement Sourcing Tool ! Please register :</string>
+    <string name="signup_screen_1_welcome">Welcome to CrossProc ! Please register :</string>
     <string name="signup_nameField_title">First Name</string>
     <string name="signup_surnameField_title">Name</string>
     <string name="signup_loginField_title">Enter your Airbus User ID</string>
