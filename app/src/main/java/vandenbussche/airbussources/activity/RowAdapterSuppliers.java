@@ -24,7 +24,7 @@ public class RowAdapterSuppliers extends ArrayAdapter<Supplier> {
 
     private Member relevantMember;
 
-    public RowAdapterSuppliers(Context context, @NonNull List<Supplier> elements, Member member){
+    RowAdapterSuppliers(Context context, @NonNull List<Supplier> elements, Member member){
         super(context, R.layout.row_item_check_tables_small, elements);
         this.relevantMember = member;
     }
@@ -53,7 +53,7 @@ public class RowAdapterSuppliers extends ArrayAdapter<Supplier> {
         if(element != null) {
             String id = element.getIdentifier();
             viewHolder.name.setText(id);
-            ((CheckedTextView) viewHolder.name).setChecked(relevantMember.isWorkingWith(getContext(), element.getName())); //TODO
+            ((CheckedTextView) viewHolder.name).setChecked(relevantMember.isWorkingWith(getContext(), element.getName()));
             viewHolder.column3CheckBox.setChecked(Member.isThereANegotiationBetween(getContext(), relevantMember, element.getName()));
         }
         return convertView;

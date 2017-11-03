@@ -21,12 +21,10 @@ import vandenbussche.airbussources.core.Supplier;
 
 public class RowAdapterMembers extends ArrayAdapter<Member> {
 
-    //TODO This class has no use right now
-
     private Product relevantProduct;
     private Supplier relevantSupplier;
 
-    public RowAdapterMembers(Context context, @NonNull List<Member> elements, @Nullable Product product, @Nullable Supplier supplier){
+    RowAdapterMembers(Context context, @NonNull List<Member> elements, @Nullable Product product, @Nullable Supplier supplier){
         super(context, R.layout.row_item_check_tables_small, elements);
         this.relevantProduct = product;
         this.relevantSupplier = supplier;

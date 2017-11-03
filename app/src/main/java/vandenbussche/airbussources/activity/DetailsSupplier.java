@@ -53,8 +53,8 @@ public class DetailsSupplier extends AppCompatActivity {
 
         SQLUtility db = SQLUtility.prepareDataBase(DetailsSupplier.this);
         List<Product> products = db.getAllSuppliersProducts(supplierName);
-        List<Nameable> productsAsNameables = new ArrayList<Nameable>();
-        productsAsNameables.addAll(products);  //I can not think of a better way to cast my Products to Nameables at the moment TODO
+        List<Nameable> productsAsNameables = new ArrayList<Nameable>(products);
+
         RowAdapterResearchResults adapterProducts = new RowAdapterResearchResults(DetailsSupplier.this, productsAsNameables);
         listProducts.setAdapter(adapterProducts);
 
