@@ -5,5 +5,7 @@ I am aware my code is quite messy and class names are clearly questionable, but 
 
 I am aware not much of this app's code will be reusable, but still thought it might be useful to you to have access to this repository, so here it is.
 
+In case you were wondering, Pietlafrite and MaVdbussche are my two Github accounts, that I used indifferently.
+
 Here is my e-mail address in case you have any questions :
 vandenbusschemartin@gmail.com
