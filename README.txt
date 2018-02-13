@@ -8,4 +8,4 @@ I am aware not much of this app's code will be reusable, but still thought it mi
 In case you were wondering, Pietlafrite and MaVdbussche are my two Github accounts, that I used indifferently.
 
 Here is my e-mail address in case you have any questions :
-vandenbusschemartin@gmail.com
+vandenbusschemartin[at]gmail.com
